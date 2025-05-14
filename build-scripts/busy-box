@@ -19,19 +19,18 @@ if [ ! -d $BUSY_BOX_PATH ]; then
 	sleep 0.5
 
 	mv busybox-$BUSY_BOX_VERSION busybox
+else
+	echo "-- BusyBox was found in dependencies path"
+	sleep 0.5
 fi
 
-echo "-- BusyBox is ready to be compiled"
-sleep 0.5
-
 cd $BUSY_BOX_PATH
-make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE menuconfig
 
 echo "-- Overwriting .config file from busybox-config"
 sleep 0.5
 
 rm -f .config
-cp $CONFIG_FILES_PATH/buxybox-config .config
+cp $CONFIG_FILES_PATH/busybox-config .config
 
 # We do not apply busybox patches yet
 # echo "-- Applying busybox patches"
@@ -44,7 +43,8 @@ echo "-- Compiling BusyBox"
 sleep 0.5
 make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE -j$(nproc)
 
-echo "-- Moving compiled Image to compilation path"
+echo "-- Installing BusyBox"
 sleep 0.5
-rm -f $LINUX_KERNEL_TARGET
-mv $LINUX_KERNEL_PATH/arch/arm64/boot/Image $LINUX_KERNEL_TARGET
+make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE CONFIG_PREFIX=$BUSY_BOX_CONFIG_PREFIX install
+
+echo "== Busybox installed successfully"
