@@ -15,12 +15,17 @@ LINUX_KERNEL_PATH=$DEPENDENCIES_PATH/linux
 LINUX_KERNEL_IMAGE_TARGET=$TARGET_PATH/ImageWolfbear
 
 BUSY_BOX_VERSION=1.37.0
+BUSY_BOX_PATH=$DEPENDENCIES_PATH/busybox
+
 SDL_VERSION=
 
 BUILD_ARCH=arm64
-BUILD_CROSS_COMPILER=aarch64-linux-gnu-
+BUILD_CROSS_COMPILE=aarch64-linux-gnu-
 
 mkdir -p $DEPENDENCIES_PATH
 cd $BUILD_SCRIPTS_PATH
 
-source ./linux-kernel
+# source ./linux-kernel
+
+# cd $BUID_SCRIPTS_PATH
+source ./busy-box

@@ -1,0 +1,50 @@
+#!/bin/bash
+
+echo "== Building BusyBox"
+
+cd $DEPENDENCIES_PATH
+
+if [ ! -d $BUSY_BOX_PATH ]; then
+	echo "-- BusyBox was not found, downloading it.."
+	sleep 0.5
+
+	wget https://busybox.net/downloads/busybox-$BUSY_BOX_VERSION.tar.bz2
+
+	echo "Uncompressing BusyBox"
+	sleep 0.5
+
+	tar -xjf busybox-$BUSY_BOX_VERSION.tar.bz2
+
+	echo "Moving BusyBox to it's dependency path"
+	sleep 0.5
+
+	mv busybox-$BUSY_BOX_VERSION busybox
+fi
+
+echo "-- BusyBox is ready to be compiled"
+sleep 0.5
+
+cd $BUSY_BOX_PATH
+make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE menuconfig
+
+echo "-- Overwriting .config file from busybox-config"
+sleep 0.5
+
+rm -f .config
+cp $CONFIG_FILES_PATH/buxybox-config .config
+
+# We do not apply busybox patches yet
+# echo "-- Applying busybox patches"
+# sleep 0.5
+# patch -p1 < $PATCHES_PATH/kernel.patch
+
+make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE oldconfig
+
+echo "-- Compiling BusyBox"
+sleep 0.5
+make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE -j$(nproc)
+
+echo "-- Moving compiled Image to compilation path"
+sleep 0.5
+rm -f $LINUX_KERNEL_TARGET
+mv $LINUX_KERNEL_PATH/arch/arm64/boot/Image $LINUX_KERNEL_TARGET
