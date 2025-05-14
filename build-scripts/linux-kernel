@@ -1,0 +1,34 @@
+#!/bin/bash
+
+echo "== Building Linux Kernel"
+
+if [ ! -d $LINUX_KERNEL_PATH ]; then
+	echo "-- Linux kernel was not found, downloading it.."
+	sleep 0.5
+
+	git clone -b v$LINUX_KERNEL_VERSION --single-branch https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git $LINUX_KERNEL_PATH
+fi
+
+echo "-- Linux kernel is ready to be compiled"
+sleep 0.5
+
+cd $LINUX_KERNEL_PATH
+
+echo "-- Overwriting .config file from linux-config"
+sleep 0.5
+rm -f .config
+cp $CONFIG_FILES_PATH/linux-config .config
+
+echo "-- Applying kernel patches"
+sleep 0.5
+patch -p1 < $PATCHES_PATH/kernel.patch
+
+make ARCH=$BUILD_ARCH CROSS_COMPILER=$BUILD_CROSS_COMPILER oldconfig
+
+echo "-- Compiling wolfbearOS Linux kernel"
+sleep 0.5
+make ARCH=$BUILD_ARCH CROSS_COMPILER=$BUILD_CROSS_COMPILER -j$(nproc)
+
+echo "-- Moving compiled Image to compilation path"
+sleep 0.5
+mv arch/arm64/boot/Image $LINUX_KERNEL_TARGET
