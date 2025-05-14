@@ -24,9 +24,6 @@ BUILD_ARCH=arm64
 BUILD_CROSS_COMPILE=aarch64-linux-gnu-
 
 mkdir -p $DEPENDENCIES_PATH
-cd $BUILD_SCRIPTS_PATH
 
-# source ./linux-kernel
-
-# cd $BUID_SCRIPTS_PATH
-source ./busy-box
+source .$BUILD_SCRIPTS_PATH/linux-kernel
+source .$BUILD_SCRIPTS_PATH/busy-box
