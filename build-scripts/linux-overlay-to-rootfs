@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "== Customizing rootfs with overlay path  =="
+cp -a $OVERLAY_PATH/* $ROOTFS_PATH
+

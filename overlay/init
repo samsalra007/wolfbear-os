@@ -1,0 +1,17 @@
+#!/bin/sh
+
+mount -t proc none /proc
+mount -t sysfs none /sys
+mount -t devtmpfs none /dev
+
+echo "WolfbearOS" > /proc/sys/kernel/hostname
+
+while true; do
+	clear
+
+	echo "WolfbearOS Development Version!"
+	# /sbin/getty -L -a cheese ttyAMA0 115200 vt100
+	/sbin/getty -L ttyAMA0 115200 vt1000
+
+	echo "Woof bye!"
+done

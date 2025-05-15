@@ -1,0 +1,9 @@
+#!/bin/bash
+
+echo "== Updating init to overlay path"
+
+rm -f $OVERLAY_PATH/init
+cp $INIT_PATH/init-overlay $OVERLAY_PATH/
+
+echo "== Init was successfully updated in (overlay/init)"
+
