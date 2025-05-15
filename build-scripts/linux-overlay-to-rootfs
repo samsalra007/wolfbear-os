@@ -1,7 +1,13 @@
 #!/bin/bash
 
 echo "== Customizing rootfs with overlay path"
-mkdir -p $ROOTFS_PATH
 
+echo "Removing previous rootfs path"
+sleep 0.5
+rm -rf $ROOTFS_PATH
+mkdir $ROOTFS_PATH
+
+echo "Moving from /overlay to /rootfs"
+sleep 0.5
 cp -a $OVERLAY_PATH/* $ROOTFS_PATH
 
