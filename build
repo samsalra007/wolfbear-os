@@ -43,3 +43,6 @@ echo "==== Running BusyBox Scripts ===="
 cd $BUILD_SCRIPTS_PATH
 source ./busy-box
 
+echo "==== Running rootfs packaging ===="
+cd $BUILD_SCRIPTS_PATH
+source ./rootfs-package
