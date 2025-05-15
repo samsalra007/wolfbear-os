@@ -10,6 +10,7 @@ DEPENDENCIES_PATH=$WOLFBEAR_OS_PROJECT_PATH/dependencies
 PATCHES_PATH=$WOLFBEAR_OS_PROJECT_PATH/patches
 TARGET_PATH=$WOLFBEAR_OS_PROJECT_PATH/target
 INIT_PATH=$WOLFBEAR_OS_PROJECT_PATH/init
+EXTERNAL_PATH=$WOLFBEAR_OS_PROJECT_PATH/external
 
 LINUX_KERNEL_VERSION=6.1
 LINUX_KERNEL_PATH=$DEPENDENCIES_PATH/linux
@@ -21,7 +22,7 @@ BUSY_BOX_CONFIG_PREFIX=$WOLFBEAR_OS_PROJECT_PATH/rootfs
 OVERLAY_PATH=$WOLFBEAR_OS_PROJECT_PATH/overlay
 ROOTFS_PATH=$WOLFBEAR_OS_PROJECT_PATH/rootfs
 
-SDL_VERSION=
+SDL_VERSION=3.2.0
 
 BUILD_ARCH=arm64
 BUILD_CROSS_COMPILE=aarch64-linux-gnu-
@@ -42,6 +43,13 @@ source ./linux-overlay-to-rootfs
 echo "==== Running BusyBox Scripts ===="
 cd $BUILD_SCRIPTS_PATH
 source ./busy-box
+
+echo "==== Running External Scripts ===="
+rm -rf $EXTERNAL_PATH
+mkdir $EXTERNAL_PATH
+
+cd $BUILD_SCRIPTS_PATH
+source ./external-lib-sdl
 
 echo "==== Running rootfs packaging ===="
 cd $BUILD_SCRIPTS_PATH

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo "== Installing SDL =="
+sleep 0.5
+
+cd $DEPENDENCIES_PATH
+SDL_DEPENDENCY_PATH=$DEPENDENCIES_PATH/sdl
+
+if [ ! -d $SDL_DEPENDENCY_PATH ]; then
+	echo "SDL was not found, downloading"
+	sleep 0.5
+
+	git clone -b release-$SDL_VERSION --single-branch https://github.com/libsdl-org/SDL.git $SDL_DEPENDENCY_PATH
+fi
+
+echo "== SDL installed successfully"
+sleep 0.5
