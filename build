@@ -13,7 +13,6 @@ INIT_PATH=$WOLFBEAR_OS_PROJECT_PATH/init
 
 LINUX_KERNEL_VERSION=6.1
 LINUX_KERNEL_PATH=$DEPENDENCIES_PATH/linux
-LINUX_KERNEL_IMAGE_TARGET=$TARGET_PATH/ImageWolfbear
 
 BUSY_BOX_VERSION=1.37.0
 BUSY_BOX_PATH=$DEPENDENCIES_PATH/busybox
@@ -29,11 +28,17 @@ BUILD_CROSS_COMPILE=aarch64-linux-gnu-
 
 mkdir -p $DEPENDENCIES_PATH
 
+rm $TARGET_PATH
+mkdir $TARGET_PATH
+
 echo "==== Running Linux Scripts ===="
 cd $BUILD_SCRIPTS_PATH
 source ./linux-kernel
 
 echo "==== Running BusyBox Scripts ===="
 cd $BUILD_SCRIPTS_PATH
-source .$BUILD_SCRIPTS_PATH/busy-box
+source ./busy-box
 
+echo "==== Running Overaly to RootFS Scripts ===="
+cd $BUILD_SCRIPTS_PATH
+source ./linux-overlay-to-rootfs

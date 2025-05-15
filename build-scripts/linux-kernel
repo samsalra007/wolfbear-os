@@ -36,5 +36,4 @@ make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE -j$(nproc)
 
 echo "-- Moving compiled Image to compilation path"
 sleep 0.5
-rm -f $LINUX_KERNEL_TARGET
-mv $LINUX_KERNEL_PATH/arch/arm64/boot/Image $LINUX_KERNEL_TARGET
+mv $LINUX_KERNEL_PATH/arch/arm64/boot/Image $TARGET_PATH
