@@ -31,12 +31,18 @@ sleep 0.5
 rm -f .config
 cp $CONFIG_FILES_PATH/busybox-config .config
 
-pwd
 echo "-- Applying BusyBox patches"
-sleep 0.5
-patch -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch
+
+
+if patch --dry-run --forward -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch > /dev/null; then
+        echo "Applying Busybox patches"
+        patch -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch
+else
+        echo "No BusyBox patch needed"
+fi
 
 echo "Preparing BusyBox config"
+sleep 0.5
 make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE oldconfig
 
 echo "-- Compiling BusyBox"

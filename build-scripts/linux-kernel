@@ -21,7 +21,7 @@ cp $CONFIG_FILES_PATH/linux-config .config
 
 echo "-- Checking kernel patches"
 sleep 0.5
-if patch --dry-run --forward -p1 < $PATCHEs_PATH/kernel.patch > /dev/null; then
+if patch --dry-run --forward -p1 < $PATCHES_PATH/kernel.patch > /dev/null; then
 	echo "Applying kernel patches"
 	patch -p1 < $PATCHES_PATH/kernel.patch
 else

@@ -35,10 +35,11 @@ echo "==== Running Linux Scripts ===="
 cd $BUILD_SCRIPTS_PATH
 source ./linux-kernel
 
+echo "==== Running Overaly to RootFS Scripts ===="
+cd $BUILD_SCRIPTS_PATH
+source ./linux-overlay-to-rootfs
+
 echo "==== Running BusyBox Scripts ===="
 cd $BUILD_SCRIPTS_PATH
 source ./busy-box
 
-echo "==== Running Overaly to RootFS Scripts ===="
-cd $BUILD_SCRIPTS_PATH
-source ./linux-overlay-to-rootfs
