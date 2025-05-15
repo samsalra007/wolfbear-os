@@ -1,5 +1,7 @@
 #!/bin/bash
 
 echo "== Customizing rootfs with overlay path"
+mkdir -p $ROOTFS_PATH
+
 cp -a $OVERLAY_PATH/* $ROOTFS_PATH
 
