@@ -17,7 +17,8 @@ echo "-- Compiling SDL"
 0.5
 cd $SDL_DEPENDENCY_PATH
 
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../
+./autogen.sh
+./configure --prefix=$OVERLAY_LIBS_PATH/SLD --disable-shared --enable-static
 
 echo "== SDL installed successfully"
 sleep 0.5
