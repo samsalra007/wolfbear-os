@@ -4,8 +4,12 @@ mount -t proc none /proc
 mount -t sysfs none /sys
 mount -t devtmpfs none /dev
 
-echo "WolfbearOS" > /proc/sys/kernel/hostname
+# Si hay hostname entonces lo configuramos para que cambie también el comando
+if [ -f /etc/hostname ]; then
+    hostname "$(cat /etc/hostname)"
+fi
 
+# El while true evita el kernel panic al regresar de nuevo al login si la terminal getty finaliza
 while true; do
 	clear
 

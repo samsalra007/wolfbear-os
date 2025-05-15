@@ -28,7 +28,7 @@ BUILD_CROSS_COMPILE=aarch64-linux-gnu-
 
 mkdir -p $DEPENDENCIES_PATH
 
-rm $TARGET_PATH
+rm -rf $TARGET_PATH
 mkdir $TARGET_PATH
 
 echo "==== Running Linux Scripts ===="
