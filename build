@@ -49,12 +49,12 @@ echo "==== Running BusyBox Scripts ===="
 cd $BUILD_SCRIPTS_PATH
 source ./busy-box
 
-echo "==== Running External Scripts ===="
-rm -rf $EXTERNAL_PATH
-mkdir $EXTERNAL_PATH
+# echo "==== Running External Scripts ===="
+# rm -rf $EXTERNAL_PATH
+# mkdir $EXTERNAL_PATH
 
-cd $BUILD_SCRIPTS_PATH
-source ./external-lib-sdl
+# cd $BUILD_SCRIPTS_PATH
+# source ./external-lib-sdl
 
 echo "==== Running external to rootfs script ===="
 cd $BUILD_SCRIPTS_PATH
