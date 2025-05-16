@@ -33,6 +33,9 @@ sleep 2
 rm -rf $ROOTFS_PATH
 mkdir $ROOTFS_PATH
 
+
+
+
 echo "- Linux kernel setup"
 sleep 2
 cd $BUILD_SCRIPTS_PATH
@@ -43,29 +46,44 @@ sleep 2
 cd $BUILD_SCRIPTS_PATH
 source ./linux-busybox-setup
 
+
+
+
 echo "- Wolfbear ./overlay to ./rootfs sync"
 sleep 2
 cd $BUILD_SCRIPTS_PATH
 source ./wolfbear-overlay-to-rootfs
 
+
+
+
 rm -rf $PKG_EXTERNAL_PATH
 mkdir $PKG_EXTERNAL_PATH
-chmod -R u+rwX $PKG_EXTERNAL_PATH
 
-echo "- Package external (pkg-external) apk tools install"
-sleep 2
-cd $BUILD_SCRIPTS_PATH
-source ./pkg-external-apk-tools
+# echo "- Package external (pkg-external) apk tools install"
+# sleep 2
+# cd $BUILD_SCRIPTS_PATH
+# source ./pkg-external-apk-tools-manual
 
-echo "- Package external (pkg-external) dependencies install"
+# echo "- Package external (pkg-external) dependencies install"
+# sleep 2
+# cd $BUILD_SCRIPTS_PATH
+# source ./pkg-external-dependencies
+
+echo "- Using Alpine docker image to install dependencies"
 sleep 2
-cd $BUILD_SCRIPTS_PATH
-source ./pkg-external-dependencies
+source ./pkg-external-dependencies-alpine-docker
+
+
+
 
 echo "- Wolfbear ./pkg-external to ./rootfs sync"
 sleep 2
 cd $BUILD_SCRIPTS_PATH
 source ./wolfbear-pkg-external-to-rootfs
+
+
+
 
 echo "- Wolfbear rootfs package"
 sleep 2

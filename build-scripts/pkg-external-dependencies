@@ -3,16 +3,37 @@
 echo "[STEP] Package external (pkg-external) dependencies install"
 sleep 1
 
-echo "  Opening pkg-external path"
+
+echo "  (FETCHING) SDL2, SDL2-DEV Dependencies"
+sleep 1
+
+
+
+/usr/bin/apk \
+  --root $PKG_EXTERNAL_PATH \
+  --repositories-file $PKG_EXTERNAL_PATH/etc/apk/repositories \
+  --allow-untrusted \
+  fetch --recursive \
+    --output $PKG_EXTERNAL_PATH/sdl2-packages \
+    sdl2 sdl2-dev
+
+
+
+echo "  Decompressing downloaded dependencies"
 sleep 1
 cd $PKG_EXTERNAL_PATH
+for pkg in sdl2-packages/*.apk; do
+  tar -xzf "$pkg" -C .
+done
 
-apk \
-  --root $PKG_EXTERNAL_PATH \
-  --repositories-file $OVERLAY_PATH/etc/apk/repositories \
-  --allow-untrusted \
-  --no-log \
-add sdl2 sdl2-dev
+echo "  Removing cached sdl2-packages"
+sleep 1
+rm -rf sdl2-packages
+
+echo "  Verifying installation"
+sleep 1
+ls $PKG_EXTERNAL_PATH/usr/lib | grep libSDL2
+ls $PKG_EXTERNAL_PATHl/usr/include/SDL2
 
 echo "[STEP] Package external (pkg-external) installed dependencies successfully"
 sleep 1
