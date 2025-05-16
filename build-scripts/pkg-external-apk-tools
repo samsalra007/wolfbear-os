@@ -3,13 +3,54 @@
 echo "[STEP] Package external APK tools install"
 sleep 1
 
-echo "  Downloading Alpine APK Tools"
-sleep 1
-mkdir -p $PKG_EXTERNAL_PATH/etc/apk
-echo "http://dl-cdn.alpinelinux.org/alpine/latest-stable/main" > $PKG_EXTERNAL_PATH/etc/apk/repositories
+# echo "  Downloading Alpine APK Tools"
+# sleep 1
+# mkdir -p $PKG_EXTERNAL_PATH/etc/apk
+#echo "http://dl-cdn.alpinelinux.org/alpine/latest-stable/main" > $PKG_EXTERNAL_PATH/etc/apk/repositories
 
-echo "  Initializating APK Tools Database"
+wget https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/aarch64/alpine-minirootfs-3.21.3-aarch64.tar.gz
+tar -xzf alpine-minirootfs-3.21.3-aarch64.tar.gz -C $PKG_EXTERNAL_PATH
+rm alpine-minirootfs-3.21.3-aarch64.tar.gz
+
+cd $PKG_EXTERNAL_PATH
+mkdir -p $PKG_EXTERNAL_PATH/usr/bin
+
+echo "  Using qemu aarch64 static"
 sleep 1
+sudo cp /usr/bin/qemu-aarch64-static $PKG_EXTERNAL_PATH/usr/bin
+sudo chmod +x $PKG_EXTERNAL_PATH/usr/bin/qemu-aarch64-static
+
+echo "  Usin QEMU super user"
+sleep 1
+sudo chroot $PKG_EXTERNAL_PATH /usr/bin/qemu-aarch64-static $PKG_EXTERNAL_PATH/bin/sh
+
+echo "  Installing dependencies"
+sleep 1
+apk update
+apk add sdl2 sdl2-dev-
+exit
+
+echo "  Removing temporary qemu"
+sleep 1
+sudo rm $PKG_EXTERNAL_PATH/usr/bin/qemu-aarch64-static
+exit
+
+# echo "  Setting up apk.log"
+# sleep 1
+# mkdir -p var/log/
+# touch var/log/apk.log
+# chmod -R u+rwX var
+
+# echo "  Setting up apk database"
+# sleep 1
+# mkdir -p lib/apk/db
+# touch lib/apk/db/installed
+# chmod -R u+rwX lib
+
+#echo "  Initializating APK Tools Database"
+# sleep 1
+#apk --root $PKG_EXTERNAL_PATH --initdb --allow-untrusted
+
 
 # apk --root $PKG_EXTERNAL_PATH --initdb
 echo "[STEP] Package external has installed Alpine APK tools into ./pkg-external path"
