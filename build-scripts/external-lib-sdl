@@ -15,10 +15,20 @@ fi
 
 echo "-- Compiling SDL"
 0.5
+
 cd $SDL_DEPENDENCY_PATH
 
 ./autogen.sh
-./configure --prefix=$OVERLAY_LIBS_PATH/SLD --disable-shared --enable-static
+./configure --prefix=$(pwd)/build --disable-shared --enable-static
+
+make -j$(nproc)
+make install
+
+mkdir -p $EXTERNAL_PATH/sdl2/usr/include
+mkdir -p $EXTERNAL_PATH/sdl2/usr/lib
+
+cp -r build/include/SDL2 $EXTERNAL_PATH/sdl2/usr/include/
+cp build/lib/libSDL2.a $EXTERNAL_PATH/sdl2/usr/lib/
 
 echo "== SDL installed successfully"
 sleep 0.5

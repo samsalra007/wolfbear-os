@@ -39,6 +39,9 @@ cd $BUILD_SCRIPTS_PATH
 source ./linux-kernel
 
 echo "==== Running Overaly to RootFS Scripts ===="
+rm -rf $ROOTFS_PATH
+mkdir $ROOTFS_PATH
+
 cd $BUILD_SCRIPTS_PATH
 source ./linux-overlay-to-rootfs
 
@@ -52,6 +55,10 @@ mkdir $EXTERNAL_PATH
 
 cd $BUILD_SCRIPTS_PATH
 source ./external-lib-sdl
+
+echo "==== Running external to rootfs script ===="
+cd $BUILD_SCRIPTS_PATH
+source ./linux-external-to-rootfs
 
 echo "==== Running rootfs packaging ===="
 cd $BUILD_SCRIPTS_PATH

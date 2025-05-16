@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo "== Customizing rootfs with external path"
+
+echo "Moving from /external to /rootfs"
+sleep 0.5
+
+cp -a $EXTERNAL_PATH/*/* $ROOTFS_PATH
