@@ -51,10 +51,15 @@ source ./wolfbear-overlay-to-rootfs
 rm -rf $PKG_EXTERNAL_PATH
 mkdir $PKG_EXTERNAL_PATH
 
-echo "- Package external (pkg-external) build"
+echo "- Package external (pkg-external) apk tools install"
 sleep 2
 cd $BUILD_SCRIPTS_PATH
-source ./pkg-external-build
+source ./pkg-external-apk-tools
+
+echo "- Package external (pkg-external) dependencies install"
+sleep 2
+cd $BUILD_SCRIPTS_PATH
+source ./pkg-external-dependencies
 
 echo "- Wolfbear rootfs package"
 cd $BUILD_SCRIPTS_PATH

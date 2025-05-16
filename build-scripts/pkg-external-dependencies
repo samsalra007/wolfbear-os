@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "[STEP] Package external dependencies install"
+sleep 1

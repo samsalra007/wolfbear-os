@@ -1,0 +1,16 @@
+#!/bin/bash
+
+echo "[STEP] Package external APK tools install"
+sleep 1
+
+echo "  Downloading Alpine APK Tools"
+sleep 1
+mkdir -p $PKG_EXTERNAL_PATH/etc/apk
+echo "http://dl-cdn.alpinelinux.org/alpine/latest-stable/main" > $PKG_EXTERNAL_PATH/etc/apk/repositories
+
+echo "  Initializating APK Tools Database"
+sleep 1
+
+# apk --root $PKG_EXTERNAL_PATH --initdb
+echo "[STEP] Package external has installed Alpine APK tools into ./pkg-external path"
+sleep 1
