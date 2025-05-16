@@ -1,7 +1,0 @@
-#!/bin/bash
-
-echo "== Customizing rootfs with overlay path"
-echo "Moving from /overlay to /rootfs"
-sleep 0.5
-
-cp -a $OVERLAY_PATH/* $ROOTFS_PATH

@@ -1,0 +1,57 @@
+#!/bin/bash
+
+echo "== Building BusyBox"
+
+cd $DEPENDENCIES_PATH
+
+if [ ! -d $BUSY_BOX_PATH ]; then
+	echo " busybox was not found, downloading it.."
+	sleep 1
+
+	wget https://busybox.net/downloads/busybox-$BUSY_BOX_VERSION.tar.bz2
+
+	echo "  Uncompressing busybox"
+	sleep 1
+
+	tar -xjf busybox-$BUSY_BOX_VERSION.tar.bz2
+
+	echo "  Moving busybox to it's dependency path"
+	sleep 1
+
+	mv busybox-$BUSY_BOX_VERSION busybox
+else
+	echo "  Busybox is already downloaded in dependencies path"
+	sleep 1
+fi
+
+cd $BUSY_BOX_PATH
+
+echo " Overwriting .config file from busybox-config"
+sleep 1
+rm -f .config
+cp $CONFIG_FILES_PATH/busybox-config .config
+
+echo " Applying busybox patches"
+
+
+if patch --dry-run --forward -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch > /dev/null; then
+        echo " Applying busybox patches"
+        patch -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch
+else
+        echo " No busybox patch needed"
+fi
+
+echo "  Preparing busybox config"
+sleep 1
+make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE oldconfig
+
+echo "  Compiling busybox"
+sleep 1
+make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE -j$(nproc)
+
+echo "  Installing busybox"
+sleep 1
+make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE CONFIG_PREFIX=$LINUX_KERNEL_PATH install
+
+echo "  Busybox was installed successfully"
+sleep 1

@@ -1,8 +1,0 @@
-#! /bin/bash
-
-echo "== Starting packagin rootfs into initramfs file"
-cd $ROOTFS_PATH
-
-find . -print0 | cpio --null -ov --format=newc | gzip -9 > $TARGET_PATH/initramfs.cpio.gz
-
-echo "== Packaging complete"

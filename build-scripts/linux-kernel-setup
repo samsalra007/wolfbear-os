@@ -1,39 +1,48 @@
 #!/bin/bash
 
-echo "== Building Linux Kernel"
+echo "  Building Linux Kernel"
+sleep 1
 
 if [ ! -d $LINUX_KERNEL_PATH ]; then
-	echo "-- Linux kernel was not found, downloading it.."
-	sleep 0.5
+	echo "  Linux kernel was not found, downloading it.."
+	sleep 1
 
 	git clone -b v$LINUX_KERNEL_VERSION --single-branch https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git $LINUX_KERNEL_PATH
+else 
+	echo "  Linux kernel was found and no download is needed"
+	sleep 1
 fi
 
 cd $LINUX_KERNEL_PATH
 
-echo "-- Linux kernel is ready to be compiled"
-sleep 0.5
+echo "  Linux kernel is ready to be compiled"
+sleep 1
 
-echo "-- Overwriting .config file from linux-config"
-sleep 0.5
+echo "  Overwriting .config file from config/linux-config"
+sleep 1
+
 rm -f .config
 cp $CONFIG_FILES_PATH/linux-config .config
 
-echo "-- Checking kernel patches"
-sleep 0.5
+echo "  Checking kernel patches"
+sleep 1
+
 if patch --dry-run --forward -p1 < $PATCHES_PATH/kernel.patch > /dev/null; then
-	echo "Applying kernel patches"
+	echo "  APPLYING LINUX KERNEL PATCHES"
+	sleep 1
+
 	patch -p1 < $PATCHES_PATH/kernel.patch
 else
-	echo "No kernel patch needed"
+	echo "  LINUX KERNEL WAS ALREADY PATCHED"
+	sleep 1
 fi
 
 make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE oldconfig
 
-echo "-- Compiling wolfbearOS Linux kernel"
-sleep 0.5
+echo "  Compiling wolfbearOS Linux kernel"
+sleep 1
 make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE -j$(nproc)
 
-echo "-- Moving compiled Image to compilation path"
-sleep 0.5
+echo "  Moving Wolfbear compiled kernel image to compilation path"
+sleep 1
 mv $LINUX_KERNEL_PATH/arch/arm64/boot/Image $TARGET_PATH

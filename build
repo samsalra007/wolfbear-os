@@ -9,7 +9,6 @@ CONFIG_FILES_PATH=$WOLFBEAR_OS_PROJECT_PATH/config
 DEPENDENCIES_PATH=$WOLFBEAR_OS_PROJECT_PATH/dependencies
 PATCHES_PATH=$WOLFBEAR_OS_PROJECT_PATH/patches
 TARGET_PATH=$WOLFBEAR_OS_PROJECT_PATH/target
-INIT_PATH=$WOLFBEAR_OS_PROJECT_PATH/init
 EXTERNAL_PATH=$WOLFBEAR_OS_PROJECT_PATH/external
 
 LINUX_KERNEL_VERSION=6.1
@@ -17,14 +16,9 @@ LINUX_KERNEL_PATH=$DEPENDENCIES_PATH/linux
 
 BUSY_BOX_VERSION=1.37.0
 BUSY_BOX_PATH=$DEPENDENCIES_PATH/busybox
-BUSY_BOX_CONFIG_PREFIX=$WOLFBEAR_OS_PROJECT_PATH/rootfs
 
 OVERLAY_PATH=$WOLFBEAR_OS_PROJECT_PATH/overlay
-OVERLAY_LIBS_PATH=$OVERLAY_PATH/libs
-
 ROOTFS_PATH=$WOLFBEAR_OS_PROJECT_PATH/rootfs
-
-SDL_VERSION=2.32.0
 
 BUILD_ARCH=arm64
 BUILD_CROSS_COMPILE=aarch64-linux-gnu-
@@ -34,32 +28,26 @@ mkdir -p $DEPENDENCIES_PATH
 rm -rf $TARGET_PATH
 mkdir $TARGET_PATH
 
-echo "==== Running Linux Scripts ===="
-cd $BUILD_SCRIPTS_PATH
-source ./linux-kernel
-
-echo "==== Running Overaly to RootFS Scripts ===="
+echo "- Removing old ./rootfs"
+sleep 2
 rm -rf $ROOTFS_PATH
 mkdir $ROOTFS_PATH
 
+echo "- Linux kernel setup"
+sleep 2
 cd $BUILD_SCRIPTS_PATH
-source ./linux-overlay-to-rootfs
+source ./linux-kernel-setup
 
-echo "==== Running BusyBox Scripts ===="
+echo "- Linux busybox setup"
+sleep 2
 cd $BUILD_SCRIPTS_PATH
-source ./busy-box
+source ./linux-busybox-setup
 
-# echo "==== Running External Scripts ===="
-# rm -rf $EXTERNAL_PATH
-# mkdir $EXTERNAL_PATH
-
-# cd $BUILD_SCRIPTS_PATH
-# source ./external-lib-sdl
-
-echo "==== Running external to rootfs script ===="
+echo "- Wolfbear ./overlay to ./rootfs sync"
+sleep 2
 cd $BUILD_SCRIPTS_PATH
-source ./linux-external-to-rootfs
+source ./wolfbear-overlay-to-rootfs
 
-echo "==== Running rootfs packaging ===="
+echo "- Wolfbear rootfs package"
 cd $BUILD_SCRIPTS_PATH
-source ./rootfs-package
+source ./wolfbear-rootfs-package

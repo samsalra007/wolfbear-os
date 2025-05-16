@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "  Syncing ./overlay -> ./rootfs"
+sleep 1
+
+cp -a $OVERLAY_PATH/* $ROOTFS_PATH

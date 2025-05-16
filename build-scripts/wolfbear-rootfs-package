@@ -1,0 +1,11 @@
+#! /bin/bash
+
+echo " Packaging ./rootfs -> initramfs.cpio.gz file"
+sleep 1
+
+cd $ROOTFS_PATH
+
+find . -print0 | cpio --null -ov --format=newc | gzip -9 > $TARGET_PATH/initramfs.cpio.gz
+
+echo "  ./rootfs has been compiled and compressed successfully"
+sleep 2
