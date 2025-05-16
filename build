@@ -9,7 +9,7 @@ CONFIG_FILES_PATH=$WOLFBEAR_OS_PROJECT_PATH/config
 DEPENDENCIES_PATH=$WOLFBEAR_OS_PROJECT_PATH/dependencies
 PATCHES_PATH=$WOLFBEAR_OS_PROJECT_PATH/patches
 TARGET_PATH=$WOLFBEAR_OS_PROJECT_PATH/target
-EXTERNAL_PATH=$WOLFBEAR_OS_PROJECT_PATH/external
+PKG_EXTERNAL_PATH=$WOLFBEAR_OS_PROJECT_PATH/pkg-external
 
 LINUX_KERNEL_VERSION=6.1
 LINUX_KERNEL_PATH=$DEPENDENCIES_PATH/linux
@@ -47,6 +47,14 @@ echo "- Wolfbear ./overlay to ./rootfs sync"
 sleep 2
 cd $BUILD_SCRIPTS_PATH
 source ./wolfbear-overlay-to-rootfs
+
+rm -rf $PKG_EXTERNAL_PATH
+mkdir $PKG_EXTERNAL_PATH
+
+echo "- Package external (pkg-external) build"
+sleep 2
+cd $BUILD_SCRIPTS_PATH
+source ./pkg-external-build
 
 echo "- Wolfbear rootfs package"
 cd $BUILD_SCRIPTS_PATH
