@@ -1,4 +1,16 @@
 #!/bin/bash
 
-echo "[STEP] Package external dependencies install"
+echo "[STEP] Package external (pkg-external) dependencies install"
+sleep 1
+
+echo "  Installing SDL2"
+sleep 1
+cd $PKG_EXTERNAL_PATH
+apk \
+  --root $PKG_EXTERNAL_PATH \
+  --repositories-file $OVERLAY_PATH/etc/apk/repositories \
+  --allow-untrusted \
+add sdl2 sdl2-dev
+
+echo "[STEP] Package external (pkg-external) installed dependencies successfully"
 sleep 1
