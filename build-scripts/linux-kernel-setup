@@ -37,7 +37,20 @@ else
 	sleep 1
 fi
 
-make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE oldconfig
+if [ "$1" = 'linux-menuconfig' ] then;
+	echo "  Changing Linux Kernel Config"
+	sleep 2
+
+	make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE menuconfig
+	
+	echo "  Syncing changes of /config/linux-config"
+	sleep 2
+
+	rm -f $WOLFBEAR_OS_PROJECT_PATH/config/linux-config
+	cp .config $WOLFBEAR_OS_PROJECT_PATH/config/linux-config
+else
+	make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE oldconfig
+fi
 
 echo "  Compiling wolfbearOS Linux kernel"
 sleep 1
