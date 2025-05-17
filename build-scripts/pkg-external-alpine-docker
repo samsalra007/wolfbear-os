@@ -1,0 +1,69 @@
+#!/bin/bash
+
+echo "[STEP BEGIN] pkg-external-dependencies-alpine-docker"
+sleep 1
+
+echo "  Verifying required paths exist"
+sleep 1
+mkdir -p $PKG_EXTERNAL_PATH/usr/include $PKG_EXTERNAL_PATH/usr/lib
+
+
+echo "  Running Docker Image"
+sleep 1
+# docker run --rm -v $PKG_EXTERNAL_PATH:/target alpine:3.18 \
+#  /bin/sh -c "\
+#    apk update && \
+#    apk add --no-cache sdl2-dev musl-dev && \
+#    cp -a /usr/include/SDL2 /target/usr/include/ && \
+#    cp -a /usr/lib/libSDL2* /target/usr/lib/" && \
+#    cp -a /usr/include/*.h /target/usr/include && \
+#    cp -a /usr/lib/libm.so* /target/usr/lib/ && \
+#    cp -a /usr/lib/libc.so* /target/usr/lib/
+#"
+
+echo "  PKG_EXTERNAL_PATH="$PKG_EXTERNAL_PATH
+sleep 1
+
+#docker run --rm -v $PKG_EXTERNAL_PATH:/target alpine:3.18 \
+#  /bin/sh -c "\
+#    apk update && \
+#    apk add --no-cache sdl2-dev musl-dev && \
+#    cp -a /usr/include/SDL2 /target/usr/include/ && \
+#    cp -a /usr/include/*.h /target/usr/include/ && \
+#    cp -a /usr/lib/libSDL2* /target/usr/lib/ && \
+#    cp -a /usr/lib/libm.so* /target/usr/lib/ && \
+#    cp -a /usr/lib/libc.so* /target/usr/lib/ \
+#  "
+
+docker run --rm -v "${PKG_EXTERNAL_PATH}":/target alpine:3.18 sh -euxc '
+  apk update
+  apk add --no-cache sdl2-dev musl-dev
+
+  # Copiar encabezados estándar de C
+  mkdir -p /target/usr/include
+  cp -a /usr/include/*.h       /target/usr/include/
+
+  # Copiar SDL2
+  cp -a /usr/include/SDL2       /target/usr/include/
+  cp -a /usr/lib/libSDL2*       /target/usr/lib/
+
+  # Copiar libc y loader dinámico (que traen libm, stdio, etc.)
+  mkdir -p /target/lib
+  cp -a /lib/libc.musl-*.so.1	/target/lib/libc.so.1
+  cp -a /lib/ld-musl-*.so.1     /target/lib/
+
+  # (Opcional) si necesitas la libc estática (.a)
+  cp -a /usr/lib/libc.a       /target/usr/lib/
+
+  echo "--- Dentro del contenedor, /target/lib contiene:" && ls /target/lib
+  echo "--- Dentro del contenedor, /target/usr/lib contiene:" && ls /target/usr/lib
+'
+
+
+echo "  Checking dependencies were installed successfully"
+sleep 1
+ls $PKG_EXTERNAL_PATH/usr/include/SDL2
+ls $PKG_EXTERNAL_PATH/usr/lib | grep libSDL2
+
+echo "[STEP END] pkg-external-dependencies-alpine-docker"
+sleep 1

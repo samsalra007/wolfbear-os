@@ -30,12 +30,12 @@ mkdir $TARGET_PATH
 
 echo "- Removing old ./rootfs"
 sleep 2
-rm -rf $ROOTFS_PATH
+sudo rm -rf $ROOTFS_PATH
 mkdir $ROOTFS_PATH
 
 
 
-
+# Base linux and busybox (includes patches)
 echo "- Linux kernel setup"
 sleep 2
 cd $BUILD_SCRIPTS_PATH
@@ -48,7 +48,7 @@ source ./linux-busybox-setup
 
 
 
-
+# Generating rootfs with basic linux kernel
 echo "- Wolfbear ./overlay to ./rootfs sync"
 sleep 2
 cd $BUILD_SCRIPTS_PATH
@@ -56,27 +56,24 @@ source ./wolfbear-overlay-to-rootfs
 
 
 
-
-rm -rf $PKG_EXTERNAL_PATH
+# External Libraries Build
+sudo rm -rf $PKG_EXTERNAL_PATH
 mkdir $PKG_EXTERNAL_PATH
-
-# echo "- Package external (pkg-external) apk tools install"
-# sleep 2
-# cd $BUILD_SCRIPTS_PATH
-# source ./pkg-external-apk-tools-manual
-
-# echo "- Package external (pkg-external) dependencies install"
-# sleep 2
-# cd $BUILD_SCRIPTS_PATH
-# source ./pkg-external-dependencies
 
 echo "- Using Alpine docker image to install dependencies"
 sleep 2
-source ./pkg-external-dependencies-alpine-docker
+source ./pkg-external-alpine-docker
 
 
 
+# APP built-in compilation
+echo "- Compiling built-in apps"
+sleep 2
+source ./app-hello-world
 
+
+
+# Everyhing generated in external goes to rootfs
 echo "- Wolfbear ./pkg-external to ./rootfs sync"
 sleep 2
 cd $BUILD_SCRIPTS_PATH
@@ -84,8 +81,11 @@ source ./wolfbear-pkg-external-to-rootfs
 
 
 
-
+# Final Packaging
 echo "- Wolfbear rootfs package"
 sleep 2
 cd $BUILD_SCRIPTS_PATH
 source ./wolfbear-rootfs-package
+
+echo "WolfbearOS compilation is done!"
+sleep 0.5
