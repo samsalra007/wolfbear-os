@@ -16,7 +16,10 @@ sleep 1
 
 docker run --rm -v "${PKG_EXTERNAL_PATH}":/target alpine:3.18 sh -euxc '
   apk update
-  apk add --no-cache sdl2-dev musl-dev libdrm mesa-dri-gallium mesa-gl mesa-egl eudev-dev
+  apk add --no-cache \
+  sdl2-dev musl-dev \
+  libdrm mesa-dri-gallium mesa-gl mesa-egl eudev-dev \
+  mesa-gbm
 
   # Copiar encabezados estándar
   rm -rf /target/usr/include
@@ -30,7 +33,26 @@ docker run --rm -v "${PKG_EXTERNAL_PATH}":/target alpine:3.18 sh -euxc '
   cp -a /usr/lib/libdrm*	/target/usr/lib/
   cp -a /usr/lib/libEGL*	/target/usr/lib/
   cp -a /usr/lib/libGL*	/target/usr/lib/
-  cp -a /usr/lib/libudev*	/target/usr/lib/
+  #cp -a /usr/lib/libudev*	/target/usr/lib/
+  #cp -a $(readlink -f /usr/lib/libudev.so.1) /target/usr/lib/
+  cp -a /usr/lib/libgbm*	/target/usr/lib/
+
+  # Enlace simbolico a libudev ya que Alpine no trae por defecto
+  # al estar usando mesa y no la version oficial
+  #cd /usr/lib
+  #ln -sf libudev.so.1 /target/usr/lib/libudev.so
+  #cd /target/usr/lib
+  #ln -sf libudev.so.1.6.3 libudev.so.1
+  #ln -sf libudev.so.1 libudev.so
+
+  # Copiar SOLO la biblioteca real de libudev
+  REALUDEV=$(readlink -f /usr/lib/libudev.so.1)
+  cp -a "$REALUDEV" /target/usr/lib/
+
+  # Crear enlaces simbólicos correctos dentro del rootfs
+  cd /target/usr/lib
+  ln -sf $(basename "$REALUDEV") libudev.so.1
+  ln -sf libudev.so.1 libudev.so
 
   # Copiar libc y loader dinámico (que traen libm, stdio, etc.)
   mkdir -p /target/lib
@@ -44,6 +66,12 @@ docker run --rm -v "${PKG_EXTERNAL_PATH}":/target alpine:3.18 sh -euxc '
   echo "--- Dentro del contenedor, /target/usr/lib contiene:" && ls /target/usr/lib
 '
 
+# Activar según la GPU, Por el momento no se activa, y hay que añadir mesa-vulkan en las dependencias
+# ICDs (implementaciones de Vulkan para hardware específico, ej: mesa)
+# cp -a /usr/lib/libvulkan_intel.so* /target/usr/lib/ 2>/dev/null || true
+# cp -a /usr/lib/libvulkan_radeon.so* /target/usr/lib/ 2>/dev/null || true
+# cp -a /usr/lib/libvulkan_lvp.so* /target/usr/lib/ 2>/dev/null || true
+# cp -a /usr/lib/libvulkan_swrast.so* /target/usr/lib/ 2>/dev/null || true
 
 echo "  Checking dependencies installed"
 sleep 1
