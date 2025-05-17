@@ -10,38 +10,19 @@ mkdir -p $PKG_EXTERNAL_PATH/usr/include $PKG_EXTERNAL_PATH/usr/lib
 
 echo "  Running Docker Image"
 sleep 1
-# docker run --rm -v $PKG_EXTERNAL_PATH:/target alpine:3.18 \
-#  /bin/sh -c "\
-#    apk update && \
-#    apk add --no-cache sdl2-dev musl-dev && \
-#    cp -a /usr/include/SDL2 /target/usr/include/ && \
-#    cp -a /usr/lib/libSDL2* /target/usr/lib/" && \
-#    cp -a /usr/include/*.h /target/usr/include && \
-#    cp -a /usr/lib/libm.so* /target/usr/lib/ && \
-#    cp -a /usr/lib/libc.so* /target/usr/lib/
-#"
 
 echo "  PKG_EXTERNAL_PATH="$PKG_EXTERNAL_PATH
 sleep 1
-
-#docker run --rm -v $PKG_EXTERNAL_PATH:/target alpine:3.18 \
-#  /bin/sh -c "\
-#    apk update && \
-#    apk add --no-cache sdl2-dev musl-dev && \
-#    cp -a /usr/include/SDL2 /target/usr/include/ && \
-#    cp -a /usr/include/*.h /target/usr/include/ && \
-#    cp -a /usr/lib/libSDL2* /target/usr/lib/ && \
-#    cp -a /usr/lib/libm.so* /target/usr/lib/ && \
-#    cp -a /usr/lib/libc.so* /target/usr/lib/ \
-#  "
 
 docker run --rm -v "${PKG_EXTERNAL_PATH}":/target alpine:3.18 sh -euxc '
   apk update
   apk add --no-cache sdl2-dev musl-dev
 
-  # Copiar encabezados estándar de C
-  mkdir -p /target/usr/include
-  cp -a /usr/include/*.h       /target/usr/include/
+  # Copiar encabezados estándar
+  rm -rf /target/usr/include
+  mkdir /target/usr/include
+
+  cp -a /usr/include       /target/usr/
 
   # Copiar SDL2
   cp -a /usr/include/SDL2       /target/usr/include/

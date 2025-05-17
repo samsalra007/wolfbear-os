@@ -23,6 +23,8 @@ ROOTFS_PATH=$WOLFBEAR_OS_PROJECT_PATH/rootfs
 BUILD_ARCH=arm64
 BUILD_CROSS_COMPILE=aarch64-linux-gnu-
 
+
+WOLFBEAR_APPS_PATH=$OVERLAY_PATH/apps
 mkdir -p $DEPENDENCIES_PATH
 
 rm -rf $TARGET_PATH
@@ -68,6 +70,7 @@ source ./pkg-external-alpine-docker
 
 # APP built-in compilation
 echo "- Compiling built-in apps"
+cd $BUILD_SCRIPTS_PATH
 sleep 2
 source ./app-hello-world
 
