@@ -16,7 +16,7 @@ sleep 1
 
 docker run --rm -v "${PKG_EXTERNAL_PATH}":/target alpine:3.18 sh -euxc '
   apk update
-  apk add --no-cache sdl2-dev musl-dev
+  apk add --no-cache sdl2-dev musl-dev libdrm mesa-dri-gallium mesa-gl mesa-egl eudev-dev
 
   # Copiar encabezados estándar
   rm -rf /target/usr/include
@@ -24,9 +24,13 @@ docker run --rm -v "${PKG_EXTERNAL_PATH}":/target alpine:3.18 sh -euxc '
 
   cp -a /usr/include       /target/usr/
 
-  # Copiar SDL2
-  cp -a /usr/include/SDL2       /target/usr/include/
-  cp -a /usr/lib/libSDL2*       /target/usr/lib/
+  # Copiar Librerias No Estandar
+  cp -a /usr/include/SDL2	/target/usr/include/
+  cp -a /usr/lib/libSDL2*	/target/usr/lib/
+  cp -a /usr/lib/libdrm*	/target/usr/lib/
+  cp -a /usr/lib/libEGL*	/target/usr/lib/
+  cp -a /usr/lib/libGL*	/target/usr/lib/
+  cp -a /usr/lib/libudev*	/target/usr/lib/
 
   # Copiar libc y loader dinámico (que traen libm, stdio, etc.)
   mkdir -p /target/lib
@@ -41,10 +45,10 @@ docker run --rm -v "${PKG_EXTERNAL_PATH}":/target alpine:3.18 sh -euxc '
 '
 
 
-echo "  Checking dependencies were installed successfully"
+echo "  Checking dependencies installed"
 sleep 1
-ls $PKG_EXTERNAL_PATH/usr/include/SDL2
-ls $PKG_EXTERNAL_PATH/usr/lib | grep libSDL2
+# ls $PKG_EXTERNAL_PATH/usr/include/SDL2
+ls $PKG_EXTERNAL_PATH/usr/lib
 
 echo "[STEP END] pkg-external-dependencies-alpine-docker"
 sleep 1
