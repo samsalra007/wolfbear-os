@@ -3,67 +3,55 @@
 echo "[STEP BEGIN] pkg-external-dependencies-alpine-docker"
 sleep 1
 
-echo "  Verifying required paths exist"
-sleep 1
-mkdir -p $PKG_EXTERNAL_PATH/usr/include $PKG_EXTERNAL_PATH/usr/lib
-
-
-echo "  Running Docker Image"
+echo "  External path found: "${PKG_EXTERNAL_PATH}
 sleep 1
 
-echo "  PKG_EXTERNAL_PATH="$PKG_EXTERNAL_PATH
-sleep 1
-
-docker run --rm -v "${PKG_EXTERNAL_PATH}":/target alpine:3.18 sh -euxc '
+docker run --rm -v "$PKG_EXTERNAL_PATH":/target alpine:3.18 sh -euxc '
+  # 1) Instala las librerías y herramientas base
   apk update
+
   apk add --no-cache \
-  sdl2-dev musl-dev \
-  libdrm mesa-dri-gallium mesa-gl mesa-egl eudev-dev \
-  mesa-gbm
+  musl-dev sdl2-dev file binutils pkgconf libmagic \
+  eudev-dev mesa-gbm mesa-gl mesa-dri-gallium mesa-egl rsync
 
-  # Copiar encabezados estándar
-  rm -rf /target/usr/include
-  mkdir /target/usr/include
+  # 2) Limpia y prepara los directorios de destino
+  rm -rf /target/{usr/{include,lib},lib}
+  mkdir -p /target/usr/{include,lib/bin,share/misc} /target/lib
 
-  cp -a /usr/include       /target/usr/
+  # 3) Copiar headers estándar (stdio.h, math.h, bits/, …)
+  rsync -a --links /usr/include	/target/usr/
 
-  # Copiar Librerias No Estandar
-  cp -a /usr/include/SDL2	/target/usr/include/
-  cp -a /usr/lib/libSDL2*	/target/usr/lib/
-  cp -a /usr/lib/libdrm*	/target/usr/lib/
-  cp -a /usr/lib/libEGL*	/target/usr/lib/
-  cp -a /usr/lib/libGL*	/target/usr/lib/
-  #cp -a /usr/lib/libudev*	/target/usr/lib/
-  #cp -a $(readlink -f /usr/lib/libudev.so.1) /target/usr/lib/
-  cp -a /usr/lib/libgbm*	/target/usr/lib/
+  # 4) Copiar SDL2 headers y librerías
+  rsync -a --links /usr/lib/libSDL2* /target/usr/lib/
+  rsync -a --links /usr/lib/libdrm* /target/usr/lib/
+  rsync -a --links /usr/lib/libEGL* /target/usr/lib/
+  rsync -a --links /usr/lib/libGL* /target/usr/lib/
+  rsync -a --links /usr/lib/libgbm* /target/usr/lib/
+  rsync -a --links /usr/lib/libmagic.so* /target/usr/lib/
 
-  # Enlace simbolico a libudev ya que Alpine no trae por defecto
-  # al estar usando mesa y no la version oficial
-  #cd /usr/lib
-  #ln -sf libudev.so.1 /target/usr/lib/libudev.so
-  #cd /target/usr/lib
-  #ln -sf libudev.so.1.6.3 libudev.so.1
-  #ln -sf libudev.so.1 libudev.so
+  # 5) Copiar libc dinámico y loader (incluye libm, stdio, etc.)
+  cp -a /lib/libc.musl-*.so.1 /target/lib/libc.so.1
+  cp -a /lib/ld-musl-*.so.1 /target/lib/
 
-  # Copiar SOLO la biblioteca real de libudev
-  REALUDEV=$(readlink -f /usr/lib/libudev.so.1)
-  cp -a "$REALUDEV" /target/usr/lib/
+  # 6) Copiar la libc estática (si decides enlazar estático)
+  cp -a /usr/lib/libc.a /target/usr/lib/
 
-  # Crear enlaces simbólicos correctos dentro del rootfs
-  cd /target/usr/lib
-  ln -sf $(basename "$REALUDEV") libudev.so.1
-  ln -sf libudev.so.1 libudev.so
+  # 7) Copiar utilidades 'file' y 'ldd' + sus deps
+  rsync -a --links /usr/bin/file /target/usr/bin/
+  rsync -a --links /usr/bin/ldd /target/usr/bin/
+  rsync -a --links /usr/bin/readelf /target/usr/bin/
 
-  # Copiar libc y loader dinámico (que traen libm, stdio, etc.)
-  mkdir -p /target/lib
-  cp -a /lib/libc.musl-*.so.1	/target/lib/libc.so.1
-  cp -a /lib/ld-musl-*.so.1     /target/lib/
+  # 8) Copiar la base de datos de magic para 'file'
+  mkdir -p /target/usr/share/misc
+  cp -a /usr/share/misc/magic.mgc /target/usr/share/misc/
 
-  # (Opcional) si necesitas la libc estática (.a)
-  cp -a /usr/lib/libc.a       /target/usr/lib/
+  # 9) Fijar permisos (para que git u otros scripts no fallen)
+  chmod -R u+rwX /target
 
-  echo "--- Dentro del contenedor, /target/lib contiene:" && ls /target/lib
-  echo "--- Dentro del contenedor, /target/usr/lib contiene:" && ls /target/usr/lib
+  echo "=== pkg-external listo ==="
+  sleep .5
+  ls -R /target
+  sleep 2
 '
 
 # Activar según la GPU, Por el momento no se activa, y hay que añadir mesa-vulkan en las dependencias
@@ -72,11 +60,6 @@ docker run --rm -v "${PKG_EXTERNAL_PATH}":/target alpine:3.18 sh -euxc '
 # cp -a /usr/lib/libvulkan_radeon.so* /target/usr/lib/ 2>/dev/null || true
 # cp -a /usr/lib/libvulkan_lvp.so* /target/usr/lib/ 2>/dev/null || true
 # cp -a /usr/lib/libvulkan_swrast.so* /target/usr/lib/ 2>/dev/null || true
-
-echo "  Checking dependencies installed"
-sleep 1
-# ls $PKG_EXTERNAL_PATH/usr/include/SDL2
-ls $PKG_EXTERNAL_PATH/usr/lib
 
 echo "[STEP END] pkg-external-dependencies-alpine-docker"
 sleep 1
