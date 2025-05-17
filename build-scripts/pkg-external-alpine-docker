@@ -7,56 +7,43 @@ echo "  External path found: "${PKG_EXTERNAL_PATH}
 sleep 1
 
 docker run --rm -v "$PKG_EXTERNAL_PATH":/target alpine:3.18 sh -euxc '
-  # 1) Instala las librerías y herramientas base
   apk update
-
   apk add --no-cache \
-  musl-dev sdl2-dev file binutils pkgconf libmagic \
-  eudev-dev mesa-gbm mesa-gl mesa-dri-gallium mesa-egl rsync \
-  mesa-dev libdrm-dev
+    musl-dev sdl2-dev file binutils pkgconf libmagic \
+    eudev-dev mesa-gbm mesa-gl mesa-dri-gallium mesa-egl rsync \
+    libdrm-dev mesa-dev
 
-  # 2) Limpia y prepara los directorios de destino
+  # Limpia y crea directorios base
   rm -rf /target/{usr/{include,lib},lib}
-  mkdir -p /target/usr/{include,lib/bin,share/misc} /target/lib
+  mkdir -p /target/usr/{include,lib,bin,share/misc} /target/lib
 
-  # 3) Copiar headers estándar (stdio.h, math.h, bits/, …)
-  rsync -a --links /usr/include/ /target/usr/
-  cp -a /usr/include/SDL2 /target/usr/include/
+  # 1⃣ Copia *todo* /usr/include en target/usr/include
+  rsync -a --links /usr/include/ /target/usr/include/
 
-  # 4) Copiar SDL2 headers y librerías
-  rsync -a --links /usr/lib/libSDL2* /target/usr/lib/
-  rsync -a --links /usr/lib/libdrm* /target/usr/lib/
-  rsync -a --links /usr/lib/libEGL* /target/usr/lib/
-  rsync -a --links /usr/lib/libGL* /target/usr/lib/
-  rsync -a --links /usr/lib/libgbm* /target/usr/lib/
-  rsync -a --links /usr/lib/libmagic.so* /target/usr/lib/
+  # 2⃣ Copia librerías dinámicas
+  rsync -a --links /usr/lib/libSDL2*   /target/usr/lib/
+  rsync -a --links /usr/lib/libdrm*    /target/usr/lib/
+  rsync -a --links /usr/lib/libgbm*    /target/usr/lib/
+  rsync -a --links /usr/lib/libEGL*    /target/usr/lib/
+  rsync -a --links /usr/lib/libGL*     /target/usr/lib/
+  rsync -a --links /usr/lib/libmagic.* /target/usr/lib/
 
-  # 5) Copiar libc dinámico y loader (incluye libm, stdio, etc.)
-  # Copiar libc dinámico *sin renombrar*
+  # 3⃣ Copia loader y libc musl
   rsync -a --links /lib/libc.musl-*.so.1 /target/lib/
+  rsync -a --links /lib/ld-musl-*.so.1   /target/lib/
 
-  # Copiar el dynamic loader musl
-  rsync -a --links /lib/ld-musl-*.so.1 /target/lib/
+  # 4⃣ (Opcional) copia la libc estática si la necesitas
+  cp -a /usr/lib/libc.a /target/usr/lib/ || true
 
-  # 6) Copiar la libc estática (si decides enlazar estático)
-  cp -a /usr/lib/libc.a /target/usr/lib/
-
-  # 7) Copiar utilidades 'file' y 'ldd' + sus deps
-  rsync -a --links /usr/bin/file /target/usr/bin/
-  rsync -a --links /usr/bin/ldd /target/usr/bin/
-  rsync -a --links /usr/bin/readelf /target/usr/bin/
-
-  # 8) Copiar la base de datos de magic para 'file'
+  # 5⃣ Copia utilidades
+  rsync -a --links /usr/bin/{file,ldd,readelf} /target/usr/bin/
   mkdir -p /target/usr/share/misc
   cp -a /usr/share/misc/magic.mgc /target/usr/share/misc/
 
-  # 9) Fijar permisos (para que git u otros scripts no fallen)
+  # Ajusta permisos
   chmod -R u+rwX /target
 
   echo "=== pkg-external listo ==="
-  sleep .5
-  ls -R /target
-  sleep 2
 '
 
 # Activar según la GPU, Por el momento no se activa, y hay que añadir mesa-vulkan en las dependencias
