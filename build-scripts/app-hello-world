@@ -23,25 +23,28 @@ echo "  Compiling application"
 sleep 0.5
 
 aarch64-linux-gnu-gcc \
-  $WOLFBEAR_APPS_PATH/sdl_hello/sdl_hello.c \
-  -o $WOLFBEAR_APPS_PATH/sdl_hello/sdl_hello.wbapp \
-  --sysroot=$PKG_EXTERNAL_PATH \
-  -isystem $PKG_EXTERNAL_PATH/usr/include \
-  -I$PKG_EXTERNAL_PATH/usr/include/SDL2 \
-  -L$PKG_EXTERNAL_PATH/lib \
-  -L$PKG_EXTERNAL_PATH/usr/lib \
-  -Wl,-rpath-link=$PKG_EXTERNAL_PATH/lib \
-  -Wl,-rpath-link=$PKG_EXTERNAL_PATH/usr/lib \
+  "$WOLFBEAR_APPS_PATH/sdl_hello/sdl_hello.c" \
+  -o "$WOLFBEAR_APPS_PATH/sdl_hello/sdl_hello.wbapp" \
+  --sysroot="$PKG_EXTERNAL_PATH" \
+  -isystem "$PKG_EXTERNAL_PATH/usr/include/SDL2" \
+  -I"$PKG_EXTERNAL_PATH/usr/include" \
+  -L"$PKG_EXTERNAL_PATH/lib" \
+  -L"$PKG_EXTERNAL_PATH/usr/lib" \
+  -Wl,-rpath-link="$PKG_EXTERNAL_PATH/lib" \
+  -Wl,-rpath-link="$PKG_EXTERNAL_PATH/usr/lib" \
   -Wl,-rpath=/lib \
   -Wl,-rpath=/usr/lib \
   -Wl,--dynamic-linker=/lib/libc.musl-aarch64.so.1 \
-  -lSDL2
+  -lSDL2 -lgbm -ldrm -lwayland-server -lexpat -lffi
 
-aarch64-linux-gnu-gcc $WOLFBEAR_APPS_PATH/sdl_hello/test_gbm.c \
-  -o $WOLFBEAR_APPS_PATH/sdl_hello/test_gbm \
-  --sysroot=$PKG_EXTERNAL_PATH \
-  -I$PKG_EXTERNAL_PATH/usr/include \
-  -L$PKG_EXTERNAL_PATH/usr/lib -lgbm -ldrm
+aarch64-linux-gnu-gcc \
+  "$WOLFBEAR_APPS_PATH/sdl_hello/test_gbm.c" \
+  -o "$WOLFBEAR_APPS_PATH/sdl_hello/test_gbm.wbapp" \
+  --sysroot="$PKG_EXTERNAL_PATH" \
+  -I"$PKG_EXTERNAL_PATH/usr/include" \
+  -I"$PKG_EXTERNAL_PATH/usr/include/libdrm" \
+  -L"$PKG_EXTERNAL_PATH/usr/lib" \
+  -lgbm -ldrm -lwayland-server -lexpat -lffi
 
 echo "  Compilation finished"
 sleep 0.5
