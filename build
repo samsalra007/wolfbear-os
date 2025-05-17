@@ -41,7 +41,7 @@ mkdir $ROOTFS_PATH
 echo "- Linux kernel setup"
 sleep 2
 cd $BUILD_SCRIPTS_PATH
-source ./linux-kernel-setup
+source ./linux-kernel-setup $1
 
 echo "- Linux busybox setup"
 sleep 2

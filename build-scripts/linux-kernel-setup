@@ -37,12 +37,12 @@ else
 	sleep 1
 fi
 
-if [ "$1" = 'linux-menuconfig' ] then;
-	echo "  Changing Linux Kernel Config"
+if [ "$1" = 'linux-menuconfig' ]; then
+	echo "  Opening Linux Kernel Menu Config"
 	sleep 2
 
 	make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE menuconfig
-	
+
 	echo "  Syncing changes of /config/linux-config"
 	sleep 2
 
