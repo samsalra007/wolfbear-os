@@ -49,8 +49,8 @@ chmod 660 /dev/input/event1 2>/dev/null || true
 [ ! -e /dev/console ] && mknod -m 622 /dev/console c 5 1
 [ ! -e /dev/tty     ] && mknod -m 622 /dev/tty     c 5 0
 
-
-./apps/sdl_hello/test_gbm
+export LIBGL_DRIVERS_PATH=/usr/lib/dri
+export SDL_VIDEODRIVER=KMSDRM
 
 ### 6) Variables SDL ###
 export SDL_VIDEODRIVER=KMSDRM
