@@ -153,7 +153,7 @@ if [ "$VAR_ALPINE_DOCKER" = 'y' ]; then
 	mkdir $PKG_EXTERNAL_PATH
 
 	cd $BUILD_SCRIPTS_PATH
-	source ./pkg-external-alpine-docker
+	source ./pkg-external/pkg-external-alpine-docker
 
 	echo "[BUILD] Alpine Docker image run finished"
 	sleep 2

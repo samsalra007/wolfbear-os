@@ -1,0 +1,42 @@
+#!/bin/bash
+set -euo pipefail
+
+echo "[STEP BEGIN] pkg-external-dependencies-alpine-docker"
+sleep 1
+
+# 1) Define tu proyecto y el sysroot externo:
+#    Ajusta según dónde esté tu carpeta real.
+export PKG_EXTERNAL_PATH="$WOLFBEAR_OS_PROJECT_PATH/pkg-external"
+
+# Crea la carpeta si no existe
+mkdir -p "$PKG_EXTERNAL_PATH"
+
+echo "- Opening ./pkg-external path from $PKG_EXTERNAL_PATH"
+sleep 1
+cd "$WOLFBEAR_OS_PROJECT_PATH/build-scripts/pkg-external"
+
+echo "- Building docker image"
+sleep 1
+docker build --platform linux/arm64 -t sdl2-musl-sysroot -f Dockerfile .
+
+echo "- Creating temporary container"
+sleep 1
+CONTAINER=$(docker create sdl2-musl-sysroot)
+
+echo "- Copying temporary container ./target into '$PKG_EXTERNAL_PATH'"
+sleep 1
+docker cp "$CONTAINER":/target/. "$PKG_EXTERNAL_PATH"
+
+echo "- Removing temorary container"
+sleep 1
+docker rm "$CONTAINER"
+
+
+echo "- Verifying host ./pkg-external path"
+sleep 1
+ls "$PKG_EXTERNAL_PATH/usr/include"
+ls "$PKG_EXTERNAL_PATH/usr/lib"
+ls "$PKG_EXTERNAL_PATH/lib"
+
+echo "[STEP END] pkg-external-dependencies-alpine-docker"
+sleep 1

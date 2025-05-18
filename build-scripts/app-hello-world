@@ -1,7 +1,7 @@
 #! /bin/bash
 
 echo "[STEP BEGIN] app-hello-world compilation start"
-echo 1
+sleep 1
 
 echo "- Configuring pkg config path"
 sleep 1
@@ -12,14 +12,13 @@ echo "- Compiling hello world application aarch64-linux-musl-gcc"
 sleep 1
 
 aarch64-linux-musl-gcc \
-  -static \
   -o "${WOLFBEAR_APPS_PATH}/sdl_hello/sdl_hello.wbapp" \
   "${WOLFBEAR_APPS_PATH}/sdl_hello/sdl_hello.c" \
   --sysroot="$PKG_EXTERNAL_PATH" \
   -I"$PKG_EXTERNAL_PATH/usr/include" \
   -L"$PKG_EXTERNAL_PATH/usr/lib" \
-  -lSDL2 \
-  -lm
+  -Wl,-rpath=/usr/lib \
+  -lSDL2 -lgbm -ldrm -lexpat -lffi -lm
 
 echo "- Compilation finished"
 sleep 1
