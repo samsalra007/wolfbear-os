@@ -7,64 +7,38 @@ echo "  External path found: "${PKG_EXTERNAL_PATH}
 sleep 1
 
 
-docker run --rm --platform linux/arm64 -v "$PKG_EXTERNAL_PATH":/target debian:bookworm-slim sh -euxc '
-  # 1. Actualiza e instala paquetes necesarios
-  apt-get update
-  apt-get install -y --no-install-recommends \
-    pkg-config rsync \
-    libsdl2-dev \
+docker run --rm --platform=linux/arm64 --security-opt apparmor=unconfined -v "$PKG_EXTERNAL_PATH":/target alpine:latest sh -euxc '
+  apk add --no-cache \
+    build-base \
+    sdl2-dev \
+    mesa-dev \
     libdrm-dev \
-    libgbm-dev \
-    libegl1-mesa-dev \
-    libgl1-mesa-dev \
-    libwayland-dev \
-    libexpat1-dev \
+    wayland-dev \
+    expat-dev \
     libffi-dev \
-    libc6-dev \
-    file
+    musl-dev \
+    file rsync
 
-  # 2. Limpia y crea estructura destino
+  # Limpia y crea estructura
   rm -rf /target/usr/include /target/usr/lib /target/lib
-  mkdir -p \
-    /target/usr/include \
-    /target/usr/lib \
-    /target/lib \
-    /target/usr/bin \
-    /target/usr/share/misc
+  mkdir -p /target/usr/include /target/usr/lib /target/lib /target/usr/bin /target/usr/share/misc
 
-  echo "Copiando headers de desarrollo..."
-  rsync -a --links /usr/include/ /target/usr/include/
+  # Headers
+  rsync -a /usr/include/ /target/usr/include/
 
-  echo "Copiando librerías dinámicas..."
-  rsync -a --links /usr/lib/aarch64-linux-gnu/libSDL2*.so*          /target/usr/lib/
-  rsync -a --links /usr/lib/aarch64-linux-gnu/libdrm*.so*           /target/usr/lib/
-  rsync -a --links /usr/lib/aarch64-linux-gnu/libgbm*.so*           /target/usr/lib/
-  rsync -a --links /usr/lib/aarch64-linux-gnu/libEGL*.so*           /target/usr/lib/
-  rsync -a --links /usr/lib/aarch64-linux-gnu/libGL*.so*            /target/usr/lib/
-  rsync -a --links /usr/lib/aarch64-linux-gnu/libwayland-server*.so* /target/usr/lib/
-  rsync -a --links /usr/lib/aarch64-linux-gnu/libexpat*.so*         /target/usr/lib/
-  rsync -a --links /usr/lib/aarch64-linux-gnu/libffi*.so*           /target/usr/lib/
-  rsync -a --links /usr/lib/aarch64-linux-gnu/libm.so*              /target/usr/lib/
+  # SOLO estáticas (.a)
+  find /usr/lib -type f -name "*.a" -exec rsync -a {} /target/usr/lib/ \;
 
-  echo "Copiando librerías estáticas (si existen)..."
-  rsync -a --links /usr/lib/aarch64-linux-gnu/libSDL2.a             /target/usr/lib/ || true
-  rsync -a --links /usr/lib/aarch64-linux-gnu/libdrm.a              /target/usr/lib/ || true
-  rsync -a --links /usr/lib/aarch64-linux-gnu/libgbm.a              /target/usr/lib/ || true
-  rsync -a --links /usr/lib/aarch64-linux-gnu/libwayland-server.a   /target/usr/lib/ || true
-  rsync -a --links /usr/lib/aarch64-linux-gnu/libexpat.a            /target/usr/lib/ || true
-  rsync -a --links /usr/lib/aarch64-linux-gnu/libffi.a              /target/usr/lib/ || true
-  rsync -a --links /usr/lib/aarch64-linux-gnu/libm.a                /target/usr/lib/ || true
-  rsync -a --links /usr/lib/aarch64-linux-gnu/libc.a                /target/usr/lib/ || true
+  # loader musl
+  cp /lib/libc.musl-*.so.1 /target/lib/
 
-  echo "Copiando herramientas de desarrollo..."
-  rsync -a --links /usr/bin/file                                    /target/usr/bin/
-  rsync -a --links /usr/bin/ldd                                     /target/usr/bin/
+  # Tools
+  rsync -a /usr/bin/file /target/usr/bin/
 
-  echo "Copiando base de datos de magic..."
-  cp -a /usr/share/misc/magic.mgc                                   /target/usr/share/misc/
+  # magic
+  cp -a /usr/share/misc/magic.mgc /target/usr/share/misc/
 
   chmod -R u+rwX /target
-  echo "=== pkg-external listo para cross-compilación ==="
 '
 
 

@@ -23,25 +23,14 @@ echo "  Compiling application"
 sleep 0.5
 
 aarch64-linux-musl-gcc \
-  -o "$WOLFBEAR_APPS_PATH/sdl_hello/sdl_hello.wbapp" \
-  "$WOLFBEAR_APPS_PATH/sdl_hello/sdl_hello.c" \
-  --sysroot="$PKG_EXTERNAL_PATH" \
-  -isystem "$PKG_EXTERNAL_PATH/usr/include" \
-  -isystem "$PKG_EXTERNAL_PATH/usr/include/SDL2" \
-  -L"$PKG_EXTERNAL_PATH/usr/lib" \
-  -Wl,-rpath=/usr/lib \
-  -lSDL2 -lgbm -ldrm -lwayland-server -lexpat -lffi -lm
-
-aarch64-linux-musl-gcc \
-  "$WOLFBEAR_APPS_PATH/sdl_hello/test_gbm.c" \
-  -o "$WOLFBEAR_APPS_PATH/sdl_hello/test_gbm.wbapp" \
-  --sysroot="$PKG_EXTERNAL_PATH" \
   -static \
+  -o "${WOLFBEAR_APPS_PATH}/sdl_hello/sdl_hello.wbapp" \
+  "${WOLFBEAR_APPS_PATH}/sdl_hello/sdl_hello.c" \
+  --sysroot="$PKG_EXTERNAL_PATH" \
   -I"$PKG_EXTERNAL_PATH/usr/include" \
-  -I"$PKG_EXTERNAL_PATH/usr/include/libdrm" \
-  -I"$PKG_EXTERNAL_PATH/usr/include/SDL2" \
   -L"$PKG_EXTERNAL_PATH/usr/lib" \
-  -lgbm -ldrm -lwayland-server -lexpat -lffi -lm
+  -lSDL2 \
+  -lm
 
   echo "  Compilation finished"
 sleep 0.5
