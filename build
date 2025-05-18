@@ -25,70 +25,160 @@ BUILD_CROSS_COMPILE=aarch64-linux-gnu-
 
 
 WOLFBEAR_APPS_PATH=$OVERLAY_PATH/apps
+
+# Variables por defecto
+VAR_REMOVE_TARGET='n'
+VAR_REMOVE_ROOTFS='n'
+VAR_COMPILE_LINUX_KERNEL='n'
+VAR_COMPILE_LINUX_KERNEL_MENU_CONFIG='n'
+VAR_COMPILE_BUSYBOX='n'
+VAR_OVERLAY_TO_ROOTFS='n'
+VAR_ALPINE_DOCKER='n'
+VAR_COMPILE_DEFAULT_APPS='n'
+VAR_PKG_EXTERNAL_TO_ROOTFS='n'
+VAR_COMPRESS_ROOTFS='n'
+
+# Procesar argumentos
+while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+        -t|--remove-target)
+            VAR_REMOVE_TARGET='y'
+            ;;
+        -r|--remove-rootfs)
+	    VAR_REMOVE_ROOTFS='y'
+            ;;
+        -l|--linux-kernel)
+            VAR_COMPILE_LINUX_KERNEL='y'
+            ;;
+        -lm|--linux-menuconfig)
+            VAR_COMPILE_LINUX_KERNEL_MENUCONFIG='y'
+            ;;
+        -b|--busybox)
+            VAR_COMPILE_BUSYBOX='y'
+            ;;
+        -o|--overlay-to-rootfs)
+            VAR_OVERLAY_TO_ROOTFS='y'
+            ;;
+        -a|--alpine-docker)
+            VAR_ALPINE_DOCKER='y'
+            ;;
+        -p|--default-apps)
+            VAR_COMPILE_DEFAULT_APPS='y'
+            ;;
+        -e|--external-to-rootfs)
+            VAR_COMPILE_LINUX_KERNEL='y'
+            ;;
+        -c|--compress-rootfs)
+            VAR_COMPRESS_ROOTFS='y'
+            ;;
+    esac
+done
+
 mkdir -p $DEPENDENCIES_PATH
 
-rm -rf $TARGET_PATH
-mkdir $TARGET_PATH
+if [ "$VAR_REMOVE_TARGET" = 'y' ]; then
+	echo "[BUILD] Removing ./target path (probably it will request for sudo access)"
+	sleep 2
 
-echo "- Removing old ./rootfs"
-sleep 2
-sudo rm -rf $ROOTFS_PATH
-mkdir $ROOTFS_PATH
+	rm -rf $TARGET_PATH
+        mkdir $TARGET_PATH
 
+	echo "[BUILD] ./target removed successfully"
+	sleep 2
+fi
 
+if [ "$VAR_REMOVE_ROOTFS" = 'y' ]; then
+	echo "[BUILD] Removing ./rootfs path"
+	sleep 2
 
-# Base linux and busybox (includes patches)
-echo "- Linux kernel setup"
-sleep 2
-cd $BUILD_SCRIPTS_PATH
-source ./linux-kernel-setup $1
+	sudo rm -rf $ROOTFS_PATH
+	mkdir $ROOTFS_PATH
 
-echo "- Linux busybox setup"
-sleep 2
-cd $BUILD_SCRIPTS_PATH
-source ./linux-busybox-setup
+	echo "[BUILD] ./rootfs was removed successfully"
+	sleep 2
+fi
 
+if [ "$VAR_COMPILE_LINUX_KERNEL" - 'y' ]; then
+	echo "[BUILD] Compiling and patching linux kernel"
+	sleep 2
 
+	cd $BUILD_SCRIPTS_PATH
+	source ./linux-kernel-setup $VAR_COMPILE_LINUX_KERNEL_MENUCONFIG
 
-# Generating rootfs with basic linux kernel
-echo "- Wolfbear ./overlay to ./rootfs sync"
-sleep 2
-cd $BUILD_SCRIPTS_PATH
-source ./wolfbear-overlay-to-rootfs
-
-
-
-# External Libraries Build
-sudo rm -rf $PKG_EXTERNAL_PATH
-mkdir $PKG_EXTERNAL_PATH
-
-echo "- Using Alpine docker image to install dependencies"
-sleep 2
-source ./pkg-external-alpine-docker
+	echo "[BUILD] Linux kernel was patched successfully"
+	sleep 2
+fi
 
 
+if [ "$VAR_COMPILE_BUSYBOX" = 'y' ]; then
+	echo "[BUILD] Linux busybox setup"
+	sleep 2
 
-# APP built-in compilation
-echo "- Compiling built-in apps"
-cd $BUILD_SCRIPTS_PATH
-sleep 2
-source ./app-hello-world
+	cd $BUILD_SCRIPTS_PATH
+	source ./linux-busybox-setup
+
+	echo "[BUILD] Busybox was compiled successfully"
+	sleep 2
+fi
+
+if [ "$VAR_OVERLAY_TO_ROOTFS" = 'y' ]; then
+	echo "[BUILD] ./overlay to ./rootfs sync begin"
+	sleep 2
+
+	cd $BUILD_SCRIPTS_PATH
+	source ./wolfbear-overlay-to-rootfs
+
+	echo "[BUILD] ./overlay to ./rootfs syng end"
+	sleep 2
+fi
+
+if [ "$VAR_ALPINE_DOCKER" = 'y' ]; then
+	echo "[BUILD] Running Alpine Docker image to install external dependencies"
+	sleep 2
+
+	sudo rm -rf $PKG_EXTERNAL_PATH
+	mkdir $PKG_EXTERNAL_PATH
+
+	cd $BUILD_SCRIPTS_PATH
+	source ./pkg-external-alpine-docker
+
+	echo "[BUILD] Alpine Docker image run finished"
+	sleep 2
+fi
+
+if [ "$VAR_COMPILE_DEFAULT_APPS" = 'y' ]; then
+	echo "[BUILD] Compiling built-in apps"
+	sleep 2
+
+	cd $BUILD_SCRIPTS_PATH
+	source ./app-hello-world
+
+	echo "[BUILD] Built-in apps were compiled successfully"
+	sleep 2
+fi
+
+if [ "$VAR_PKG_EXTERNAL_TO_ROOTFS" = 'y' ]; then
+	echo "[BUILD] ./pkg-external to ./rootfs sync begin"
+	sleep 2
+
+	cd $BUILD_SCRIPTS_PATH
+	source ./wolfbear-pkg-external-to-rootfs
+
+	echo "[BUILD] ./pkg-external to ./rootfs syng end"
+	sleep 2
+fi
 
 
+if [ "$VAR_COMPRESS_ROOTFS" = 'y' ]; then
+	echo "[BUILD] ./rootfs compression begin"
+	sleep 2
 
-# Everyhing generated in external goes to rootfs
-echo "- Wolfbear ./pkg-external to ./rootfs sync"
-sleep 2
-cd $BUILD_SCRIPTS_PATH
-source ./wolfbear-pkg-external-to-rootfs
+	cd $BUILD_SCRIPTS_PATH
+	source ./wolfbear-rootfs-package
 
+	echo "[BUILD] ./rootfs compression end"
+	sleep 1
+fi
 
-
-# Final Packaging
-echo "- Wolfbear rootfs package"
-sleep 2
-cd $BUILD_SCRIPTS_PATH
-source ./wolfbear-rootfs-package
-
-echo "WolfbearOS compilation is done!"
-sleep 0.5
+echo "[FINISH] WolfbearOS build script process finished"
+sleep 0.2
