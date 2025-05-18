@@ -43,33 +43,43 @@ while [[ "$#" -gt 0 ]]; do
     case "$1" in
         -t|--remove-target)
             VAR_REMOVE_TARGET='y'
+	    shift
             ;;
         -r|--remove-rootfs)
 	    VAR_REMOVE_ROOTFS='y'
+            shift
             ;;
         -l|--linux-kernel)
             VAR_COMPILE_LINUX_KERNEL='y'
+            shift
             ;;
         -lm|--linux-menuconfig)
             VAR_COMPILE_LINUX_KERNEL_MENUCONFIG='y'
+            shift
             ;;
         -b|--busybox)
             VAR_COMPILE_BUSYBOX='y'
+            shift
             ;;
         -o|--overlay-to-rootfs)
             VAR_OVERLAY_TO_ROOTFS='y'
+            shift
             ;;
         -a|--alpine-docker)
             VAR_ALPINE_DOCKER='y'
+            shift
             ;;
-        -p|--default-apps)
+        -p|--external-default-apps)
             VAR_COMPILE_DEFAULT_APPS='y'
+            shift
             ;;
         -e|--external-to-rootfs)
             VAR_COMPILE_LINUX_KERNEL='y'
+            shift
             ;;
         -c|--compress-rootfs)
             VAR_COMPRESS_ROOTFS='y'
+            shift
             ;;
     esac
 done
@@ -98,13 +108,16 @@ if [ "$VAR_REMOVE_ROOTFS" = 'y' ]; then
 	sleep 2
 fi
 
-if [ "$VAR_COMPILE_LINUX_KERNEL" - 'y' ]; then
+if [ "$VAR_COMPILE_LINUX_KERNEL" = 'y' ]; then
 	echo "[BUILD] Compiling and patching linux kernel"
 	sleep 2
 
 	cd $BUILD_SCRIPTS_PATH
-	source ./linux-kernel-setup $VAR_COMPILE_LINUX_KERNEL_MENUCONFIG
-
+	if [ "$VAR_COMPILE_LINUX_KERNEL_MENUCONFIG" = 'y' ]; then
+		source ./linux-kernel-setup linux-menuconfig
+	else
+		source ./linux-kernel-setup
+	fi
 	echo "[BUILD] Linux kernel was patched successfully"
 	sleep 2
 fi

@@ -1,26 +1,15 @@
 #! /bin/bash
 
 echo "[STEP BEGIN] app-hello-world compilation start"
+echo 1
 
-sleep 0.5
-if [ "$1" = 'local' ]; then
+echo "- Configuring pkg config path"
+sleep 1
 
-	current_dir=$(pwd)
-
-	WOLFBEAR_OS_PROJECT_PATH=$( echo ${current_dir%/*} )
-
-	PKG_EXTERNAL_PATH=$WOLFBEAR_OS_PROJECT_PATH/pkg-external
-	OVERLAY_PATH=$WOLFBEAR_OS_PROJECT_PATH/overlay
-	WOLFBEAR_APPS_PATH=$OVERLAY_PATH/apps
-
-fi
-
-echo "  Configuring pkg config path"
-sleep 0.5
 PKG_CONFIG_PATH="${PKG_EXTERNAL_PATH}/usr/lib/pkgconfig"
 
-echo "  Compiling application"
-sleep 0.5
+echo "- Compiling hello world application aarch64-linux-musl-gcc"
+sleep 1
 
 aarch64-linux-musl-gcc \
   -static \
@@ -32,8 +21,8 @@ aarch64-linux-musl-gcc \
   -lSDL2 \
   -lm
 
-  echo "  Compilation finished"
-sleep 0.5
+echo "- Compilation finished"
+sleep 1
 
 echo "[STEP END] app-hello-world compilation success"
 sleep 1

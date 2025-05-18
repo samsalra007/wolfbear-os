@@ -1,61 +1,73 @@
 #!/bin/bash
 
-echo "  Building Linux Kernel"
+echo "[STEP] Running linux-kerne-setup script"
+
 sleep 1
 
 if [ ! -d $LINUX_KERNEL_PATH ]; then
-	echo "  Linux kernel was not found, downloading it.."
+	echo "- Linux kernel was not found, so we need to download it.."
 	sleep 1
 
 	git clone -b v$LINUX_KERNEL_VERSION --single-branch https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git $LINUX_KERNEL_PATH
+
+	echo "- Linux kernel has been cloned successfully"
 else 
-	echo "  Linux kernel was found and no download is needed"
+	echo "- Linux kernel is already in dependencies and no download is needed"
 	sleep 1
 fi
 
 cd $LINUX_KERNEL_PATH
 
-echo "  Linux kernel is ready to be compiled"
-sleep 1
-
-echo "  Overwriting .config file from config/linux-config"
+echo "- Overwriting ./config/linux-config into ./dependencies/linux/.config file"
 sleep 1
 
 rm -f .config
 cp $CONFIG_FILES_PATH/linux-config .config
 
-echo "  Checking kernel patches"
+echo "- Now I am going to patdch kernel with some WolfbearOS changes"
 sleep 1
 
 if patch --dry-run --forward -p1 < $PATCHES_PATH/kernel.patch > /dev/null; then
-	echo "  APPLYING LINUX KERNEL PATCHES"
+	echo "- Patching.."
 	sleep 1
 
 	patch -p1 < $PATCHES_PATH/kernel.patch
+
+	echo "- Patch is done.."
+	sleep 1
 else
-	echo "  LINUX KERNEL WAS ALREADY PATCHED"
+	echo "- Linux kernel is already patched and no patch-action is needed"
 	sleep 1
 fi
 
 if [ "$1" = 'linux-menuconfig' ]; then
-	echo "  Opening Linux Kernel Menu Config"
+	echo "-  Requested to open Linux Kernel Menu Config"
 	sleep 2
 
 	make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE menuconfig
 
-	echo "  Syncing changes of /config/linux-config"
+	echo "- Applying new configuration into /config/linux-config"
 	sleep 2
 
 	rm -f $WOLFBEAR_OS_PROJECT_PATH/config/linux-config
 	cp .config $WOLFBEAR_OS_PROJECT_PATH/config/linux-config
+
+	echo "- Configuration is done"
+	sleep 1
 else
+	echo "- Using oldconfig to compile Linux"
+	sleep 1
+
 	make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE oldconfig
 fi
 
-echo "  Compiling wolfbearOS Linux kernel"
+echo "- Compiling wolfbearOS Linux kernel"
 sleep 1
 make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE -j$(nproc)
 
-echo "  Moving Wolfbear compiled kernel image to compilation path"
+echo "-  Moving Wolfbear compiled kernel image to compilation path"
 sleep 1
 mv $LINUX_KERNEL_PATH/arch/arm64/boot/Image $TARGET_PATH
+
+echo "[STEP END] linux-kernel-setup process finished"
+sleep 0.5
