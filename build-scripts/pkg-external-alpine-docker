@@ -17,7 +17,8 @@ docker run --rm --platform=linux/arm64 --security-opt apparmor=unconfined -v "$P
     expat-dev \
     libffi-dev \
     musl-dev \
-    file rsync
+    file rsync \
+    kmod
 
   # Limpia y crea estructura
   rm -rf /target/usr/include /target/usr/lib /target/lib
@@ -39,6 +40,20 @@ docker run --rm --platform=linux/arm64 --security-opt apparmor=unconfined -v "$P
   cp -a /usr/share/misc/magic.mgc /target/usr/share/misc/
 
   chmod -R u+rwX /target
+
+  # Copia los binarios de kmod (lsmod, modprobe, etc) y sus dependencias compartidas
+  mkdir -p /target/bin
+  mkdir -p /target/sbin
+
+  rsync -a /bin/kmod /target/bin/
+  rsync -a /sbin/lsmod /target/sbin/
+  rsync -a /sbin/modprobe /target/sbin/
+  rsync -a /sbin/insmod /target/sbin/
+  rsync -a /sbin/rmmod /target/sbin/
+  rsync -a /sbin/depmod /target/sbin/
+
+  ldd /sbin/lsmod | awk '{print $3}' | grep -E '^/' | while read lib; do rsync -a "$lib" /target/usr/lib/; done
+
 '
 
 

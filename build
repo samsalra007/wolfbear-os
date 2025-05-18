@@ -74,7 +74,7 @@ while [[ "$#" -gt 0 ]]; do
             shift
             ;;
         -e|--external-to-rootfs)
-            VAR_COMPILE_LINUX_KERNEL='y'
+            VAR_PKG_EXTERNAL_TO_ROOTFS='y'
             shift
             ;;
         -c|--compress-rootfs)
