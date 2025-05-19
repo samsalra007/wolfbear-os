@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "[STEP] Running linux-kerne-setup script"
 
@@ -44,7 +44,7 @@ if [ "$1" = 'linux-menuconfig' ]; then
 	echo "-  Requested to open Linux Kernel Menu Config"
 	sleep 2
 
-	make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE menuconfig
+	make ARCH=$BUILD_ARCH menuconfig
 
 	echo "- Applying new configuration into /config/linux-config"
 	sleep 2
@@ -58,12 +58,12 @@ else
 	echo "- Using oldconfig to compile Linux"
 	sleep 1
 
-	make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE oldconfig
+	make ARCH=$BUILD_ARCH oldconfig
 fi
 
 echo "- Compiling wolfbearOS Linux kernel"
 sleep 1
-make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE -j$(nproc)
+make ARCH=$BUILD_ARCH -j$(nproc)
 
 echo "-  Moving Wolfbear compiled kernel image to compilation path"
 sleep 1

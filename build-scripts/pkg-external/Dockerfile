@@ -1,59 +1,65 @@
-FROM alpine:latest
-
-# Instalar dependencias de SDL2 y multimedia (devel packages incluyen .so y .a)
-#    sdl2-dev		# SDL2 (librería + headers):contentReference[oaicite:3]{index=3}, incluye mesa-dev para GL/EGL
-#    libdrm-dev		# DRM/GBM user-space (libdrm) y cabeceras
-#    libpciaccess-dev	# Acceso a PCI (necesario para libdrm)
-#    libffi-dev		# libffi (dinámico y estático):contentReference[oaicite:4]{index=4}
-#    expat-dev		# Expat (dinámico)
-#    expat-static	# Expat (estático) para obtener libexpat.a:contentReference[oaicite:5]{index=5}
+# build-scripts/pkg-external/Dockerfile
+FROM alpine:3.21
 
 RUN apk update && apk add --no-cache \
-    sdl2-dev \
-    libdrm-dev \
-    libpciaccess-dev \
-    libffi-dev \
-    expat-dev \ 
-    expat-static
+      build-base \
+      sdl2-dev \
+      mesa-dev \
+      libdrm-dev \
+      wayland-dev \
+      wayland-protocols-dev \
+      expat-dev \
+      expat-static \
+      libffi-dev \
+      file \
+      rsync \
+      pkgconf \
+    && rm -rf /var/cache/apk/*
 
-# Crear estructura de sysroot en /target
-RUN mkdir -p /target/usr/lib /target/usr/include
+RUN mkdir -p /target/usr/include /target/usr/lib /target/lib /target/usr/bin /target/usr/share/misc
 
-# Copiar bibliotecas dinámicas (.so) de SDL2 y dependencias a /target/usr/lib
-RUN cp /usr/lib/libSDL2-2.0.so* /target/usr/lib/   && \
-    cp /usr/lib/libSDL2.so /target/usr/lib/        && \
-    cp /usr/lib/libEGL.so* /target/usr/lib/        && \
-    cp /usr/lib/libGL.so* /target/usr/lib/         && \
-    cp /usr/lib/libGLESv1_CM.so* /target/usr/lib/  && \
-    cp /usr/lib/libGLESv2.so* /target/usr/lib/     && \
-    cp /usr/lib/libgbm.so* /target/usr/lib/        && \
-    cp /usr/lib/libdrm*.so* /target/usr/lib/       && \
-    cp /usr/lib/libexpat.so* /target/usr/lib/      && \
-    cp /usr/lib/libffi.so* /target/usr/lib/        && \
-    cp /usr/lib/libstdc++.so* /target/usr/lib/     && \
-    cp /usr/lib/libgcc*.so* /target/usr/lib/
+# 1) Copiar TODOS los headers de /usr/include
+RUN rsync -a --links /usr/include/ /target/usr/include/
 
-# Copiar bibliotecas estáticas (.a) necesarias a /target/usr/lib
-RUN cp /usr/lib/libSDL2.a /target/usr/lib/    && \
-    cp /usr/lib/libSDL2_test.a /target/usr/lib/ && \
-    cp /usr/lib/libSDL2main.a /target/usr/lib/ && \
-    cp /usr/lib/libffi.a /target/usr/lib/       && \
-    cp /usr/lib/libexpat.a /target/usr/lib/
+# 2) Copiar headers específicos de SDL2, libdrm, EGL, Wayland
+RUN rsync -a --links /usr/include/SDL2/   /target/usr/include/SDL2/ && \
+    rsync -a --links /usr/include/libdrm/ /target/usr/include/libdrm/ && \
+    rsync -a --links /usr/include/EGL/    /target/usr/include/EGL/ && \
+    rsync -a --links /usr/include/wayland*/ /target/usr/include/
 
-# Copiar headers de SDL2 y dependencias a /target/usr/include
-RUN cp -r /usr/include/SDL2 /target/usr/include/ && \
-    cp -r /usr/include/libdrm /target/usr/include/ && \
-    cp -r /usr/include/EGL /target/usr/include/ && \
-    cp -r /usr/include/GL /target/usr/include/  && \
-    cp -r /usr/include/GLES* /target/usr/include/ && \
-    cp -r /usr/include/KHR /target/usr/include/ && \
-    cp /usr/include/expat*.h /target/usr/include/ && \
-    cp /usr/include/ffi*.h /target/usr/include/
+# 3) Copiar librerías dinámicas concretas a sysroot
+RUN for lib in \
+      /usr/lib/libSDL2*.so* \
+      /usr/lib/libGLESv*.so* \
+      /usr/lib/libEGL*.so* \
+      /usr/lib/libGL*.so* \
+      /usr/lib/libgbm*.so* \
+      /usr/lib/libdrm*.so* \
+      /usr/lib/libwayland-*.so* \
+      /usr/lib/libexpat*.so* \
+      /usr/lib/libffi*.so*; do \
+    [ -f "$lib" ] && cp -a "$lib" /target/usr/lib/; \
+  done
 
-# Crear /target/lib y copiar el loader + libc de musl
-RUN mkdir -p /target/lib && \
-    cp /lib/ld-musl-aarch64.so.1   /target/lib/ && \
+# 4) Copiar librerías estáticas (.a) si existen
+RUN for a in /usr/lib/*.a; do \
+    [ -f "$a" ] && cp -a "$a" /target/usr/lib/; \
+  done
+
+# 5) Copiar loader y libc de musl
+RUN cp /lib/ld-musl-aarch64.so.1   /target/lib/ && \
     cp /lib/libc.musl-aarch64.so.1 /target/lib/
 
-# Fin. El contenedor copiará los ficheros y luego terminará automáticamente.
+# 6) Copiar herramientas mínimas
+RUN cp /usr/bin/file    /target/usr/bin/ && \
+    cp /usr/bin/ldd     /target/usr/bin/ && \
+    cp /usr/bin/pkgconf /target/usr/bin/
+
+# 7) Magic database para file
+RUN cp /usr/share/misc/magic.mgc /target/usr/share/misc/
+
+# 8) Ajustar permisos
+RUN chmod -R u+rwX /target
+
+CMD ["sh", "-c", "echo '✓ Sysroot ARM64-musl listo en /target'"]
 

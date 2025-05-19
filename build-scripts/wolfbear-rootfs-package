@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 
 echo " Packaging ./rootfs -> initramfs.cpio.gz file"
 sleep 1

@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 
 echo "[STEP BEGIN] app-hello-world compilation start"
 sleep 1
@@ -11,7 +11,7 @@ PKG_CONFIG_PATH="${PKG_EXTERNAL_PATH}/usr/lib/pkgconfig"
 echo "- Compiling hello world application aarch64-linux-musl-gcc"
 sleep 1
 
-aarch64-linux-musl-gcc \
+gcc \
   -o "${WOLFBEAR_APPS_PATH}/sdl_hello/sdl_hello.wbapp" \
   "${WOLFBEAR_APPS_PATH}/sdl_hello/sdl_hello.c" \
   --sysroot="$PKG_EXTERNAL_PATH" \
