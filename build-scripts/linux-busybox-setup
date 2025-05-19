@@ -43,15 +43,15 @@ fi
 
 echo "  Preparing busybox config"
 sleep 1
-make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE oldconfig
+make ARCH=$BUILD_ARCH oldconfig
 
 echo "  Compiling busybox"
 sleep 1
-make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE -j$(nproc)
+make ARCH=$BUILD_ARCH -j$(nproc)
 
 echo "  Installing busybox"
 sleep 1
-make ARCH=$BUILD_ARCH CROSS_COMPILE=$BUILD_CROSS_COMPILE CONFIG_PREFIX=$ROOTFS_PATH install
+make ARCH=$BUILD_ARCH CONFIG_PREFIX=$ROOTFS_PATH install
 
 echo "  Busybox was installed successfully"
 sleep 1

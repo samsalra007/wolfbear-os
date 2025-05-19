@@ -14,6 +14,7 @@ RUN apk update && apk add --no-cache \
       file \
       rsync \
       pkgconf \
+      libdrm libdrm-dev mesa-gbm mesa-dev eudev-libs eudev-dev \
     && rm -rf /var/cache/apk/*
 
 RUN mkdir -p /target/usr/include /target/usr/lib /target/lib /target/usr/bin /target/usr/share/misc
@@ -37,7 +38,10 @@ RUN for lib in \
       /usr/lib/libdrm*.so* \
       /usr/lib/libwayland-*.so* \
       /usr/lib/libexpat*.so* \
-      /usr/lib/libffi*.so*; do \
+      /usr/lib/libffi*.so* \
+      /usr/lib/libdrm*.so* \
+      /usr/lib/libgbm*.so* \
+      /usr/lib/libudev*.so*; do \
     [ -f "$lib" ] && cp -a "$lib" /target/usr/lib/; \
   done
 
