@@ -9,7 +9,6 @@ CONFIG_FILES_PATH=$WOLFBEAR_OS_PROJECT_PATH/config
 DEPENDENCIES_PATH=$WOLFBEAR_OS_PROJECT_PATH/dependencies
 PATCHES_PATH=$WOLFBEAR_OS_PROJECT_PATH/patches
 TARGET_PATH=$WOLFBEAR_OS_PROJECT_PATH/target
-PKG_EXTERNAL_PATH=$WOLFBEAR_OS_PROJECT_PATH/pkg-external
 EXTERNAL_PATH=$WOLFBEAR_OS_PROJECT_PATH/external
 
 LINUX_KERNEL_VERSION=6.1
@@ -33,10 +32,7 @@ VAR_REMOVE_ROOTFS='n'
 VAR_COMPILE_LINUX_KERNEL='n'
 VAR_COMPILE_LINUX_KERNEL_MENU_CONFIG='n'
 VAR_COMPILE_BUSYBOX='n'
-VAR_OVERLAY_TO_ROOTFS='n'
 VAR_ALPINE_DOCKER='n'
-VAR_COMPILE_DEFAULT_APPS='n'
-VAR_PKG_EXTERNAL_TO_ROOTFS='n'
 VAR_COMPRESS_ROOTFS='n'
 VAR_EXTERNAL_PATH='n'
 
@@ -63,26 +59,10 @@ while [[ "$#" -gt 0 ]]; do
             VAR_COMPILE_BUSYBOX='y'
             shift
             ;;
-        -o|--overlay-to-rootfs)
-            VAR_OVERLAY_TO_ROOTFS='y'
-            shift
-            ;;
-        -a|--alpine-docker)
-            VAR_ALPINE_DOCKER='y'
-            shift
-            ;;
         -ep|--external-path)
             VAR_EXTERNAL_PATH='y'
             shift
 	    ;;
-        -p|--external-default-apps)
-            VAR_COMPILE_DEFAULT_APPS='y'
-            shift
-            ;;
-        -e|--external-to-rootfs)
-            VAR_PKG_EXTERNAL_TO_ROOTFS='y'
-            shift
-            ;;
         -c|--compress-rootfs)
             VAR_COMPRESS_ROOTFS='y'
             shift
@@ -140,43 +120,6 @@ if [ "$VAR_COMPILE_BUSYBOX" = 'y' ]; then
 	sleep 2
 fi
 
-if [ "$VAR_OVERLAY_TO_ROOTFS" = 'y' ]; then
-	echo "[BUILD] ./overlay to ./rootfs sync begin"
-	sleep 2
-
-	cd $BUILD_SCRIPTS_PATH
-	source ./wolfbear-overlay-to-rootfs
-
-	echo "[BUILD] ./overlay to ./rootfs syng end"
-	sleep 2
-fi
-
-if [ "$VAR_ALPINE_DOCKER" = 'y' ]; then
-	echo "[BUILD] Running Alpine Docker image to install external dependencies"
-	sleep 2
-
-	sudo rm -rf $PKG_EXTERNAL_PATH
-	mkdir $PKG_EXTERNAL_PATH
-
-	cd $BUILD_SCRIPTS_PATH
-	# source ./pkg-external/pkg-external-alpine-docker
-	source ./external/external-apk
-
-	echo "[BUILD] Alpine Docker image run finished"
-	sleep 2
-fi
-
-if [ "$VAR_COMPILE_DEFAULT_APPS" = 'y' ]; then
-	echo "[BUILD] Compiling built-in apps"
-	sleep 2
-
-	cd $BUILD_SCRIPTS_PATH
-	source ./app-hello-world
-
-	echo "[BUILD] Built-in apps were compiled successfully"
-	sleep 2
-fi
-
 if [ "$VAR_EXTERNAL_PATH" = 'y' ]; then
         echo "[BUILD] ./external build started"
         sleep 2
@@ -187,18 +130,6 @@ if [ "$VAR_EXTERNAL_PATH" = 'y' ]; then
         echo "[BUILD] ./external build finished"
         sleep 2
 fi
-
-if [ "$VAR_PKG_EXTERNAL_TO_ROOTFS" = 'y' ]; then
-	echo "[BUILD] ./pkg-external to ./rootfs sync begin"
-	sleep 2
-
-	cd $BUILD_SCRIPTS_PATH
-	source ./wolfbear-pkg-external-to-rootfs
-
-	echo "[BUILD] ./pkg-external to ./rootfs syng end"
-	sleep 2
-fi
-
 
 if [ "$VAR_COMPRESS_ROOTFS" = 'y' ]; then
 	echo "[BUILD] ./rootfs compression begin"

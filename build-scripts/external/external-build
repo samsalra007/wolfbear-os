@@ -1,19 +1,61 @@
 #!/bin/sh
+set -euo pipefail
 
 EXTERNAL_PATH="$WOLFBEAR_OS_PROJECT_PATH"/external
 
 echo "- Recognized ./external path: '$EXTERNAL_PATH'"
 sleep 0.5
-
 echo "- Recognized ./overlay path: '$OVERLAY_PATH'"
 sleep 0.5
 
-echo "- Removing previous ./external path"
-rm -rf $EXTERNAL_PATH
-mkdir -p $EXTERNAL_PATH
+echo "- Removing previous ./external path (sudo needed)"
+sleep 0.5
+sudo rm -rf "$EXTERNAL_PATH"
+mkdir -p "$EXTERNAL_PATH"
 
 echo "- Syncing ./overlay into ./external"
-rsync -a --links $OVERLAY_PATH $EXTERNAL_PATH
+sleep 0.5
+rsync -a --links "$OVERLAY_PATH"/ "$EXTERNAL_PATH"/
 
-echo "- Sync was finished, listing content"
-ls -l $EXTERNAL_PATH
+echo "- Creating ./external/tmp path"
+sleep 0.5
+mkdir -p "$EXTERNAL_PATH"/tmp
+
+echo "- Creating base ./external paths"
+sleep 0.5
+mkdir -p \
+  "$EXTERNAL_PATH/sbin" \
+  "$EXTERNAL_PATH/etc/ssl/certs" \
+  "$EXTERNAL_PATH/lib" \
+  "$EXTERNAL_PATH/usr/lib"
+
+echo "- Extracting APK TOOLS (binario, libs, DB y config) from Alpine Docker Image"
+docker run --rm -v "$EXTERNAL_PATH":/target alpine sh -c '
+  apk add --no-cache apk-tools rsync && \
+  # 1) apk binario y libs
+  mkdir -p /target/sbin && \
+  cp /sbin/apk /target/sbin/apk && \
+  ldd /sbin/apk \
+    | awk "{print \$3}" \
+    | grep -v "^$" \
+    | xargs -I{} cp -v --parents {} /target && \
+  # 2) índices de repositorios
+  mkdir -p /target/lib/apk/db && \
+  cp -r /lib/apk/db/* /target/lib/apk/db/ && \
+  # 3) estado de paquetes instalados
+  mkdir -p /target/var/lib/apk/db && \
+  cp -r /var/lib/apk/db/* /target/var/lib/apk/db/ && \
+  cp -v /var/lib/apk/world /target/var/lib/apk/world || true && \
+  # 4) configuración de repositorios
+  mkdir -p /target/etc/apk && \
+  cp -r /etc/apk/* /target/etc/apk/ && \
+  # 5) certificados SSL
+  cp -r /etc/ssl/certs /target/etc/ssl/
+'
+
+echo "- Alpine Docker Image extracted successfully"
+echo "  APK Tools is now in: $EXTERNAL_PATH/sbin/apk"
+ls -l "$EXTERNAL_PATH"/sbin/
+
+echo "- Chroot y actualizar repositorios (sudo necesario)"
+sudo chroot "$EXTERNAL_PATH" /sbin/apk update

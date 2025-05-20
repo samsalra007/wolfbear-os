@@ -1,6 +1,6 @@
 dependencies/*
 rootfs/*
 target/*
-pkg-external/*
+external/*
 **.swp
 *.wbapp

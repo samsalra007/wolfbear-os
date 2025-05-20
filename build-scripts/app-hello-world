@@ -6,7 +6,7 @@ sleep 1
 echo "- Configuring pkg config path"
 sleep 1
 
-PKG_CONFIG_PATH="${PKG_EXTERNAL_PATH}/usr/lib/pkgconfig"
+PKG_CONFIG_PATH="${EXTERNAL_PATH}/usr/lib/pkgconfig"
 
 echo "- Compiling hello world application aarch64-linux-musl-gcc"
 sleep 1
