@@ -1,58 +1,15 @@
 #!/bin/sh
-
-: <<'END_COMMENT'
-echo "Montando particiones importantes de hardware"
-mount -t proc none /proc
-mount -t sysfs none /sys
-mount -t devtmpfs none /dev
-
-echo "Montando particiones de drivers"
-mkdir -p /dev/dri
-chmod 666 /dev/dri/*
-
-echo "Montando particiones de eventos de entrada (mouse y teclado)"
-mkdir -p /dev/input
-mknod -m 660 /dev/input/event0 c 13 64
-mknod -m 660 /dev/input/event1 c 13 65
-chmod 666 /dev/input/event*
-
-echo "Inicializando consola tty"
-mkdir -p /dev
-mknod -m 0666 /dev/tty c 5 0
-mknod -m 0666 /dev/console c 5 1
-END_COMMENT
-
-#!/bin/sh
-### 1) Prepara y monta ###
-mkdir -p /proc /sys /dev
-mount -t proc proc   /proc
+mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 mount -t devtmpfs devtmpfs /dev
 
-### 2) Ajusta permisos de los nodos que creó devtmpfs ###
-chmod 666 /dev/dri/card0      2>/dev/null || true
-chmod 666 /dev/dri/renderD128 2>/dev/null || true
-
-### 3) (Opcional) Crea solo si no existen ###
 mkdir -p /dev/dri
-[ ! -e /dev/dri/card0 ] && mknod -m 0666 /dev/dri/card0      c 226 0
+[ ! -e /dev/dri/card0 ] && mknod -m 0666 /dev/dri/card0 c 226 0
 [ ! -e /dev/dri/renderD128 ] && mknod -m 0666 /dev/dri/renderD128 c 226 128
 
-### 4) Dispositivos de entrada ###
-mkdir -p /dev/input
-[ ! -e /dev/input/event0 ] && mknod -m 660 /dev/input/event0 c 13 64
-[ ! -e /dev/input/event1 ] && mknod -m 660 /dev/input/event1 c 13 65
-chmod 660 /dev/input/event0 2>/dev/null || true
-chmod 660 /dev/input/event1 2>/dev/null || true
-
-### 5) Consola y TTY ###
-[ ! -e /dev/console ] && mknod -m 622 /dev/console c 5 1
-[ ! -e /dev/tty     ] && mknod -m 622 /dev/tty     c 5 0
+chmod 0666 /dev/dri/card0 /dev/dri/renderD128
 
 export LIBGL_DRIVERS_PATH=/usr/lib/dri
-export SDL_VIDEODRIVER=KMSDRM
-
-### 6) Variables SDL ###
 export SDL_VIDEODRIVER=KMSDRM
 export SDL_KMSDRM_DEVICE=/dev/dri/card0
 export SDL_KMSDRM_RENDER_NODE=/dev/dri/renderD128

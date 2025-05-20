@@ -21,14 +21,19 @@ RUN apk update && apk add --no-cache \
       ninja \
       pkgconf \
       python3 \
-      py3-meson \
+      meson \
       ninja \
+      mesa-dri-gallium \
     && rm -rf /var/cache/apk/*
 
 RUN mkdir -p /target/usr/{include,lib} /target/lib /target/usr/bin /target/usr/share/misc
 
 # 1) Headers
 RUN rsync -a --links /usr/include/        /target/usr/include/
+RUN rsync -a --links /usr/include/SDL2   /target/usr/include/SDL2 && \
+    rsync -a --links /usr/include/libdrm /target/usr/include/libdrm && \
+    rsync -a --links /usr/include/EGL    /target/usr/include/EGL && \
+    rsync -a --links /usr/include/wayland* /target/usr/include/
 
 # 2) Bibliotecas dinámicas (rsync preserva symlinks correctamente)
 RUN rsync -a --links /usr/lib/libSDL2*.so*       /target/usr/lib/ && \
@@ -58,14 +63,17 @@ RUN cp /usr/bin/file    /target/usr/bin/ && \
 # 6) Base de datos de magic
 RUN cp /usr/share/misc/magic.mgc /target/usr/share/misc/
 
-# 3) Copia Meson + Ninja + Python3 para poder correr Meson en tu rootfs
-RUN cp /usr/bin/meson /target/usr/bin/ && \
-    cp /usr/bin/ninja /target/usr/bin/ && \
-    cp /usr/bin/python3 /target/usr/bin/ && \
-    # Copia librería de Python y módulos meson:
-    rsync -a --links /usr/lib/python3*/ /target/usr/lib/python3*/ && \
-    rsync -a --links /usr/lib/python3*/site-packages/meson* /target/usr/lib/python3*/site-packages/
+# 4) Copia la librería estándar de Python + Meson
+RUN for P in /usr/lib/python3.*; do \
+      dest="/target/usr/lib/$(basename $P)"; \
+      mkdir -p "$dest"; \
+      rsync -a --links "$P/" "$dest/"; \
+      # ahora solo los módulos meson:
+      rsync -a --links "$P/site-packages/meson"* "$dest/site-packages/"; \
+    done
 
+# Copia los modulos drivers graficos
+RUN rsync -a --links /usr/lib/dri/ /target/usr/lib/dri/
 
 RUN chmod -R u+rwX /target
 
