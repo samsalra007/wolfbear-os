@@ -2,19 +2,20 @@
 
 FROM alpine:3.21 AS builder
 
-# Instalar herramientas
+# 1) Instalar herramientas base
 RUN apk add --no-cache \
     apk-tools \
     rsync \
     ca-certificates \
     openssl \
-    zlib
+    zlib && \
+    update-ca-certificates
 
-# Regenerar bundle CA
-RUN update-ca-certificates
-
-# Preparar estructura de salida
+# 2) Variables de entorno
 ENV OUT=/out
+ENV APKBIN=/sbin/apk
+
+# 3) Crear estructura de salida
 RUN mkdir -p $OUT/sbin \
     $OUT/lib/apk/db \
     $OUT/var/lib/apk/db \
@@ -22,22 +23,22 @@ RUN mkdir -p $OUT/sbin \
     $OUT/etc/ssl \
     $OUT/usr/lib
 
-# Copiar binario apk
-ENV APKBIN=/sbin/apk
+# 4) Copiar binario 'apk'
 RUN cp $APKBIN $OUT/sbin/
 
-# Copiar librerías y datos
+# 5) Copiar librerías, índices y estado
 RUN ldd $APKBIN \
     | grep -oE '/(usr/)?lib[^ ]+' \
     | xargs -r -I{} cp --parents {} $OUT && \
-    cp -a /usr/lib $OUT/usr/ && \
-    mkdir -p $OUT/lib/apk/db && cp -r /lib/apk/db/* $OUT/lib/apk/db/ && \
-    mkdir -p $OUT/var/lib/apk/db && cp -r /var/lib/apk/db/* $OUT/var/lib/apk/db/ 2>/dev/null || true && \
-    cp /var/lib/apk/world $OUT/var/lib/apk/world 2>/dev/null || true && \
-    cp -r /etc/apk $OUT/etc/apk && \
+    cp -r /lib/apk/db/* $OUT/lib/apk/db/ && \
+    cp -r /var/lib/apk/db/* $OUT/var/lib/apk/db/ 2>/dev/null || true && \
+    cp /var/lib/apk/world $OUT/var/lib/apk/world 2>/dev/null || true
+
+# 6) Copiar configuración y certificados
+RUN cp -r /etc/apk $OUT/etc/apk && \
     cp -a /etc/ssl $OUT/etc/ssl
 
-# Imagen final
+# 7) Imagen final mínima
 FROM alpine:3.21
 RUN apk add --no-cache rsync
 COPY --from=builder /out /target

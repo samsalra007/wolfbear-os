@@ -44,21 +44,25 @@ else
   ls -l "$EXTERNAL_PATH/sbin/apk"
 fi
 
-# 9) Preparar chroot y repos HTTP
+# Ajustar permisos de base de datos apk
+echo "[7b] Fix apk db ownership"
+sudo chown -R root:root "$EXTERNAL_PATH/var/lib/apk"
+
+# 9) Preparar chroot (red y certificados)
 echo "[8] Setup chroot"
 sudo cp /etc/resolv.conf "$EXTERNAL_PATH/etc/resolv.conf"
-
 for fs in proc sys dev; do
   sudo mkdir -p "$EXTERNAL_PATH/$fs"
   sudo mount --bind "/$fs" "$EXTERNAL_PATH/$fs"
 done
 
-# 10) Depurar y actualizar repositorios en chroot
- echo "[9] Debug apk database dirs inside chroot"
- sudo chroot "$EXTERNAL_PATH" ls -l /lib/apk/db
- sudo chroot "$EXTERNAL_PATH" ls -l /var/lib/apk/db
- echo "[9b] Chroot and update"
- SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt sudo chroot "$EXTERNAL_PATH" /sbin/apk update
+# 10) Depurar base de datos y actualizar repositorios
+echo "[9] Debug APK DB dirs"
+sudo chroot "$EXTERNAL_PATH" ls -l /lib/apk/db
+sudo chroot "$EXTERNAL_PATH" ls -l /var/lib/apk/db
+
+echo "[9b] Chroot and update"
+SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt sudo chroot "$EXTERNAL_PATH" /sbin/apk update
 
 # 11) Sincronizar a rootfs
 echo "[10] Sync external to rootfs"
