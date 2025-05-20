@@ -1,0 +1,19 @@
+#!/bin/sh
+
+EXTERNAL_PATH="$WOLFBEAR_OS_PROJECT_PATH"/external
+
+echo "- Recognized ./external path: '$EXTERNAL_PATH'"
+sleep 0.5
+
+echo "- Recognized ./overlay path: '$OVERLAY_PATH'"
+sleep 0.5
+
+echo "- Removing previous ./external path"
+rm -rf $EXTERNAL_PATH
+mkdir -p $EXTERNAL_PATH
+
+echo "- Syncing ./overlay into ./external"
+rsync -a --links $OVERLAY_PATH $EXTERNAL_PATH
+
+echo "- Sync was finished, listing content"
+ls -l $EXTERNAL_PATH

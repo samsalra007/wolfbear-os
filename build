@@ -10,6 +10,7 @@ DEPENDENCIES_PATH=$WOLFBEAR_OS_PROJECT_PATH/dependencies
 PATCHES_PATH=$WOLFBEAR_OS_PROJECT_PATH/patches
 TARGET_PATH=$WOLFBEAR_OS_PROJECT_PATH/target
 PKG_EXTERNAL_PATH=$WOLFBEAR_OS_PROJECT_PATH/pkg-external
+EXTERNAL_PATH=$WOLFBEAR_OS_PROJECT_PATH/external
 
 LINUX_KERNEL_VERSION=6.1
 LINUX_KERNEL_PATH=$DEPENDENCIES_PATH/linux
@@ -37,6 +38,7 @@ VAR_ALPINE_DOCKER='n'
 VAR_COMPILE_DEFAULT_APPS='n'
 VAR_PKG_EXTERNAL_TO_ROOTFS='n'
 VAR_COMPRESS_ROOTFS='n'
+VAR_EXTERNAL_PATH='n'
 
 # Procesar argumentos
 while [[ "$#" -gt 0 ]]; do
@@ -69,6 +71,10 @@ while [[ "$#" -gt 0 ]]; do
             VAR_ALPINE_DOCKER='y'
             shift
             ;;
+        -ep|--external-path)
+            VAR_EXTERNAL_PATH='y'
+            shift
+	    ;;
         -p|--external-default-apps)
             VAR_COMPILE_DEFAULT_APPS='y'
             shift
@@ -153,7 +159,8 @@ if [ "$VAR_ALPINE_DOCKER" = 'y' ]; then
 	mkdir $PKG_EXTERNAL_PATH
 
 	cd $BUILD_SCRIPTS_PATH
-	source ./pkg-external/pkg-external-alpine-docker
+	# source ./pkg-external/pkg-external-alpine-docker
+	source ./external/external-apk
 
 	echo "[BUILD] Alpine Docker image run finished"
 	sleep 2
@@ -168,6 +175,17 @@ if [ "$VAR_COMPILE_DEFAULT_APPS" = 'y' ]; then
 
 	echo "[BUILD] Built-in apps were compiled successfully"
 	sleep 2
+fi
+
+if [ "$VAR_EXTERNAL_PATH" = 'y' ]; then
+        echo "[BUILD] ./external build started"
+        sleep 2
+
+        cd $BUILD_SCRIPTS_PATH
+        source ./external/external-build
+
+        echo "[BUILD] ./external build finished"
+        sleep 2
 fi
 
 if [ "$VAR_PKG_EXTERNAL_TO_ROOTFS" = 'y' ]; then
