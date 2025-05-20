@@ -8,13 +8,6 @@ EXTERNAL_PATH="$WOLFBEAR_OS_PROJECT_PATH/external"
 # 1) Mostrar rutas
 echo "[1] external=$EXTERNAL_PATH, overlay=$OVERLAY_PATH"
 
-# 2) Desmontar y limpiar
-for fs in proc sys dev; do
-  mountpoint -q "$EXTERNAL_PATH/$fs" && sudo umount -l "$EXTERNAL_PATH/$fs"
-done
-sudo rm -rf "$EXTERNAL_PATH"
-mkdir -p "$EXTERNAL_PATH"
-
 # 3) Sincronizar overlay
 echo "[2] Sync overlay"
 rsync -a --links "$OVERLAY_PATH/" "$EXTERNAL_PATH/"
@@ -60,9 +53,13 @@ for fs in proc sys dev; do
   sudo mount --bind "/$fs" "$EXTERNAL_PATH/$fs"
 done
 
-# 10) Actualizar repositorios en chroot
-echo "[9] Chroot and update"
-sudo chroot "$EXTERNAL_PATH" /sbin/apk update
+# 10) Depurar y actualizar repositorios en chroot
+ echo "[9] Debug apk database dirs inside chroot"
+ sudo chroot "$EXTERNAL_PATH" ls -l /lib/apk/db
+ sudo chroot "$EXTERNAL_PATH" ls -l /var/lib/apk/db
+ echo "[9b] Chroot and update"
+ SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt sudo chroot "$EXTERNAL_PATH" /sbin/apk update
+
 # 11) Sincronizar a rootfs
 echo "[10] Sync external to rootfs"
 sudo rsync -a --links "$EXTERNAL_PATH/" "$ROOTFS_PATH/"

@@ -14,32 +14,31 @@ RUN apk add --no-cache \
 RUN update-ca-certificates
 
 # Preparar estructura de salida
-env OUT=/out
+ENV OUT=/out
 RUN mkdir -p $OUT/sbin \
     $OUT/lib/apk/db \
     $OUT/var/lib/apk/db \
     $OUT/etc/apk \
-    $OUT/etc/ssl/certs \
+    $OUT/etc/ssl \
     $OUT/usr/lib
 
-# Copiar binario apk y todas sus dependencias y datos
+# Copiar binario apk
 ENV APKBIN=/sbin/apk
-RUN cp $APKBIN $OUT/sbin/ && \
-    ldd $APKBIN | grep -oE '/(usr/)?lib[^ ]+' | xargs -r -I{} cp --parents {} $OUT && \
-    # Copiar índices de repositorios
+RUN cp $APKBIN $OUT/sbin/
+
+# Copiar librerías y datos
+RUN ldd $APKBIN \
+    | grep -oE '/(usr/)?lib[^ ]+' \
+    | xargs -r -I{} cp --parents {} $OUT && \
+    cp -a /usr/lib $OUT/usr/ && \
     mkdir -p $OUT/lib/apk/db && cp -r /lib/apk/db/* $OUT/lib/apk/db/ && \
-    # Copiar estado de instalación
     mkdir -p $OUT/var/lib/apk/db && cp -r /var/lib/apk/db/* $OUT/var/lib/apk/db/ 2>/dev/null || true && \
     cp /var/lib/apk/world $OUT/var/lib/apk/world 2>/dev/null || true && \
-    # Copiar configuración de repos
-    cp -r /etc/apk/* $OUT/etc/apk/ && \
-    # Copiar certificados SSL
+    cp -r /etc/apk $OUT/etc/apk && \
     cp -a /etc/ssl $OUT/etc/ssl
 
+# Imagen final
 FROM alpine:3.21
-# instalar rsync para copiar correctamente enlaces simbólicos
 RUN apk add --no-cache rsync
-
 COPY --from=builder /out /target
-
-CMD ["sh", "-c", "rsync -a /target/ /real-target/"] ["sh", "-c", "rsync -a /target/ /real-target/"]
+CMD ["sh", "-c", "rsync -a /target/ /real-target/"]
