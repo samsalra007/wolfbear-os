@@ -37,14 +37,26 @@ sudo /sbin/apk --root "$EXTERNAL_PATH" \
   --initdb \
   --keys-dir /etc/apk/keys \
   --repositories-file /etc/apk/repositories \
-  add apk-tools shadow dhcpcd openresolv util-linux strace
-#  add apk-tools shadow util-linux strace strace mesa-dri-gallium mesa-gl mesa-egl mesa-gbm libdrm musl musl-dev
+  add \
+    apk-tools \
+    shadow \
+    dhcpcd \
+    openresolv \
+    util-linux \
+    strace \
+    mesa-gl \
+    mesa-egl \
+    mesa-gbm \
+    libdrm \
+    musl \
+    musl-dev \
+    openssh \
+    mesa-dri-gallium
 
 echo "- Setting up root user"
 sleep 0.5
 echo 'root:x:0:0:root:/root:/bin/sh' >> $EXTERNAL_PATH/etc/passwd
 echo 'root::14600:0:99999:7:::' >> $EXTERNAL_PATH/etc/shadow
-
 
 echo "nameserver 8.8.8.8" > $EXTERNAL_PATH/etc/resolv.conf
 sudo chmod u+s $EXTERNAL_PATH/bin/ping
