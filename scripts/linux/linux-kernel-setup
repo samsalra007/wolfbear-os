@@ -36,21 +36,21 @@ sleep 0.5
 rm -f .config
 cp $CONFIG_FILES_PATH/linux-config .config
 
-echo "- Checking if Linux kernel needs to be patched with WolbearOS changes"
-sleep 0.5
+# echo "- Checking if Linux kernel needs to be patched with WolbearOS changes"
+# sleep 0.5
 
-if patch --dry-run --forward -p1 < $PATCHES_PATH/kernel.patch > /dev/null; then
-	echo "- Applying WolfbearOS patches"
-	sleep 0.5
-
-	patch -p1 < $PATCHES_PATH/kernel.patch
-
-	echo "- Patches applied successfully"
-	sleep 0.5
-else
-	echo "- Linux kernel is already patched and no patch-action is needed"
-	sleep 0.5
-fi
+# if patch --dry-run --forward -p1 < $PATCHES_PATH/kernel.patch > /dev/null; then
+# 	echo "- Applying WolfbearOS patches"
+# 	sleep 0.5
+#
+#	patch -p1 < $PATCHES_PATH/kernel.patch
+#
+#	echo "- Patches applied successfully"
+#	sleep 0.5
+# else
+#	echo "- Linux kernel is already patched and no patch-action is needed"
+#	sleep 0.5
+# fi
 
 if [ "$1" = 'menuconfig' ]; then
 	echo "- User requested to open Linux kernel menu config"
@@ -72,6 +72,14 @@ else
 
 	make ARCH=$BUILD_ARCH oldconfig
 fi
+
+echo "- Compiling Linux modules"
+sleep 0.5
+make ARCH=$BUILD_ARCH -j$(nproc) modules
+
+echo "- Instaling Linux modules"
+sleep 0.5
+make ARCH=$BUILD_ARCH -j$(nproc) modules_install
 
 echo "- Compiling Linux kernel"
 sleep 0.5
