@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Variables
 EXTERNAL_BUILD_SCRIPTS="$BUILD_SCRIPTS_PATH/external"
-EXTERNAL_PATH="$WOLFBEAR_OS_PROJECT_PATH/external"
+EXTERNAL_PATH="$PROJECT_PATH/external"
 
 # 1) Mostrar rutas
 echo "[1] external=$EXTERNAL_PATH, overlay=$OVERLAY_PATH"
@@ -18,7 +18,6 @@ mkdir -p \
   "$EXTERNAL_PATH/tmp" \
   "$EXTERNAL_PATH/sbin" \
   "$EXTERNAL_PATH/lib/apk/db" \
-  "$EXTERNAL_PATH/var/lib/apk/db" \
   "$EXTERNAL_PATH/etc/apk" \
   "$EXTERNAL_PATH/etc/ssl/certs" \
   "$EXTERNAL_PATH/usr/lib"
@@ -28,37 +27,34 @@ echo "[4] Ensure /dev/null & /dev/urandom"
 [ -c /dev/null ]    || sudo mknod -m666 /dev/null c 1 3
 [ -c /dev/urandom ] || sudo mknod -m666 /dev/urandom c 1 9
 
-# 5) Build del extractor
-echo "[5] Building extractor image"
-cd "$EXTERNAL_BUILD_SCRIPTS"
-docker build -f Dockerfile -t apk-extract:latest .
+# 5) Copiar binario apk y dependencias desde el host
+echo "[5] Copy apk binary and deps from host"
+sudo cp /sbin/apk "$EXTERNAL_PATH/sbin/"
+sudo ldd /sbin/apk \
+  | grep -oE '/(usr/)?lib[^ ]+' \
+  | xargs -r -I{} sudo cp --parents {} "$EXTERNAL_PATH"
 
-# 6) Extraer apk-tools
-echo "[6] Extracting apk-tools"
-docker run --rm -v "$EXTERNAL_PATH":/real-target apk-extract:latest
-
-# 7) Copiar DB de apk desde host para asegurar índices y estado
-echo "[7] Copying apk DB from host"
+# 6) Copiar DB de apk desde el host
+echo "[6] Copy apk DB from host"
 sudo rsync -a /lib/apk/db/ "$EXTERNAL_PATH/lib/apk/db/"
 
-# 8) Verificar extracción y DB
-echo "[8] Verify extraction & DB"
+# 7) Verificar extracción y DB
+echo "[7] Verify apk & DB"
 ls -l "$EXTERNAL_PATH/sbin/apk" || echo "apk missing"
 ls -l "$EXTERNAL_PATH/lib/apk/db"
-ls -l "$EXTERNAL_PATH/var/lib/apk/db"
 
-# 9) Preparar chroot
-echo "[9] Mount proc, sys, dev & resolv.conf"
+# 8) Preparar chroot
+echo "[8] Mount proc, sys, dev & resolv.conf"
 sudo cp /etc/resolv.conf "$EXTERNAL_PATH/etc/resolv.conf"
 for fs in proc sys dev; do
   sudo mkdir -p "$EXTERNAL_PATH/$fs"
   sudo mount --bind "/$fs" "$EXTERNAL_PATH/$fs"
 done
 
-# 10) Actualizar repositorios dentro de chroot
-echo "[10] Chroot apk update"
+# 9) Actualizar repositorios dentro de chroot
+echo "[9] Chroot apk update"
 SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt sudo chroot "$EXTERNAL_PATH" /sbin/apk update
 
-# 11) Sincronizar a rootfs
-echo "[11] Sync to rootfs"
+# 10) Sincronizar a rootfs
+echo "[10] Sync to rootfs"
 sudo rsync -a --links "$EXTERNAL_PATH/" "$ROOTFS_PATH/"

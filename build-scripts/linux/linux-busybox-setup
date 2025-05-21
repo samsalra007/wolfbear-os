@@ -1,67 +1,76 @@
 #!/bin/sh
 
-echo "== Building BusyBox"
+echo "[linux-busybox-setup] Starting busybox setup"
+sleep 0.5
 
-# 1) Mostrar rutas
-echo "[1] external=$EXTERNAL_PATH, overlay=$OVERLAY_PATH"
+echo "- External path: '$EXTERNAL_PATH'"
+sleep 0.5
 
-# 2) Desmontar y limpiar
-for fs in proc sys dev; do
-  mountpoint -q "$EXTERNAL_PATH/$fs" && sudo umount -l "$EXTERNAL_PATH/$fs"
-done
-sudo rm -rf "$EXTERNAL_PATH"
-mkdir -p "$EXTERNAL_PATH"
+echo "- Overlay path: '$OVERLAY_PATH'"
+sleep 0.5
+
+echo "- Busybox path: '$BUSY_BOX_PATH'"
+sleep 0.5
+
+echo "- Dependencies path: '$DEPENDENCIES_PATH'"
+sleep 0.5
+
+echo "- Dependencies path: '$CONFIG_FILES_PATH'"
+sleep 0.5
 
 cd $DEPENDENCIES_PATH
 
 if [ ! -d $BUSY_BOX_PATH ]; then
-	echo " busybox was not found, downloading it.."
-	sleep 1
+	echo "- Busybox was not found, downloading it.."
+	sleep 0.5
 
 	wget https://busybox.net/downloads/busybox-$BUSY_BOX_VERSION.tar.bz2
 
-	echo "  Uncompressing busybox"
-	sleep 1
+	echo "- Uncompressing busybox"
+	sleep 0.5
 
 	tar -xjf busybox-$BUSY_BOX_VERSION.tar.bz2
 
-	echo "  Moving busybox to it's dependency path"
-	sleep 1
+	echo "- Moving busybox to it's dependency path"
+	sleep 0.5
 
 	mv busybox-$BUSY_BOX_VERSION busybox
 else
-	echo "  Busybox is already downloaded in dependencies path"
-	sleep 1
+	echo "- Busybox is already downloaded in dependencies path"
+	sleep 0.5
 fi
 
 cd $BUSY_BOX_PATH
 
-echo " Overwriting .config file from busybox-config"
-sleep 1
+echo "- Overwriting .config file from busybox-config"
+sleep 0.5
+
 rm -f .config
 cp $CONFIG_FILES_PATH/busybox-config .config
 
-echo " Applying busybox patches"
-
+echo "- Checking if busybox patches for arm64 issues is needed"
+sleep 0.5
 
 if patch --dry-run --forward -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch > /dev/null; then
-        echo " Applying busybox patches"
+        echo "- Applying busybox patches"
+	sleeo 0.5
         patch -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch
 else
-        echo " No busybox patch needed"
+        echo "- No busybox patch needed"
+	sleep 0.5
 fi
 
-echo "  Preparing busybox config"
-sleep 1
+echo "- Preparing busybox config"
+sleep 0.5
 make ARCH=$BUILD_ARCH oldconfig
 
-echo "  Compiling busybox"
-sleep 1
+echo "- Compiling busybox"
+sleep 0.5
 make ARCH=$BUILD_ARCH -j$(nproc)
 
-echo "  Installing busybox"
-sleep 1
+echo "- Installing busybox"
+sleep 0.5
 make ARCH=$BUILD_ARCH CONFIG_PREFIX=$EXTERNAL_PATH install
 
-echo "  Busybox was installed successfully"
-sleep 1
+echo "- Busybox was installed successfully"
+sleep 0.5
