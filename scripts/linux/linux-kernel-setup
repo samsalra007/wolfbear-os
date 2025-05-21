@@ -36,8 +36,8 @@ cd $LINUX_KERNEL_PATH
 echo "- Syncing ./config/linux-config into ./dependencies/linux/.config file"
 sleep 0.5
 
-# rm -f .config
-# cp $CONFIG_FILES_PATH/linux-config .config
+rm -f .config
+cp $CONFIG_FILES_PATH/linux-config .config
 
 # echo "- Checking if Linux kernel needs to be patched with WolbearOS changes"
 # sleep 0.5
@@ -73,7 +73,7 @@ else
 	echo "- Using oldconfig to compile Linux"
 	sleep 0.5
 
-	make ARCH=$BUILD_ARCH oldconfig
+	make ARCH=$BUILD_ARCH oldfconfig
 fi
 
 make clean
