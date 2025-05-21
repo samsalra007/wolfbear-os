@@ -7,13 +7,16 @@ sleep 0.5
 echo "- Project path: '$PROJECT_PATH'"
 sleep 0.5
 
-echo "- Kernel version: 'v$LINUX_KERNEL_VERSION'"
+echo "- Kernek version: 'v$LINUX_KERNEL_VERSION'"
 sleep 0.5
 
-echo "- Patches path: '$PATCHES_PATH'"
+echo "- ./patches path: '$PATCHES_PATH'"
 sleep 0.5
 
-echo "- Target path: '$TARGET_PATH'"
+echo "- ./initramfs path: '$INITRAMFS_PATH'"
+sleep 0.5
+
+echo "- ./target path: '$TARGET_PATH'"
 sleep 0.5
 
 if [ ! -d $LINUX_KERNEL_PATH ]; then
@@ -79,7 +82,7 @@ make ARCH=$BUILD_ARCH -j$(nproc) modules
 
 echo "- Instaling Linux modules"
 sleep 0.5
-make ARCH=$BUILD_ARCH -j$(nproc) modules_install
+make ARCH=$BUILD_ARCH -j$(nproc) modules_install INSTALL_MOD_PATH=$INITRAMFS_PATH
 
 echo "- Compiling Linux kernel"
 sleep 0.5

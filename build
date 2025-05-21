@@ -136,3 +136,17 @@ fi
 
 echo "[FINISH] WolfbearOS build script process finished"
 sleep 0.2
+
+
+mkdir -p ~/.abuild
+cd ~/.abuild
+
+# Genera clave privada:
+# openssl genrsa -out kernel_signing_key.pem 2048
+
+# Genera certificado auto-firmado:
+# openssl req -new -x509 \
+#    -key kernel_signing_key.pem \
+#    -out kernel_signing_key.x509 \
+#    -days 365 \
+#    -subj "/CN=kernel builder/"
