@@ -1,29 +1,29 @@
 #!/bin/sh
 set -euo pipefail
 
-echo "[wolfbear-cleanup] Starting cleanup"
+echo "[wolfbear-cleanup] Starting cleanup script"
 sleep 0.5
 
-echo "- ./external path: '$EXTERNAL_PATH'"
+echo "- ./rootfs path: '$INITRAMFS_PATH'"
 sleep 0.5
 
-echo "- ./external path: '$TARGET_PATH'"
+echo "- ./target path: '$TARGET_PATH'"
 sleep 0.5
 
 echo "- Umounting lazy partitions"
 sleep 0.5
 
 for fs in proc sys dev; do
-  mountpoint -q "$EXTERNAL_PATH/$fs" && sudo umount -l "$EXTERNAL_PATH/$fs"
+  mountpoint -q "$INITRAMFS_PATH/$fs" && sudo umount -l "$INITRAMFS_PATH/$fs"
 done
 
-echo "- Cleaning ./external path"
+echo "- Cleaning ./rootfs path"
 sleep 0.5
 
-sudo rm -rf "$EXTERNAL_PATH"
-mkdir -p "$EXTERNAL_PATH"
+sudo rm -rf "$INITRAMFS_PATH"
+mkdir -p "$INITRAMFS_PATH"
 
-echo "- Cleaning ./rootfs path"
+echo "- Cleaning ./target path"
 sleep 0.5
 
 sudo rm -rf $TARGET_PATH

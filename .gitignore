@@ -1,7 +1,6 @@
 dependencies/*
 rootfs/*
 target/*
-external/*
-external/lib/apk/db/lock
+initramfs/*
 **.swp
 *.wbapp

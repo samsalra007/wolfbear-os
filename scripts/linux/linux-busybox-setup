@@ -4,19 +4,22 @@ set -euo pipefail
 echo "[linux-busybox-setup] Starting busybox setup"
 sleep 0.5
 
-echo "- External path: '$EXTERNAL_PATH'"
+echo "- ./rootfs path: '$INITRAMFS_PATH'"
 sleep 0.5
 
-echo "- Overlay path: '$OVERLAY_PATH'"
+echo "- ./overlay path: '$OVERLAY_PATH'"
 sleep 0.5
 
-echo "- Busybox path: '$BUSY_BOX_PATH'"
+echo "- ./busybox compilation path: '$BUSY_BOX_PATH'"
 sleep 0.5
 
-echo "- Dependencies path: '$DEPENDENCIES_PATH'"
+echo "- ./dependenciess path: '$DEPENDENCIES_PATH'"
 sleep 0.5
 
-echo "- Dependencies path: '$CONFIG_FILES_PATH'"
+echo "- ./config path: '$CONFIG_FILES_PATH'"
+sleep 0.5
+
+echo "- Opening ./dependencies path"
 sleep 0.5
 
 cd $DEPENDENCIES_PATH
@@ -43,7 +46,7 @@ fi
 
 cd $BUSY_BOX_PATH
 
-echo "- Overwriting .config file from busybox-config"
+echo "- Using .config file located in ./config/busybox-config"
 sleep 0.5
 
 rm -f .config
@@ -61,9 +64,26 @@ else
 	sleep 0.5
 fi
 
-echo "- Preparing busybox config"
-sleep 0.5
-make ARCH=$BUILD_ARCH oldconfig
+if [ "$1" = 'menuconfig' ]; then
+        echo "- User requested to open Busybox menu config"
+        sleep 0.5
+
+        make ARCH=$BUILD_ARCH menuconfig
+
+        echo "- Applying new configuration into /config/buxybox-config"
+        sleep 0.5
+
+        rm -f $CONFIG_FILES_PATH/busybox-config
+        cp .config $CONFIG_FILES_PATH/busybox-config
+
+        echo "- Configuration is done"
+        sleep 0.5
+else
+        echo "- Using oldconfig to compile Busybox"
+        sleep 0.5
+
+        make ARCH=$BUILD_ARCH oldconfig
+fi
 
 echo "- Compiling busybox"
 sleep 0.5
@@ -71,7 +91,7 @@ make ARCH=$BUILD_ARCH -j$(nproc)
 
 echo "- Installing busybox"
 sleep 0.5
-make ARCH=$BUILD_ARCH CONFIG_PREFIX=$EXTERNAL_PATH install
+make ARCH=$BUILD_ARCH CONFIG_PREFIX=$INITRAMFS_PATH install
 
 echo "- Busybox was installed successfully"
 sleep 0.5

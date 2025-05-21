@@ -10,7 +10,7 @@ CONFIG_FILES_PATH=$PROJECT_PATH/config
 DEPENDENCIES_PATH=$PROJECT_PATH/dependencies
 PATCHES_PATH=$PROJECT_PATH/patches
 TARGET_PATH=$PROJECT_PATH/target
-EXTERNAL_PATH=$PROJECT_PATH/external
+INITRAMFS_PATH=$PROJECT_PATH/initramfs
 
 LINUX_KERNEL_VERSION=6.1
 LINUX_KERNEL_PATH=$DEPENDENCIES_PATH/linux
@@ -31,8 +31,9 @@ VAR_CLEANUP='n'
 VAR_COMPILE_LINUX_KERNEL='n'
 VAR_COMPILE_LINUX_KERNEL_MENUCONFIG='n'
 VAR_COMPILE_BUSYBOX='n'
-VAR_COMPRESS_ROOTFS='n'
-VAR_EXTERNAL_PATH='n'
+VAR_BUSYBOX_MENUCONFIG='n'
+VAR_INITRAMFS_BUILD='n'
+VAR_INITRAMFS_COMPRESS='n'
 
 # Procesar argumentos
 while [[ "$#" -gt 0 ]]; do
@@ -53,12 +54,16 @@ while [[ "$#" -gt 0 ]]; do
             VAR_COMPILE_BUSYBOX='y'
             shift
             ;;
-        -ep|--external-path)
-            VAR_EXTERNAL_PATH='y'
+        -bc|--busybox-menuconfig)
+            VAR_BUSYBOX_MENUCONFIG='y'
+            shift
+            ;;
+        -ib|--initramfs-build)
+            VAR_INITRAMFS_BUILD='y'
             shift
 	    ;;
-        -c|--compress-rootfs)
-            VAR_COMPRESS_ROOTFS='y'
+        -ic|--initramfs-compress)
+            VAR_INITRAMFS_COMPRESS='y'
             shift
             ;;
     esac
@@ -68,18 +73,18 @@ mkdir -p $DEPENDENCIES_PATH
 
 if [ "$VAR_CLEANUP" = 'y' ]; then
 	echo "[BUILD] Starting cleanup ./rootfs and ./target path"
-	sleep 1
+	sleep 0.5
 
 	cd $BUILD_SCRIPTS_PATH
 	source ./wolfbear/wolfbear-cleanup	
 
 	echo "[BUILD] Cleanup finished ./rootfs"
-	sleep 1
+	sleep 0.5
 fi
 
 if [ "$VAR_COMPILE_LINUX_KERNEL" = 'y' ]; then
 	echo "[BUILD] Compiling and patching linux kernel"
-	sleep 1
+	sleep 0.5
 
 	cd $BUILD_SCRIPTS_PATH
 	if [ "$VAR_COMPILE_LINUX_KERNEL_MENUCONFIG" = 'y' ]; then
@@ -88,41 +93,45 @@ if [ "$VAR_COMPILE_LINUX_KERNEL" = 'y' ]; then
 		source ./linux/linux-kernel-setup oldconfig
 	fi
 	echo "[BUILD] Linux kernel was patched successfully"
-	sleep 1
+	sleep 0.5
 fi
 
 
 if [ "$VAR_COMPILE_BUSYBOX" = 'y' ]; then
 	echo "[BUILD] Linux busybox setup"
-	sleep 1
+	sleep 0.5
 
 	cd $BUILD_SCRIPTS_PATH
-	source ./linux/linux-busybox-setup
+        if [ "$VAR_BUSYBOX_MENUCONFIG" = 'y' ]; then
+		source ./linux/linux-busybox-setup menuconfig
+        else
+		source ./linux/linux-busybox-setup oldconfig
+        fi	
 
 	echo "[BUILD] Busybox was compiled successfully"
-	sleep 1
+	sleep 0.5
 fi
 
-if [ "$VAR_EXTERNAL_PATH" = 'y' ]; then
-        echo "[BUILD] ./external build started"
-        sleep 1
+if [ "$VAR_INITRAMFS_BUILD" = 'y' ]; then
+        echo "[BUILD] ./initramfs build started"
+        sleep 0.5
 
         cd $BUILD_SCRIPTS_PATH
-        source ./external/external-build
+        source ./initramfs/initramfs-dependencies-install
 
-        echo "[BUILD] ./external build finished"
-        sleep 1
+        echo "[BUILD] ./initramfs build finished"
+        sleep 0.5
 fi
 
-if [ "$VAR_COMPRESS_ROOTFS" = 'y' ]; then
-	echo "[BUILD] Strating ./external compression"
-	sleep 1
+if [ "$VAR_INITRAMFS_COMPRESS" = 'y' ]; then
+	echo "[BUILD] Strating ./initramfs compression"
+	sleep 0.5
 
 	cd $BUILD_SCRIPTS_PATH
-	source ./wolfbear/wolfbear-external-package
+	source ./wolfbear/wolfbear-rootfs-package
 
-	echo "[BUILD] Compresion of ./external finished"
-	sleep 1
+	echo "[BUILD] Finished ./initramfs compression"
+	sleep 0.5
 fi
 
 echo "[FINISH] WolfbearOS build script process finished"

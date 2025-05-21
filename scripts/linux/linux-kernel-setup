@@ -73,14 +73,6 @@ else
 	make ARCH=$BUILD_ARCH oldconfig
 fi
 
-echo "- Compiling modules"
-sleep 0.5
-make ARCH=$BUILD_ARCH INSTALL_MOD_PATH=$EXTERNAL_PATH modules
-
-echo "- Installing modules"
-sleep 0.5
-make ARCH=$BUILD_ARCH INSTALL_MOD_PATH=$EXTERNAL_PATH modules_install
-
 echo "- Compiling Linux kernel"
 sleep 0.5
 make ARCH=$BUILD_ARCH -j$(nproc)

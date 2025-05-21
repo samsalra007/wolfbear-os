@@ -1,0 +1,60 @@
+#!/bin/sh
+set -euo pipefail
+
+echo "[initramfs-dependencies-install] starting dependency install"
+sleep 0.5
+
+echo "- ./initramfs path: '$INITRAMFS_PATH'"
+sleep 0.5
+
+echo "- ./overlay path: '$OVERLAY_PATH'"
+sleep 0.5
+
+# 2) Sincronizar overlay
+echo "- Syncing overlay path to external path"
+rsync -a --links "$OVERLAY_PATH/" "$INITRAMFS_PATH/"
+
+# 3) Preparar directorios
+echo "- Preparing ./external directories"
+sleep 0.5
+
+mkdir -p \
+  "$INITRAMFS_PATH/tmp" \
+  "$INITRAMFS_PATH/sbin" \
+  "$INITRAMFS_PATH/lib/apk/db" \
+  "$INITRAMFS_PATH/etc/apk" \
+  "$INITRAMFS_PATH/etc/ssl/certs" \
+  "$INITRAMFS_PATH/usr/lib"
+
+echo "- Copying keys and repositories from local apk"
+sleep 0.5
+cp -r /etc/apk/keys $INITRAMFS_PATH/etc/apk/keys
+cp /etc/apk/repositories $INITRAMFS_PATH/etc/apk/repositories
+
+echo "- Installing ./initramfs basic dependencies"
+sleep 0.5
+
+sudo /sbin/apk --root "$INITRAMFS_PATH" \
+  --initdb \
+  --keys-dir /etc/apk/keys \
+  --repositories-file /etc/apk/repositories \
+  add \
+    apk-tools \
+    shadow \
+    dhcpcd \
+    openresolv \
+    util-linux \
+    strace \
+    openssh
+
+echo "- Setting up root user"
+sleep 0.5
+echo 'root:x:0:0:root:/root:/bin/sh' >> $INITRAMFS_PATH/etc/passwd
+echo 'root::14600:0:99999:7:::' >> $INITRAMFS_PATH/etc/shadow
+
+echo "- Fixing ping command sudo execution"
+sleep 0.5
+sudo chmod u+s $INITRAMFS_PATH/bin/ping
+
+echo "[initramfs-dependencies-install] build finished"
+sleep 0.5
