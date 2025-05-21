@@ -78,6 +78,10 @@ fi
 
 make clean
 
+echo "- Compiling Linux kernel"
+sleep 0.5
+make ARCH=$BUILD_ARCH -j$(nproc) Image
+
 echo "- Compiling Linux modules"
 sleep 0.5
 make ARCH=$BUILD_ARCH -j$(nproc) modules
@@ -85,10 +89,6 @@ make ARCH=$BUILD_ARCH -j$(nproc) modules
 echo "- Instaling Linux modules"
 sleep 0.5
 make ARCH=$BUILD_ARCH -j$(nproc) modules_install INSTALL_MOD_PATH=$INITRAMFS_PATH
-
-echo "- Compiling Linux kernel"
-sleep 0.5
-make ARCH=$BUILD_ARCH -j$(nproc)
 
 echo "-  Moving compiled kernel image to compilation path"
 sleep 1
