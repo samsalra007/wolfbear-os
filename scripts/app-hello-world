@@ -12,8 +12,8 @@ echo "- Compiling hello world application aarch64-linux-musl-gcc"
 sleep 1
 
 gcc \
-  -o "${WOLFBEAR_APPS_PATH}/sdl_hello/sdl_hello.wbapp" \
-  "${WOLFBEAR_APPS_PATH}/sdl_hello/sdl_hello.c" \
+  -o "${OVERLAY_PATH}/apps/sdl_hello/sdl_hello.wbapp" \
+  "${OVERLAY_PATH}/apps/sdl_hello/sdl_hello.c" \
   --sysroot="$PKG_EXTERNAL_PATH" \
   -I"$PKG_EXTERNAL_PATH/usr/include" \
   -L"$PKG_EXTERNAL_PATH/usr/lib" \

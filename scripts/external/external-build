@@ -51,16 +51,19 @@ sudo /sbin/apk --root "$EXTERNAL_PATH" \
     musl \
     musl-dev \
     openssh \
-    mesa-dri-gallium
+    mesa-dri-gallium \
+    sdl2 \
+    expat expat-dev \
+    libffi libffi-dev
 
 echo "- Setting up root user"
 sleep 0.5
 echo 'root:x:0:0:root:/root:/bin/sh' >> $EXTERNAL_PATH/etc/passwd
 echo 'root::14600:0:99999:7:::' >> $EXTERNAL_PATH/etc/shadow
 
-echo "nameserver 8.8.8.8" > $EXTERNAL_PATH/etc/resolv.conf
+# echo "nameserver 8.8.8.8" > $EXTERNAL_PATH/etc/resolv.conf
 sudo chmod u+s $EXTERNAL_PATH/bin/ping
 
-echo "- Adding resol.conf from local alpine"
-cp /etc/resolv.conf "$EXTERNAL_PATH/etc/resolv.conf"
+# echo "- Adding resol.conf from local alpine"
+# cp /etc/resolv.conf "$EXTERNAL_PATH/etc/resolv.conf"
 
