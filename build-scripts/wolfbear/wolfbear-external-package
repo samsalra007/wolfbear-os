@@ -24,7 +24,8 @@ echo "- Compressing ./external into initramfs.cpio.gz file"
 sleep 0.5
 
 cd $EXTERNAL_PATH
-find . -print0 | cpio --null -ov --format=newc | gzip -9 > $TARGET_PATH/initramfs.cpio.gz
+# sudo chmod +r "$EXTERNAL_PATH/etc/sudoers"
+sudo find . -print0 | cpio --null -ov --format=newc | gzip -9 > $TARGET_PATH/initramfs.cpio.gz
 
 echo "[wolfbear-rootfs-package] ./external has been compressed successfully"
 sleep 0.5

@@ -37,6 +37,10 @@ fi
 echo "[WolfbearOS] adding /sbin into $PATH"
 export PATH=$PATH:/sbin
 
+echo "[WolfbearOS] setting up network"
+mkdir -p /run/dhcpcd
+dhcpcd eth0
+
 sleep 1.5
 
 # El while true evita el kernel panic al regresar de nuevo al login si la terminal getty finaliza

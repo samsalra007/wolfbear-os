@@ -83,7 +83,7 @@ if [ "$VAR_COMPILE_LINUX_KERNEL" = 'y' ]; then
 
 	cd $BUILD_SCRIPTS_PATH
 	if [ "$VAR_COMPILE_LINUX_KERNEL_MENUCONFIG" = 'y' ]; then
-		source ./linux-kernel-setup menuconfig
+		source ./linux/linux-kernel-setup menuconfig
 	else
 		source ./linux/linux-kernel-setup oldconfig
 	fi

@@ -30,7 +30,7 @@ fi
 
 cd $LINUX_KERNEL_PATH
 
-echo "- Overwriting ./config/linux-config into ./dependencies/linux/.config file"
+echo "- Syncing ./config/linux-config into ./dependencies/linux/.config file"
 sleep 0.5
 
 rm -f .config

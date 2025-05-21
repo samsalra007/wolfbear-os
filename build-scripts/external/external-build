@@ -30,14 +30,25 @@ sleep 0.5
 cp -r /etc/apk/keys $EXTERNAL_PATH/etc/apk/keys
 cp /etc/apk/repositories $EXTERNAL_PATH/etc/apk/repositories
 
-echo "Installing apk tools in ./external"
+echo "- Installing apk tools in ./external"
 sleep 0.5
 
 sudo /sbin/apk --root "$EXTERNAL_PATH" \
   --initdb \
   --keys-dir /etc/apk/keys \
   --repositories-file /etc/apk/repositories \
-  add apk-tools strace
+  add apk-tools shadow dhcpcd openresolv util-linux strace
+#  add apk-tools shadow util-linux strace strace mesa-dri-gallium mesa-gl mesa-egl mesa-gbm libdrm musl musl-dev
+
+echo "- Setting up root user"
+sleep 0.5
+echo 'root:x:0:0:root:/root:/bin/sh' >> $EXTERNAL_PATH/etc/passwd
+echo 'root::14600:0:99999:7:::' >> $EXTERNAL_PATH/etc/shadow
+
+
+echo "nameserver 8.8.8.8" > $EXTERNAL_PATH/etc/resolv.conf
+sudo chmod u+s $EXTERNAL_PATH/bin/ping
 
 echo "- Adding resol.conf from local alpine"
-[ -f /etc/resolv.conf ] && cp /etc/resolv.conf "$EXTERNAL_PATH/etc/resolv.conf"
+cp /etc/resolv.conf "$EXTERNAL_PATH/etc/resolv.conf"
+
