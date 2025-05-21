@@ -1,34 +1,52 @@
 #!/bin/sh
+
+echo "[WolfbearOS] Mounting partitions"
+
 mkdir -p /proc /sys /dev /dev/dri
 
-# 2) Montar pseudo-FS
-# mount -t proc    proc    /proc
-# mount -t sysfs   sysfs   /sys
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
 mount -t devtmpfs devtmpfs /dev
+
+echo "[WolfbearOS] Mounting graphic card drivers"
 
 mkdir -p /dev/dri
 [ ! -e /dev/dri/card0 ] && mknod -m 0666 /dev/dri/card0 c 226 0
 [ ! -e /dev/dri/renderD128 ] && mknod -m 0666 /dev/dri/renderD128 c 226 128
 
+
+echo "[WolfbearOS] Assigning drivers permissions"
+
 chmod 0666 /dev/dri/card0 /dev/dri/renderD128
+
+
+echo "[WolfbearOS] Exporting environment variables"
 
 export LIBGL_DRIVERS_PATH=/usr/lib/dri
 export SDL_VIDEODRIVER=KMSDRM
 export SDL_KMSDRM_DEVICE=/dev/dri/card0
 export SDL_KMSDRM_RENDER_NODE=/dev/dri/renderD128
 
+echo "[WolfbearOS] Setting up hostname"
+
 # Si hay hostname entonces lo configuramos para que cambie también el comando
 if [ -f /etc/hostname ]; then
     hostname "$(cat /etc/hostname)"
 fi
 
+echo "[WolfbearOS] adding /sbin into $PATH"
+export PATH=$PATH:/sbin
+
+sleep 1.5
+
 # El while true evita el kernel panic al regresar de nuevo al login si la terminal getty finaliza
 while true; do
-	./apps/sdl_hello/sdl_hello.wbapp
-
+	# ./apps/sdl_hello/sdl_hello.wbapp
+	clear
 	echo "WolfbearOS Development Version!"
 	# /sbin/getty -L -a cheese ttyAMA0 115200 vt100
 	/sbin/getty -L ttyAMA0 115200 vt1000
 
 	echo "Woof bye!"
+	sleep 2
 done
