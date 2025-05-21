@@ -115,13 +115,13 @@ if [ "$VAR_EXTERNAL_PATH" = 'y' ]; then
 fi
 
 if [ "$VAR_COMPRESS_ROOTFS" = 'y' ]; then
-	echo "[BUILD] Strating ./rootfs compression"
+	echo "[BUILD] Strating ./external compression"
 	sleep 1
 
 	cd $BUILD_SCRIPTS_PATH
-	source ./rootfs-compression
+	source ./wolfbear/wolfbear-external-package
 
-	echo "[BUILD] Compresion of ./rootfs finished"
+	echo "[BUILD] Compresion of ./external finished"
 	sleep 1
 fi
 

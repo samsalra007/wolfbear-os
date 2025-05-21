@@ -1,6 +1,0 @@
-#!/bin/sh
-
-echo "  Syncing ./pkg-external -> ./rootfs"
-sleep 1
-
-cp -a $EXTERNAL_PATH/* $ROOTFS_PATH

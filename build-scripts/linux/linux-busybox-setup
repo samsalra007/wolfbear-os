@@ -1,4 +1,5 @@
 #!/bin/sh
+set -euo pipefail
 
 echo "[linux-busybox-setup] Starting busybox setup"
 sleep 0.5

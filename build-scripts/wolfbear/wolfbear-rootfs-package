@@ -1,0 +1,30 @@
+#! /bin/sh
+set -euo pipefail
+
+echo "[wolfbear-rootfs-package] Starting packaging ./rootfs"
+sleep 0.5
+
+echo "- ./rootfs path: '$ROOTFS_PATH'"
+sleep 0.5
+
+echo "- ./target path: '$TARGET_PATH'"
+sleep 0.5
+
+echo "- ./external path: '$EXTERNAL_PATH'"
+sleep 0.5
+
+echo "- Umounting lazy partitions (this will be mounted in qemu)"
+sleep 0.5
+
+for fs in proc sys dev; do
+  mountpoint -q "$EXTERNAL_PATH/$fs" && sudo umount -l "$EXTERNAL_PATH/$fs"
+done
+
+echo "- Compressing ./rootfs into initramfs.cpio.gz file"
+sleep 0.5
+
+cd $ROOTFS_PATH
+find . -print0 | cpio --null -ov --format=newc | gzip -9 > $TARGET_PATH/initramfs.cpio.gz
+
+echo "[wolfbear-rootfs-package] ./external has been compressed successfully"
+sleep 0.5
