@@ -1,15 +1,16 @@
 #!/bin/sh
+set -euo pipefail
 
 echo "Welcome to wolfbearOS development build script"
 
-WOLFBEAR_OS_PROJECT_PATH=$(pwd)
+PROJECT_PATH=$(pwd)
 
-BUILD_SCRIPTS_PATH=$WOLFBEAR_OS_PROJECT_PATH/build-scripts
-CONFIG_FILES_PATH=$WOLFBEAR_OS_PROJECT_PATH/config
-DEPENDENCIES_PATH=$WOLFBEAR_OS_PROJECT_PATH/dependencies
-PATCHES_PATH=$WOLFBEAR_OS_PROJECT_PATH/patches
-TARGET_PATH=$WOLFBEAR_OS_PROJECT_PATH/target
-EXTERNAL_PATH=$WOLFBEAR_OS_PROJECT_PATH/external
+BUILD_SCRIPTS_PATH=$PROJECT_PATH/build-scripts
+CONFIG_FILES_PATH=$PROJECT_PATH/config
+DEPENDENCIES_PATH=$PROJECT_PATH/dependencies
+PATCHES_PATH=$PROJECT_PATH/patches
+TARGET_PATH=$PROJECT_PATH/target
+EXTERNAL_PATH=$PROJECT_PATH/external
 
 LINUX_KERNEL_VERSION=6.1
 LINUX_KERNEL_PATH=$DEPENDENCIES_PATH/linux
@@ -17,41 +18,34 @@ LINUX_KERNEL_PATH=$DEPENDENCIES_PATH/linux
 BUSY_BOX_VERSION=1.37.0
 BUSY_BOX_PATH=$DEPENDENCIES_PATH/busybox
 
-OVERLAY_PATH=$WOLFBEAR_OS_PROJECT_PATH/overlay
-ROOTFS_PATH=$WOLFBEAR_OS_PROJECT_PATH/rootfs
+OVERLAY_PATH=$PROJECT_PATH/overlay
+ROOTFS_PATH=$PROJECT_PATH/rootfs
 
 BUILD_ARCH=arm64
 BUILD_CROSS_COMPILE=aarch64-linux-gnu-
 
-
-WOLFBEAR_APPS_PATH=$OVERLAY_PATH/apps
+OVERLAY_APPS_PATH=$OVERLAY_PATH/apps
 
 # Variables por defecto
-VAR_REMOVE_TARGET='n'
-VAR_REMOVE_ROOTFS='n'
+VAR_CLEANUP='n'
 VAR_COMPILE_LINUX_KERNEL='n'
-VAR_COMPILE_LINUX_KERNEL_MENU_CONFIG='n'
+VAR_COMPILE_LINUX_KERNEL_MENUCONFIG='n'
 VAR_COMPILE_BUSYBOX='n'
-VAR_ALPINE_DOCKER='n'
 VAR_COMPRESS_ROOTFS='n'
 VAR_EXTERNAL_PATH='n'
 
 # Procesar argumentos
 while [[ "$#" -gt 0 ]]; do
     case "$1" in
-        -t|--remove-target)
-            VAR_REMOVE_TARGET='y'
+        -c|--cleanup)
+            VAR_CLEANUP='y'
 	    shift
             ;;
-        -r|--remove-rootfs)
-	    VAR_REMOVE_ROOTFS='y'
-            shift
-            ;;
-        -l|--linux-kernel)
+        -lk|--linux-kernel)
             VAR_COMPILE_LINUX_KERNEL='y'
             shift
             ;;
-        -lm|--linux-menuconfig)
+        -lc|--linux-menuconfig)
             VAR_COMPILE_LINUX_KERNEL_MENUCONFIG='y'
             shift
             ;;
@@ -72,73 +66,62 @@ done
 
 mkdir -p $DEPENDENCIES_PATH
 
-if [ "$VAR_REMOVE_TARGET" = 'y' ]; then
-	echo "[BUILD] Removing ./target path (probably it will request for sudo access)"
-	sleep 2
+if [ "$VAR_CLEANUP" = 'y' ]; then
+	echo "[BUILD] Starting cleanup ./rootfs and ./target path"
+	sleep 1
 
-	rm -rf $TARGET_PATH
-        mkdir $TARGET_PATH
+	cd $BUILD_SCRIPTS_PATH
+	source ./wolfbear/wolfbear-cleanup	
 
-	echo "[BUILD] ./target removed successfully"
-	sleep 2
-fi
-
-if [ "$VAR_REMOVE_ROOTFS" = 'y' ]; then
-	echo "[BUILD] Removing ./rootfs path"
-	sleep 2
-
-	sudo rm -rf $ROOTFS_PATH
-	mkdir $ROOTFS_PATH
-
-	echo "[BUILD] ./rootfs was removed successfully"
-	sleep 2
+	echo "[BUILD] Cleanup finished ./rootfs"
+	sleep 1
 fi
 
 if [ "$VAR_COMPILE_LINUX_KERNEL" = 'y' ]; then
 	echo "[BUILD] Compiling and patching linux kernel"
-	sleep 2
+	sleep 1
 
 	cd $BUILD_SCRIPTS_PATH
 	if [ "$VAR_COMPILE_LINUX_KERNEL_MENUCONFIG" = 'y' ]; then
-		source ./linux-kernel-setup linux-menuconfig
+		source ./linux-kernel-setup menuconfig
 	else
-		source ./linux-kernel-setup
+		source ./linux/linux-kernel-setup oldconfig
 	fi
 	echo "[BUILD] Linux kernel was patched successfully"
-	sleep 2
+	sleep 1
 fi
 
 
 if [ "$VAR_COMPILE_BUSYBOX" = 'y' ]; then
 	echo "[BUILD] Linux busybox setup"
-	sleep 2
+	sleep 1
 
 	cd $BUILD_SCRIPTS_PATH
-	source ./linux-busybox-setup
+	source ./linux/linux-busybox-setup
 
 	echo "[BUILD] Busybox was compiled successfully"
-	sleep 2
+	sleep 1
 fi
 
 if [ "$VAR_EXTERNAL_PATH" = 'y' ]; then
         echo "[BUILD] ./external build started"
-        sleep 2
+        sleep 1
 
         cd $BUILD_SCRIPTS_PATH
         source ./external/external-build
 
         echo "[BUILD] ./external build finished"
-        sleep 2
+        sleep 1
 fi
 
 if [ "$VAR_COMPRESS_ROOTFS" = 'y' ]; then
-	echo "[BUILD] ./rootfs compression begin"
-	sleep 2
+	echo "[BUILD] Strating ./rootfs compression"
+	sleep 1
 
 	cd $BUILD_SCRIPTS_PATH
-	source ./wolfbear-rootfs-package
+	source ./rootfs-compression
 
-	echo "[BUILD] ./rootfs compression end"
+	echo "[BUILD] Compresion of ./rootfs finished"
 	sleep 1
 fi
 

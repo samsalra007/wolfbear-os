@@ -8,62 +8,57 @@ EXTERNAL_PATH="$WOLFBEAR_OS_PROJECT_PATH/external"
 # 1) Mostrar rutas
 echo "[1] external=$EXTERNAL_PATH, overlay=$OVERLAY_PATH"
 
-# 3) Sincronizar overlay
+# 2) Sincronizar overlay
 echo "[2] Sync overlay"
 rsync -a --links "$OVERLAY_PATH/" "$EXTERNAL_PATH/"
 
-# 4) Preparar directorios
+# 3) Preparar directorios
 echo "[3] Prepare dirs"
-mkdir -p "$EXTERNAL_PATH/tmp" \
-         "$EXTERNAL_PATH/sbin" \
-         "$EXTERNAL_PATH/lib/apk/db" \
-         "$EXTERNAL_PATH/var/lib/apk/db" \
-         "$EXTERNAL_PATH/etc/apk" \
-         "$EXTERNAL_PATH/etc/ssl/certs" \
-         "$EXTERNAL_PATH/usr/lib"
+mkdir -p \
+  "$EXTERNAL_PATH/tmp" \
+  "$EXTERNAL_PATH/sbin" \
+  "$EXTERNAL_PATH/lib/apk/db" \
+  "$EXTERNAL_PATH/var/lib/apk/db" \
+  "$EXTERNAL_PATH/etc/apk" \
+  "$EXTERNAL_PATH/etc/ssl/certs" \
+  "$EXTERNAL_PATH/usr/lib"
 
-# 5) Asegurar /dev/null y /dev/urandom
-echo "[4] Ensure /dev/null and /dev/urandom"
-[ -c /dev/null ]    || { sudo rm -f /dev/null;    sudo mknod -m666 /dev/null c 1 3; }
-[ -c /dev/urandom ] || { sudo rm -f /dev/urandom; sudo mknod -m666 /dev/urandom c 1 9; }
+# 4) Asegurar pseudo-FS (dev/null y dev/urandom)
+echo "[4] Ensure /dev/null & /dev/urandom"
+[ -c /dev/null ]    || sudo mknod -m666 /dev/null c 1 3
+[ -c /dev/urandom ] || sudo mknod -m666 /dev/urandom c 1 9
 
-# 6) Build de la imagen
-echo "[5] Building Docker image"
+# 5) Build del extractor
+echo "[5] Building extractor image"
 cd "$EXTERNAL_BUILD_SCRIPTS"
 docker build -f Dockerfile -t apk-extract:latest .
 
-# 7) Ejecutar contenedor para extraer contenidos
-echo "[6] Running Docker container to extract apk"
+# 6) Extraer apk-tools
+echo "[6] Extracting apk-tools"
 docker run --rm -v "$EXTERNAL_PATH":/real-target apk-extract:latest
 
-# 8) Verificar extracción de apk
-echo "[7] Verify extraction"
-if [ ! -f "$EXTERNAL_PATH/sbin/apk" ]; then
-  echo "ERROR: No se encontró apk en $EXTERNAL_PATH/sbin/apk"; ls -R "$EXTERNAL_PATH"; exit 1
-else
-  ls -l "$EXTERNAL_PATH/sbin/apk"
-fi
+# 7) Copiar DB de apk desde host para asegurar índices y estado
+echo "[7] Copying apk DB from host"
+sudo rsync -a /lib/apk/db/ "$EXTERNAL_PATH/lib/apk/db/"
 
-# Ajustar permisos de base de datos apk
-echo "[7b] Fix apk db ownership"
-sudo chown -R root:root "$EXTERNAL_PATH/var/lib/apk"
+# 8) Verificar extracción y DB
+echo "[8] Verify extraction & DB"
+ls -l "$EXTERNAL_PATH/sbin/apk" || echo "apk missing"
+ls -l "$EXTERNAL_PATH/lib/apk/db"
+ls -l "$EXTERNAL_PATH/var/lib/apk/db"
 
-# 9) Preparar chroot (red y certificados)
-echo "[8] Setup chroot"
+# 9) Preparar chroot
+echo "[9] Mount proc, sys, dev & resolv.conf"
 sudo cp /etc/resolv.conf "$EXTERNAL_PATH/etc/resolv.conf"
 for fs in proc sys dev; do
   sudo mkdir -p "$EXTERNAL_PATH/$fs"
   sudo mount --bind "/$fs" "$EXTERNAL_PATH/$fs"
 done
 
-# 10) Depurar base de datos y actualizar repositorios
-echo "[9] Debug APK DB dirs"
-sudo chroot "$EXTERNAL_PATH" ls -l /lib/apk/db
-sudo chroot "$EXTERNAL_PATH" ls -l /var/lib/apk/db
-
-echo "[9b] Chroot and update"
+# 10) Actualizar repositorios dentro de chroot
+echo "[10] Chroot apk update"
 SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt sudo chroot "$EXTERNAL_PATH" /sbin/apk update
 
 # 11) Sincronizar a rootfs
-echo "[10] Sync external to rootfs"
+echo "[11] Sync to rootfs"
 sudo rsync -a --links "$EXTERNAL_PATH/" "$ROOTFS_PATH/"

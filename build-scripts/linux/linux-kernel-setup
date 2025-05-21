@@ -1,56 +1,68 @@
 #!/bin/sh
+set -euo pipefail
 
-echo "[STEP] Running linux-kerne-setup script"
+echo "[linux-kernel-setup] Starting Linux kernel setup"
+sleep 0.5
 
-sleep 1
+echo "- Project path: '$PROJECT_PATH'"
+sleep 0.5
+
+echo "- Kernel version: 'v$LINUX_KERNEL_VERSION'"
+sleep 0.5
+
+echo "- Patches path: '$PATCHES_PATH'"
+sleep 0.5
+
+echo "- Target path: '$TARGET_PATH'"
+sleep 0.5
 
 if [ ! -d $LINUX_KERNEL_PATH ]; then
-	echo "- Linux kernel was not found, so we need to download it.."
-	sleep 1
+	echo "- Linux kernel dependency was not found, so we need to download it.."
+	sleep 0.5
 
 	git clone -b v$LINUX_KERNEL_VERSION --single-branch https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git $LINUX_KERNEL_PATH
 
 	echo "- Linux kernel has been cloned successfully"
 else 
 	echo "- Linux kernel is already in dependencies and no download is needed"
-	sleep 1
+	sleep 0.5
 fi
 
 cd $LINUX_KERNEL_PATH
 
 echo "- Overwriting ./config/linux-config into ./dependencies/linux/.config file"
-sleep 1
+sleep 0.5
 
 rm -f .config
 cp $CONFIG_FILES_PATH/linux-config .config
 
-echo "- Now I am going to patdch kernel with some WolfbearOS changes"
-sleep 1
+echo "- Checking if Linux kernel needs to be patched with WolbearOS changes"
+sleep 0.5
 
 if patch --dry-run --forward -p1 < $PATCHES_PATH/kernel.patch > /dev/null; then
-	echo "- Patching.."
-	sleep 1
+	echo "- Applying WolfbearOS patches"
+	sleep 0.5
 
 	patch -p1 < $PATCHES_PATH/kernel.patch
 
-	echo "- Patch is done.."
-	sleep 1
+	echo "- Patches applied successfully"
+	sleep 0.5
 else
 	echo "- Linux kernel is already patched and no patch-action is needed"
-	sleep 1
+	sleep 0.5
 fi
 
-if [ "$1" = 'linux-menuconfig' ]; then
-	echo "-  Requested to open Linux Kernel Menu Config"
-	sleep 2
+if [ "$1" = 'menuconfig' ]; then
+	echo "-  User requested to open Linux kernel menu config"
+	sleep 0.5
 
 	make ARCH=$BUILD_ARCH menuconfig
 
 	echo "- Applying new configuration into /config/linux-config"
 	sleep 2
 
-	rm -f $WOLFBEAR_OS_PROJECT_PATH/config/linux-config
-	cp .config $WOLFBEAR_OS_PROJECT_PATH/config/linux-config
+	rm -f $PROJECT_PATH/config/linux-config
+	cp .config $PROJECT_PATH/config/linux-config
 
 	echo "- Configuration is done"
 	sleep 1
@@ -65,9 +77,9 @@ echo "- Compiling wolfbearOS Linux kernel"
 sleep 1
 make ARCH=$BUILD_ARCH -j$(nproc)
 
-echo "-  Moving Wolfbear compiled kernel image to compilation path"
+echo "-  Moving WolfbearOS compiled kernel image to compilation path"
 sleep 1
 mv $LINUX_KERNEL_PATH/arch/arm64/boot/Image $TARGET_PATH
 
-echo "[STEP END] linux-kernel-setup process finished"
+echo "[linux-kernel-setup] Linux kernel setup is finished"
 sleep 0.5
