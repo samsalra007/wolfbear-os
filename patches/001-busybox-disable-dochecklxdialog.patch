@@ -1,0 +1,11 @@
+--- scripts/kconfig/lxdialog/Makefile	2023-01-05 09:29:10.000000000 -0600
++++ scripts/kconfig/lxdialog/Makefile.corrected	2025-05-22 13:03:01.449753260 -0600
+@@ -15,7 +15,7 @@
+ 	$(Q)$(CONFIG_SHELL) $(check-lxdialog) -check $(HOSTCC) $(HOST_EXTRACFLAGS) $(HOST_LOADLIBES)
+ 
+ hostprogs-y	:= lxdialog
+-always		:= $(hostprogs-y) dochecklxdialog
++# always		:= $(hostprogs-y) dochecklxdialog
+ 
+ lxdialog-objs := checklist.o menubox.o textbox.o yesno.o inputbox.o \
+ 		 util.o lxdialog.o msgbox.o
