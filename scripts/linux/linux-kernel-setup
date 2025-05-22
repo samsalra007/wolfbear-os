@@ -48,6 +48,12 @@ cp $CONFIG_FILES_PATH/linux-config-$BUILD_ARCH .config
 echo "- Checking if Linux kernel needs to be patched with WolbearOS changes"
 sleep 0.5
 
+if patch --dry-run --forward -p1 < $PATCHES_PATH/001-linux-blk-iocost-c-unsigned-int-format > /dev/null; then
+	echo "- Patch 001-linux-blk-iocost-c-unsigned-int-format"
+	sleep 0.5
+	patch -p1 < $PATCHES_PATH/001-linux-blk-iocost-c-unsigned-int-format
+fi
+
 if patch --dry-run --forward -p1 < $PATCHES_PATH/000-linux-uts-name.patch > /dev/null; then
  	echo "- Applying WolfbearOS patches"
  	sleep 0.5
