@@ -83,7 +83,7 @@ make clean
 
 echo "- Compiling Linux kernel"
 sleep 0.5
-make ARCH=$BUILD_ARCH -j$(nproc) Image
+make ARCH=$BUILD_ARCH -j$(nproc) KBUILD_BUILD_USER="wolfbear" KBUILD_BUILD_HOST="Alpha+" KBUILD_BUILD_VERSION="custom-kernel 1.0"
 
 if [ "$VAR_KERNEL_MODULES_COMPILE" = 'y' ]; then
 
@@ -94,11 +94,11 @@ if [ "$VAR_KERNEL_MODULES_COMPILE" = 'y' ]; then
 	echo "- Instaling Linux modules"
 	sleep 0.5
 	make ARCH=$BUILD_ARCH -j$(nproc) modules_install INSTALL_MOD_PATH=$MODULES_CACHE_PATH
-
-	echo "-  Moving compiled kernel image to compilation path"
-	sleep 1
-	mv $LINUX_KERNEL_PATH/arch/arm64/boot/Image $TARGET_PATH
 fi
+
+echo "-  Moving compiled kernel image to compilation path"
+sleep 0.5
+mv $LINUX_KERNEL_PATH/arch/arm64/boot/Image $TARGET_PATH
 
 echo "[linux-kernel-setup] Linux kernel setup is finished"
 sleep 0.5
