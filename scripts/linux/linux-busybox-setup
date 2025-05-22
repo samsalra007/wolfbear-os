@@ -52,17 +52,21 @@ sleep 0.5
 rm -f .config
 cp $CONFIG_FILES_PATH/busybox-config .config
 
-# echo "- Checking if busybox patches for arm64 issues is needed"
-# sleep 0.5
+echo "- Checking if busybox patch is needed"
+sleep 0.5
 
-# if patch --dry-run --forward -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch > /dev/null; then
-#         echo "- Applying busybox patches"
-# 	sleeo 0.5
-#         patch -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch
-# else
-#         echo "- No busybox patch needed"
-# 	sleep 0.5
-# fi
+if [ "$BUILD_ARCH" = 'arm64' ]; then
+	if patch --dry-run --forward -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch > /dev/null; then
+       		echo "- Busybox needs to be patched by arm64 changes"
+ 		sleeo 0.5
+         	patch -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch
+	else
+        	echo "- Busybox is already patched and no patch is needed"
+ 	sleep 0.5
+else 
+	echo "- Busybox does not need to be patched as per arch is: '$BUILD_ARCH'"
+	sleep 0.5
+fi
 
 if [ "$1" = 'menuconfig' ]; then
         echo "- User requested to open Busybox menu config"
