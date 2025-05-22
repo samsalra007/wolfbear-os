@@ -1,6 +1,5 @@
 #!/bin/sh
 
-#executing wolfbear workflows
 current=$(pwd)
 
 cd /players/wolfbear/scripts/
