@@ -1,0 +1,11 @@
+#!/bin/sh
+echo "[setup-network] begin"
+
+echo "- Creating dhcpd path"
+mkdir -p /run/dhcpcd
+
+echo "- Executing dhcpd in eth0"
+dhcpcd eth0
+
+echo "[setup-network] end"
+

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "[wolfbear-scripts] starting scripts workflow"
+
+./mount-system-partitions
+./mount-graphics-cards
+./setup-network
+./setup-quick-fixes
+
+echo "[wolfbear-scripts] finishing scripts workflow"

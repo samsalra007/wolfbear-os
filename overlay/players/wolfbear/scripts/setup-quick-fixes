@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo "[setup-quick-fixes] begin "
+
+echo "- Exporting /sbin in PATH"
+export PATH=$PATH:/sbin
+
+echo "- Setting up hostname"
+if [ -f /etc/hostname ]; then
+    hostname "$(cat /etc/hostname)"
+fi
+
+echo "[setup-quick-fixes] end "

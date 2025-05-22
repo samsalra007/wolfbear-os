@@ -1,0 +1,15 @@
+#!/bin/sh
+
+echo "[mount-system-partitions] begin"
+
+echo "- Creating system paths to mount"
+mkdir -p /proc /sys /dev /dev/dri
+
+echo "- Mounting proc, sysfs and devtmpfs"
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t devtmpfs devtmpfs /dev
+
+echo "- Partitions were loaded and mounted"
+
+echo "[mount-system-partitions] end"
