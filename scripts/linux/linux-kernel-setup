@@ -73,7 +73,7 @@ else
 	echo "- Using oldconfig to compile Linux"
 	sleep 0.5
 
-	make ARCH=$BUILD_ARCH oldfconfig
+	make ARCH=$BUILD_ARCH oldconfig
 fi
 
 make clean
