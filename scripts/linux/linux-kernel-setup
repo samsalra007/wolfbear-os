@@ -82,7 +82,9 @@ else
 	make oldconfig
 fi
 
-make clean
+if [ "$VAR_KERNEL_CLEAN" = 'y' ]; then
+	make clean
+fi
 
 echo "- Compiling Linux kernel"
 sleep 0.5
@@ -99,9 +101,23 @@ if [ "$VAR_KERNEL_MODULES_COMPILE" = 'y' ]; then
 	make -j$(nproc) modules_install INSTALL_MOD_PATH=$MODULES_CACHE_PATH
 fi
 
+echo "- Determining compilation path according arch"
+sleep 0.5
+
+if [ "$BUILD_ARCH" = "arm64" ]; then
+  SRC_ARCH=arm64
+  IMG=Image
+elif [ "$BUILD_ARCH" = "amd64" ] || [ "$BUILD_ARCH" = "x86_64" ]; then
+  SRC_ARCH=x86
+  IMG=bzImage
+else
+  echo "[error] Unsupported architecture: $BUILD_ARCH" >&2
+  exit 1
+fi
+
 echo "-  Moving compiled kernel image to compilation path"
 sleep 0.5
-mv $LINUX_KERNEL_PATH/arch/$BUILD_ARCH/boot/Image $TARGET_PATH
+mv $LINUX_KERNEL_PATH/arch/$SRC_ARCH/boot/$IMG $TARGET_PATH
 
 echo "[linux-kernel-setup] Linux kernel setup is finished"
 sleep 0.5

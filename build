@@ -42,6 +42,7 @@ VAR_BUSYBOX_MENUCONFIG='n'
 VAR_INITRAMFS_BUILD='n'
 VAR_INITRAMFS_COMPRESS='n'
 VAR_KERNEL_MODULES_COMPILE='n'
+VAR_KERNEL_CLEAN='n'
 
 # Procesar argumentos
 while [[ "$#" -gt 0 ]]; do
@@ -54,7 +55,11 @@ while [[ "$#" -gt 0 ]]; do
             VAR_COMPILE_LINUX_KERNEL='y'
             shift
             ;;
-        -lm|--linux-kernel-modules)
+        -lkc|--linux-kernel-clean)
+            VAR_KERNEL_CLEAN='y'
+            shift
+            ;;
+        -lkm|--linux-kernel-modules)
             VAR_KERNEL_MODULES_COMPILE='y'
             shift
             ;;
