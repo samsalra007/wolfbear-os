@@ -10,6 +10,9 @@ sleep 0.5
 echo "- ./overlay path: '$OVERLAY_PATH'"
 sleep 0.5
 
+echo "- Platform: '$BUILD_ARCH'"
+sleep 0.5
+
 echo "- ./busybox compilation path: '$BUSY_BOX_PATH'"
 sleep 0.5
 
@@ -50,7 +53,7 @@ echo "- Using .config file located in ./config/busybox-config"
 sleep 0.5
 
 rm -f .config
-cp $CONFIG_FILES_PATH/busybox-config .config
+cp $CONFIG_FILES_PATH/busybox-config-$BUILD_ARCH .config
 
 echo "- Checking if busybox patch is needed"
 sleep 0.5
@@ -62,7 +65,8 @@ if [ "$BUILD_ARCH" = 'arm64' ]; then
          	patch -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch
 	else
         	echo "- Busybox is already patched and no patch is needed"
- 	sleep 0.5
+ 		sleep 0.5
+	fi
 else 
 	echo "- Busybox does not need to be patched as per arch is: '$BUILD_ARCH'"
 	sleep 0.5
@@ -77,8 +81,8 @@ if [ "$1" = 'menuconfig' ]; then
         echo "- Applying new configuration into /config/buxybox-config"
         sleep 0.5
 
-        rm -f $CONFIG_FILES_PATH/busybox-config
-        cp .config $CONFIG_FILES_PATH/busybox-config
+        rm -f $CONFIG_FILES_PATH/busybox-config-$BUILD_ARCH
+        cp .config $CONFIG_FILES_PATH/busybox-config-$BUILD_ARCH
 
         echo "- Configuration is done"
         sleep 0.5
