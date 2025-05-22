@@ -62,7 +62,7 @@ if [ "$1" = 'menuconfig' ]; then
 	echo "- User requested to open Linux kernel menu config"
 	sleep 0.5
 
-	make ARCH=$BUILD_ARCH menuconfig
+	make menuconfig
 
 	echo "- Applying new configuration into /config/linux-config"
 	sleep 0.5
@@ -76,24 +76,24 @@ else
 	echo "- Using oldconfig to compile Linux"
 	sleep 0.5
 
-	make ARCH=$BUILD_ARCH oldconfig
+	make oldconfig
 fi
 
 make clean
 
 echo "- Compiling Linux kernel"
 sleep 0.5
-make ARCH=$BUILD_ARCH -j$(nproc) KBUILD_BUILD_USER="wolfbear" KBUILD_BUILD_HOST="Alpha+" KBUILD_BUILD_VERSION="custom-kernel 1.0"
+make -j$(nproc) KBUILD_BUILD_USER="wolfbear" KBUILD_BUILD_HOST="Alpha+" KBUILD_BUILD_VERSION="custom-kernel 1.0"
 
 if [ "$VAR_KERNEL_MODULES_COMPILE" = 'y' ]; then
 
 	echo "- Compiling Linux modules"
 	sleep 0.5
-	make ARCH=$BUILD_ARCH -j$(nproc) modules
+	make -j$(nproc) modules
 
 	echo "- Instaling Linux modules"
 	sleep 0.5
-	make ARCH=$BUILD_ARCH -j$(nproc) modules_install INSTALL_MOD_PATH=$MODULES_CACHE_PATH
+	make -j$(nproc) modules_install INSTALL_MOD_PATH=$MODULES_CACHE_PATH
 fi
 
 echo "-  Moving compiled kernel image to compilation path"
