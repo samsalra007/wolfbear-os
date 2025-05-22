@@ -14,8 +14,13 @@ chmod 0666 /dev/dri/card0 /dev/dri/renderD128
 
 echo "- Exporting SDL and LIBGL environment variables"
 export LIBGL_DRIVERS_PATH=/usr/lib/dri
-export SDL_VIDEODRIVER=KMSDRM
+export SDL_VIDEODRIVER=kmsdrm
 export SDL_KMSDRM_DEVICE=/dev/dri/card0
 export SDL_KMSDRM_RENDER_NODE=/dev/dri/renderD128
+
+echo "- Adding DRM and VIRTIO modules"
+modprobe drm
+modprobe virtio_gpu
+modprobe drm_kms_helper
 
 echo "[mount-graphics-cards] end"
