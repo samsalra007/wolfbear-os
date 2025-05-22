@@ -45,7 +45,7 @@ cp $CONFIG_FILES_PATH/linux-config .config
 echo "- Checking if Linux kernel needs to be patched with WolbearOS changes"
 sleep 0.5
 
-if patch --dry-run --forward -p1 < $PATCHES_PATH/kernel.patch > /dev/null; then
+if patch --dry-run --forward -p1 < $PATCHES_PATH/000-linux-uts-name.patch > /dev/null; then
  	echo "- Applying WolfbearOS patches"
  	sleep 0.5
 
@@ -83,7 +83,7 @@ make clean
 
 echo "- Compiling Linux kernel"
 sleep 0.5
-make ARCH=$BUILD_ARCH -j$(nproc) KBUILD_BUILD_USER="wolfbear" KBUILD_BUILD_HOST="Alpha+" KBUILD_BUILD_VERSION="custom-kernel 1.0"
+make ARCH=$BUILD_ARCH -j$(nproc)
 
 if [ "$VAR_KERNEL_MODULES_COMPILE" = 'y' ]; then
 
