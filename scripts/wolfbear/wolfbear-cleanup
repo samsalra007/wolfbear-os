@@ -32,7 +32,7 @@ sleep 0.5
 sudo rm -rf $TARGET_PATH
 mkdir $TARGET_PATH
 
-if [ "$VAR_KERNEL_MODULES_COMPILE" = 'y']; then
+if [ "$VAR_KERNEL_MODULES_COMPILE" = 'y' ]; then
 	echo "- Cleaning up modules kernel cache"
 	sleep 0.5
 
