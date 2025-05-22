@@ -11,6 +11,7 @@ DEPENDENCIES_PATH=$PROJECT_PATH/dependencies
 PATCHES_PATH=$PROJECT_PATH/patches
 TARGET_PATH=$PROJECT_PATH/target
 INITRAMFS_PATH=$PROJECT_PATH/initramfs
+MODULES_CACHE_PATH=$PROJECT_PATH/kernel-modules-cache
 
 LINUX_KERNEL_VERSION=6.12
 LINUX_KERNEL_PATH=$DEPENDENCIES_PATH/linux
@@ -34,6 +35,7 @@ VAR_COMPILE_BUSYBOX='n'
 VAR_BUSYBOX_MENUCONFIG='n'
 VAR_INITRAMFS_BUILD='n'
 VAR_INITRAMFS_COMPRESS='n'
+VAR_KERNEL_MODULES_COMPILE='n'
 
 # Procesar argumentos
 while [[ "$#" -gt 0 ]]; do
@@ -44,6 +46,10 @@ while [[ "$#" -gt 0 ]]; do
             ;;
         -lk|--linux-kernel)
             VAR_COMPILE_LINUX_KERNEL='y'
+            shift
+            ;;
+        -lm|--linux-kernel-modules)
+            VAR_KERNEL_MODULES_COMPILE='y'
             shift
             ;;
         -lc|--linux-menuconfig)

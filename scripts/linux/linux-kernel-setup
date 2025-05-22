@@ -19,6 +19,9 @@ sleep 0.5
 echo "- ./target path: '$TARGET_PATH'"
 sleep 0.5
 
+echo "- Is it requested to recompile kernel modules?: $VAR_KERNEL_MODULES_COMPILE"
+sleep 0.5
+
 if [ ! -d $LINUX_KERNEL_PATH ]; then
 	echo "- Linux kernel dependency was not found, so we need to download it.."
 	sleep 0.5
@@ -82,17 +85,20 @@ echo "- Compiling Linux kernel"
 sleep 0.5
 make ARCH=$BUILD_ARCH -j$(nproc) Image
 
-echo "- Compiling Linux modules"
-sleep 0.5
-make ARCH=$BUILD_ARCH -j$(nproc) modules
+if [ "$VAR_KERNEL_MODULES_COMPILE" = 'y' ]; then
 
-echo "- Instaling Linux modules"
-sleep 0.5
-make ARCH=$BUILD_ARCH -j$(nproc) modules_install INSTALL_MOD_PATH=$INITRAMFS_PATH
+	echo "- Compiling Linux modules"
+	sleep 0.5
+	make ARCH=$BUILD_ARCH -j$(nproc) modules
 
-echo "-  Moving compiled kernel image to compilation path"
-sleep 1
-mv $LINUX_KERNEL_PATH/arch/arm64/boot/Image $TARGET_PATH
+	echo "- Instaling Linux modules"
+	sleep 0.5
+	make ARCH=$BUILD_ARCH -j$(nproc) modules_install INSTALL_MOD_PATH=$INITRAMFS_PATH
+
+	echo "-  Moving compiled kernel image to compilation path"
+	sleep 1
+	mv $LINUX_KERNEL_PATH/arch/arm64/boot/Image $TARGET_PATH
+fi
 
 echo "[linux-kernel-setup] Linux kernel setup is finished"
 sleep 0.5

@@ -10,6 +10,9 @@ sleep 0.5
 echo "- ./target path: '$TARGET_PATH'"
 sleep 0.5
 
+echo "- Is it requested to clean modules kernel cache?: $VAR_KERNEL_MODULES_COMPILE"
+sleep 0.5
+
 echo "- Umounting lazy partitions"
 sleep 0.5
 
@@ -28,5 +31,13 @@ sleep 0.5
 
 sudo rm -rf $TARGET_PATH
 mkdir $TARGET_PATH
+
+if [ "$VAR_KERNEL_MODULES_COMPILE" = 'y']; then
+	echo "- Cleaning up modules kernel cache"
+	sleep 0.5
+
+	sudo rm -rf $VAR_KERNEL_MODULES_COMPILE
+	mkdir $VAR_KERNEL_MODULES_COMPILE
+fi
 
 echo "[wolfbear-cleanup] Cleanup is done"
