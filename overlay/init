@@ -1,7 +1,12 @@
 #!/bin/sh
 
 #executing wolfbear workflows
-./players/wolfbear/scripts/scripts
+current=$(pwd)
+
+cd /players/wolfbear/scripts/
+./scripts
+
+cd $current
 
 while true; do
 	clear
