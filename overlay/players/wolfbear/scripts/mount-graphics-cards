@@ -18,4 +18,9 @@ export SDL_VIDEODRIVER=KMSDRM
 export SDL_KMSDRM_DEVICE=/dev/dri/card0
 export SDL_KMSDRM_RENDER_NODE=/dev/dri/renderD128
 
+echo "- Adding DRM and VIRTIO modules"
+modprobe drm
+modprobe virtio_gpu
+modprobe drm_kms_helper
+
 echo "[mount-graphics-cards] end"

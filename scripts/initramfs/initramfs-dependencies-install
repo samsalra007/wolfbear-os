@@ -50,7 +50,15 @@ sudo /sbin/apk --root "$INITRAMFS_PATH" \
     openresolv \
     util-linux \
     strace \
-    openssh
+    openssh \
+    sdl2-dev sdl2 \
+    libdrm \
+    libdrm-dev \
+    mesa-gbm \
+    mesa-dev \
+    linux-headers \
+    mesa-dri-gallium \
+    libinput-dev
 
 echo "- Setting up root user"
 sleep 0.5
