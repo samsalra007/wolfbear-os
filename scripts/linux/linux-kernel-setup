@@ -93,7 +93,7 @@ if [ "$VAR_KERNEL_MODULES_COMPILE" = 'y' ]; then
 
 	echo "- Instaling Linux modules"
 	sleep 0.5
-	make ARCH=$BUILD_ARCH -j$(nproc) modules_install INSTALL_MOD_PATH=$INITRAMFS_PATH
+	make ARCH=$BUILD_ARCH -j$(nproc) modules_install INSTALL_MOD_PATH=$MODULES_CACHE_PATH
 
 	echo "-  Moving compiled kernel image to compilation path"
 	sleep 1

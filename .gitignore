@@ -2,5 +2,6 @@ dependencies/*
 rootfs/*
 target/*
 initramfs/*
+kernel-modules-cache/*
 **.swp
 *.wbapp

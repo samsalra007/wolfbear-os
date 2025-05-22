@@ -10,12 +10,13 @@ sleep 0.5
 echo "- ./overlay path: '$OVERLAY_PATH'"
 sleep 0.5
 
-# 2) Sincronizar overlay
+echo "- ./kernel-modules-cache path: '$MODULES_CACHE_PATH'"
+sleep 0.5
+
 echo "- Syncing overlay path to external path"
 rsync -a --links "$OVERLAY_PATH/" "$INITRAMFS_PATH/"
 
-# 3) Preparar directorios
-echo "- Preparing ./external directories"
+echo "- Preparing ./initramfs directories"
 sleep 0.5
 
 mkdir -p \
@@ -25,6 +26,10 @@ mkdir -p \
   "$INITRAMFS_PATH/etc/apk" \
   "$INITRAMFS_PATH/etc/ssl/certs" \
   "$INITRAMFS_PATH/usr/lib"
+
+echo "- Syncing kernel modules"
+sleep 0.5
+rsync -a --links "$MODULES_CACHE_PATH/" "$INITRAMFS_PATH/"
 
 echo "- Copying keys and repositories from local apk"
 sleep 0.5

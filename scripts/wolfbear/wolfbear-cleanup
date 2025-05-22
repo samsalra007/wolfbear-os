@@ -36,8 +36,8 @@ if [ "$VAR_KERNEL_MODULES_COMPILE" = 'y' ]; then
 	echo "- Cleaning up modules kernel cache"
 	sleep 0.5
 
-	sudo rm -rf $VAR_KERNEL_MODULES_COMPILE
-	mkdir $VAR_KERNEL_MODULES_COMPILE
+	sudo rm -rf $MODULES_CACHE_PATH
+	mkdir -p $MODULES_CACHE_PATH
 fi
 
 echo "[wolfbear-cleanup] Cleanup is done"
