@@ -64,7 +64,7 @@ if [ "$BUILD_ARCH" = 'arm64' ]; then
 
 	if patch --dry-run --forward -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch > /dev/null; then
        		echo "- Busybox needs to be patched by ARM64 changes"
- 		sleeo 0.5
+ 		sleep 0.5
          	patch -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch
 	else
         	echo "- Busybox is already patched and no patch is needed (ARM64)"
@@ -72,11 +72,11 @@ if [ "$BUILD_ARCH" = 'arm64' ]; then
 	fi
 else 
 	echo "- Validating busybox AMD64 patches"
-	001-busybox-disable-dochecklxdialog.patch
-	
+	sleep 0.5
+
 	if patch --dry-run --forward -p0 < $PATCHES_PATH/001-busybox-disable-dochecklxdialog.patch > /dev/null; then
                 echo "- Busybox needs to be patched by AMD64 changes"
-                sleeo 0.5
+                sleep 0.5
                 patch -p0 < $PATCHES_PATH/001-busybox-disable-dochecklxdialog.patch
         else
                 echo "- Busybox is already patched and no patch is needed (AMD64)"
