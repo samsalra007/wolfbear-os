@@ -58,7 +58,8 @@ sudo /sbin/apk --root "$INITRAMFS_PATH" \
     mesa-dev \
     linux-headers \
     mesa-dri-gallium \
-    libinput-dev
+    libinput-dev \
+    expat-dev libffi-dev
 
 echo "- Setting up root user"
 sleep 0.5
