@@ -50,8 +50,7 @@ sudo /sbin/apk --root "$INITRAMFS_PATH" \
     openresolv \
     util-linux \
     strace \
-    openssh \
-    sdl2
+    openssh
 
 echo "- Setting up root user"
 sleep 0.5

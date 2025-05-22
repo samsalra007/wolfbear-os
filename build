@@ -22,11 +22,11 @@ BUSY_BOX_PATH=$DEPENDENCIES_PATH/busybox
 OVERLAY_PATH=$PROJECT_PATH/overlay
 ROOTFS_PATH=$PROJECT_PATH/rootfs
 
-BUILD_ARCH=$(uname -r)
+BUILD_ARCH=$(uname -m)
 if [ "$BUILD_ARCH" = 'aarch64' ]; then
-	BUILD_ARCH='arm64';
+	BUILD_ARCH='arm64'
 else 
-	BUILD_ARCH=amd64
+	BUILD_ARCH='amd64'
 fi
 
 BUILD_CROSS_COMPILE=aarch64-linux-gnu-
