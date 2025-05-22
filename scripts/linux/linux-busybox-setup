@@ -52,23 +52,23 @@ sleep 0.5
 rm -f .config
 cp $CONFIG_FILES_PATH/busybox-config .config
 
-echo "- Checking if busybox patches for arm64 issues is needed"
-sleep 0.5
+# echo "- Checking if busybox patches for arm64 issues is needed"
+# sleep 0.5
 
-if patch --dry-run --forward -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch > /dev/null; then
-        echo "- Applying busybox patches"
-	sleeo 0.5
-        patch -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch
-else
-        echo "- No busybox patch needed"
-	sleep 0.5
-fi
+# if patch --dry-run --forward -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch > /dev/null; then
+#         echo "- Applying busybox patches"
+# 	sleeo 0.5
+#         patch -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch
+# else
+#         echo "- No busybox patch needed"
+# 	sleep 0.5
+# fi
 
 if [ "$1" = 'menuconfig' ]; then
         echo "- User requested to open Busybox menu config"
         sleep 0.5
 
-        make ARCH=$BUILD_ARCH menuconfig
+        make menuconfig
 
         echo "- Applying new configuration into /config/buxybox-config"
         sleep 0.5
@@ -82,16 +82,16 @@ else
         echo "- Using oldconfig to compile Busybox"
         sleep 0.5
 
-        make ARCH=$BUILD_ARCH oldconfig
+        make oldconfig
 fi
 
 echo "- Compiling busybox"
 sleep 0.5
-make ARCH=$BUILD_ARCH -j$(nproc)
+make -j$(nproc)
 
 echo "- Installing busybox"
 sleep 0.5
-make ARCH=$BUILD_ARCH CONFIG_PREFIX=$INITRAMFS_PATH install
+make CONFIG_PREFIX=$INITRAMFS_PATH install
 
 echo "- Busybox was installed successfully"
 sleep 0.5

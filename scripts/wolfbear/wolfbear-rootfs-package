@@ -21,7 +21,8 @@ echo "- Compressing ./rootfs into initramfs.cpio.gz file"
 sleep 0.5
 
 cd $INITRAMFS_PATH
-sudo find . -print0 | cpio --null -ov --format=newc | gzip -9 > $TARGET_PATH/initramfs.cpio.gz
+#sudo find . -print0 | cpio --null -ov --format=newc | gzip -9 > $TARGET_PATH/initramfs.cpio.gz
+sudo find . | cpio -o -H newc | xz -T0 -z -C crc32 -3 > $TARGET_PATH/initramfs.cpio.gz
 
 echo "[wolfbear-rootfs-package] ./rootfs has been compressed successfully"
 sleep 0.5
