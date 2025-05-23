@@ -1,6 +1,6 @@
 #!/bin/sh
 
-current=$(pwd)
+echo "=== Runing WolfbearOS init scripts ==="
 
 cd /players/wolfbear/scripts/
 ./scripts
@@ -8,8 +8,6 @@ cd /players/wolfbear/scripts/
 cd $current
 
 while true; do
-	clear
-
 	echo "WolfbearOS Development Version!"
 
 	/sbin/getty -L ttyAMA0 115200 vt1000

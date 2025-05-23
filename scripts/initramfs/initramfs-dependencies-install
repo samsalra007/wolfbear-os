@@ -29,7 +29,7 @@ mkdir -p \
 
 echo "- Syncing kernel modules"
 sleep 0.5
-rsync -a --links "$MODULES_CACHE_PATH/" "$INITRAMFS_PATH/"
+rsync -a --links "$MODULES_CACHE_PATH/" "$INITRAMFS_PATH/" || true
 
 echo "- Copying keys and repositories from local apk"
 sleep 0.5
@@ -50,16 +50,17 @@ sudo /sbin/apk --root "$INITRAMFS_PATH" \
     openresolv \
     util-linux \
     strace \
-    openssh \
-    sdl2-dev sdl2 \
-    libdrm \
-    libdrm-dev \
-    mesa-gbm \
-    mesa-dev \
-    linux-headers \
-    mesa-dri-gallium \
-    libinput-dev \
-    expat-dev libffi-dev
+    openssh
+# Si se habilita esto la grafica funciona pero el initramfs queda muy pesado
+#    sdl2-dev sdl2 \
+#    libdrm \
+#    libdrm-dev \
+#    mesa-gbm \
+#    mesa-dev \
+#    linux-headers \
+#    mesa-dri-gallium \
+#    libinput-dev \
+#    expat-dev libffi-dev
 
 echo "- Setting up root user"
 sleep 0.5

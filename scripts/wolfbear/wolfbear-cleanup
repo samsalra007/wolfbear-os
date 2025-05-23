@@ -4,7 +4,7 @@ set -euo pipefail
 echo "[wolfbear-cleanup] Starting cleanup script"
 sleep 0.5
 
-echo "- ./rootfs path: '$INITRAMFS_PATH'"
+echo "- ./initramfs path: '$INITRAMFS_PATH'"
 sleep 0.5
 
 echo "- ./target path: '$TARGET_PATH'"
@@ -20,7 +20,7 @@ for fs in proc sys dev; do
   mountpoint -q "$INITRAMFS_PATH/$fs" && sudo umount -l "$INITRAMFS_PATH/$fs"
 done
 
-echo "- Cleaning ./rootfs path"
+echo "- Cleaning ./initramfs path"
 sleep 0.5
 
 sudo rm -rf "$INITRAMFS_PATH"
