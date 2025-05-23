@@ -50,13 +50,9 @@ sudo /sbin/apk --root "$INITRAMFS_PATH" \
     openresolv \
     util-linux \
     strace \
-    openssh \
-    wpa_supplicant \
-    iw \
-    sdl2 \
-    libinput
+    openssh
 
-# Esto habilita la GPU por hardware
+# Estas librerías habilitan SDL2 y los graficos
 #    sdl2-dev sdl2 \
 #    libdrm \
 #    libdrm-dev \
