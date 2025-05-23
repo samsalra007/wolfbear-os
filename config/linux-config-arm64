@@ -133,6 +133,7 @@ CONFIG_TASK_IO_ACCOUNTING=y
 # end of CPU/Task time and stats accounting
 
 CONFIG_CPU_ISOLATION=y
+DRM_VIRTIO_GPU_KMS=y
 
 #
 # RCU Subsystem

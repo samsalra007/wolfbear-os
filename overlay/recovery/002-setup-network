@@ -1,0 +1,81 @@
+#!/bin/sh
+
+function detect_interface() {
+	local ifs
+  
+	mapfile -t ifs < <(ip -o link show | awk -F': ' '{print $2}' | grep -E '^(eth|en|wlan|wl)')
+	if [ ${#ifs[@]} -eq 0 ]; then
+    		echo "No network interfaces found." >&2
+    		exit 1
+  	elif [ ${#ifs[@]} -eq 1 ]; then
+    		echo "Detected single interface: ${ifs[0]}"
+    		echo "${ifs[0]}"
+	else
+    		echo "Detected interfaces:"
+    		for i in "${!ifs[@]}"; do
+      			printf "%d) %s\n" $((i+1)) "${ifs[i]}"
+    		done
+    		read -rp "Select interface number: " sel
+		
+		echo "${ifs[$((sel-1))]}"
+	fi
+}
+
+function configure_network(){
+	NETWORK_INTERFACE=$(detect_interface)
+	echo "Using interface: $NETWORK_INTERFACE"
+	
+	if [[ "$NETWORK_INTERFACE" == wlan0 ]]; then
+		while true; do
+    			echo "Scaning WiFi networks..."
+
+		    	mapfile -t SSIDS < <(iw dev wlan0 scan | awk -F'SSID: ' '/SSID: /{print \$2}' | sort -u)
+
+    			if [ \${#SSIDS[@]} -eq 0 ]; then
+     				echo "No wireless networks available found"
+      				exit 1
+    			fi
+
+		    	echo "Found wireless networks:"
+    			for i in "\${!SSIDS[@]}"; do
+      				printf "%d) %s\n" \$((i+1)) "\${SSIDS[i]}"
+    			done
+
+	   		read -rp "Please select network number: " sel
+    			SSID=\${SSIDS[\$((sel-1))]}
+
+    			read -rsp "Please type password for '$SSID': " PASS
+
+		    	wpa_passphrase "$SSID" "$PASS" > /etc/wpa_supplicant.conf
+
+    			echo "Connecting to network"
+    			wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant.conf
+			
+			echo "Creating configuration path"
+			mkdir -p /run/dhcpcd
+
+			echo "Requesting DHCP IP address for '$NETWORK_INTERFACE'"
+			dhcpcd "$NETWORK_INTERFACE"
+
+			for i in $(seq 1 $timeout); do
+        			if ip addr show "$NETWORK_INTERFACE" | grep -q 'inet '; then
+          				echo "Connected and IP assigned."
+          				break 2
+        			fi
+        				sleep 1
+      			done
+      
+			echo "Connection attempt failed, retry? (y/n): "
+      			read -r retry
+      			
+			if [[ "$retry" =~ ^[Yy]$ ]]; then
+        			killall wpa_supplicant || true
+        			continue
+      			else
+        			exit 1
+      			fi
+		done
+	fi
+}
+
+configure_network

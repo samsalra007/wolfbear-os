@@ -51,6 +51,8 @@ sudo /sbin/apk --root "$INITRAMFS_PATH" \
     util-linux \
     strace \
     openssh \
+    wpa_supplicant \
+    iw \
     sdl2 \
     libinput
 

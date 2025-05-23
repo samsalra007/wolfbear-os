@@ -2,9 +2,9 @@
 
 echo "[wolfbear-scripts] starting scripts workflow"
 
-./mount-system-partitions
-./mount-graphics-cards
-./setup-network
-./setup-quick-fixes
+./000-mount-system-partitions
+./001-mount-graphics-cards
+# ./002-setup-network
+./003-user-quick-fixes
 
 echo "[wolfbear-scripts] finishing scripts workflow"

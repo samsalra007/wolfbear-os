@@ -85,7 +85,7 @@ else
 	echo "- Using oldconfig to compile Linux"
 	sleep 0.5
 
-	make oldconfig
+	make olddefconfig
 fi
 
 if [ "$VAR_KERNEL_CLEAN" = 'y' ]; then
