@@ -50,8 +50,11 @@ sudo /sbin/apk --root "$INITRAMFS_PATH" \
     openresolv \
     util-linux \
     strace \
-    openssh
-# Si se habilita esto la grafica funciona pero el initramfs queda muy pesado
+    openssh \
+    sdl2 \
+    libinput
+
+# Esto habilita la GPU por hardware
 #    sdl2-dev sdl2 \
 #    libdrm \
 #    libdrm-dev \

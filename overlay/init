@@ -2,7 +2,7 @@
 
 echo "=== Runing WolfbearOS init scripts ==="
 
-cd /players/wolfbear/scripts/
+cd /recovery
 ./scripts
 
 cd $current
