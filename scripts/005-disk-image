@@ -81,8 +81,8 @@ echo "console=ttyAMA0 root=/dev/vda2 rw" > "$BOOTDIR/BOOTAA64.conf"
 # Finalizar
 echo "Sincronizando y desmontando..."
 sync
-umount "$MNT_DIR/boot/efi"
-umount "$MNT_DIR"
+umount -l "$MNT_DIR/boot/efi"
+umount -l "$MNT_DIR"
 
 echo "Moving out $IMG to ./target path"
 mv $IMG $TARGET_PATH/
