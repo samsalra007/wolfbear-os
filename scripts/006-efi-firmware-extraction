@@ -11,16 +11,29 @@ echo "Preparando directorio: $dep_path"
 mkdir -p "$dep_path"
 cd "$dep_path"
 
-# URL del paquete Debian que contiene el firmware
-deb_url="https://deb.debian.org/debian/pool/main/q/qemu-efi/qemu-efi-aarch64_2023.05-2_all.deb"
-echo "Descargando paquete: $deb_url"
-wget -q "$deb_url" -O qemu-efi-aarch64.deb
+# 1. Descargar .deb
+pkg="qemu-efi-aarch64_2023.05-2_all.deb"
+url="https://deb.debian.org/debian/pool/main/q/qemu-efi/$pkg"
+echo "Descargando paquete: $url"
+wget -O "$pkg" "$url" || {
+  echo "Error: no se pudo descargar el paquete desde $url" >&2
+  exit 1
+}
 
-# 3. Extraer .deb usando dpkg-deb
+# 2. Verificar que el archivo no esté vacío
+if [ ! -s "$pkg" ]; then
+  echo "Error: el archivo $pkg está vacío" >&2
+  exit 1
+fi
+
+# 3. Instalar dpkg si no está disponible
+command -v dpkg-deb >/dev/null 2>&1 || apk add --no-cache dpkg
+
+# 4. Extraer .deb usando dpkg-deb
 echo "Extrayendo contenido del .deb..."
 dpkg-deb -x "$pkg" .
 
-# 4. Ubicar firmware
+# 5. Ubicar firmware
 echo "Buscando firmware .fd en usr/share..."
 firmware_path=$(find usr/share -type f -name '*.fd' | head -n1)
 if [ -z "$firmware_path" ]; then
@@ -30,16 +43,16 @@ fi
 
 echo "Firmware encontrado: $firmware_path"
 
-# 5. Instalar en Alpine
+# 6. Instalar en Alpine
 echo "Instalando firmware en: $install_dir"
 install -Dm644 "$firmware_path" "$install_dir/QEMU_EFI.fd"
 
-# 6. Copiar a destino
+# 7. Copiar a destino
 mkdir -p "$TARGET_PATH"
 echo "Copiando firmware a: $TARGET_PATH"
 cp "$install_dir/QEMU_EFI.fd" "$TARGET_PATH/"
 
-# 7. Final
+# 8. Final
 echo "Firmware listo en $TARGET_PATH/QEMU_EFI.fd"
 
 echo "[efi-firmware] extraction finished"
