@@ -12,8 +12,9 @@ mkdir -p "$dep_path"
 cd "$dep_path"
 
 # 1. Descargar .deb
-pkg="qemu-efi-aarch64_2023.05-2_all.deb"
+pkg="qemu-efi-aarch64_2024.01-1_all.deb"
 url="https://deb.debian.org/debian/pool/main/q/qemu-efi/$pkg"
+
 echo "Descargando paquete: $url"
 wget -O "$pkg" "$url" || {
   echo "Error: no se pudo descargar el paquete desde $url" >&2
