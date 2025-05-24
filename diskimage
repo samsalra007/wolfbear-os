@@ -7,6 +7,9 @@ IMG=generated.img
 SIZE_MB=512
 LOOPDEV=""
 
+echo "Eliminando imagenes previas"
+rm -f $IMG
+
 echo "Creando imagen de $SIZE_MB MiB..."
 dd if=/dev/zero of="$IMG" bs=1M count=$SIZE_MB
 
@@ -42,6 +45,9 @@ echo "Formateando partición root ($ROOT_PART) como ext4..."
 mkfs.ext4 "$ROOT_PART"
 
 MNT_DIR=/mnt/disk
+echo "Desmontando particiones previas"
+umount -l $MNT_DIR || true
+
 echo "Montando particiones..."
 mkdir -p "$MNT_DIR"
 mount "$ROOT_PART" "$MNT_DIR"
