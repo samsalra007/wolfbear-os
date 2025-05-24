@@ -10,8 +10,8 @@ TARGET_PATH=$1
 
 # Limpiar imagen previa
 echo "Eliminando imagen previa si existe..."
-umount -l "$MNT_DIR/boot/efi" || true
-umount -l "$MNT_DIR" || true
+umount -l "$MNT_DIR/EFI_SYSTEM_PARTITION" || true
+umount -l "$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION" || true
 rm -f "$IMG"
 
 # Crear imagen vacía
@@ -56,28 +56,33 @@ mkfs.ext4 "$ROOT_PART"
 
 # Montar particiones
 echo "Montando particiones en /mnt/disk..."
-mkdir -p "$MNT_DIR"
-mount "$ROOT_PART" "$MNT_DIR"
-mkdir -p "$MNT_DIR/boot/efi"
-mount "$EFI_PART" "$MNT_DIR/boot/efi"
+EFI_BOOTDIR="$MNT_DIR/EFI_SYSTEM_PARTITION/EFI/BOOT"
+ROOTFS_DIR="$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION"
 
-# Copiar kernel e initramfs
-echo "Copiando kernel e initramfs a /mnt/disk/boot..."
-mkdir -p "$MNT_DIR/boot"
-cp $TARGET_PATH/Image "$MNT_DIR/boot/"
-cp $TARGET_PATH/initramfs.cpio.gz "$MNT_DIR/boot/"
+mkdir -p "$EFI_BOOTDIR"
+mount "$EFI_PART" "$EFI_BOOTDIR"
 
-# Instalar EFI stub loader
-# Asegúrate de compilar el kernel con CONFIG_EFI_STUB=y
-echo "Instalando EFI stub loader..."
-BOOTDIR="$MNT_DIR/boot/efi/EFI/BOOT"
-mkdir -p "$BOOTDIR"
-cp $TARGET_PATH/Image           "$BOOTDIR/BOOTAA64.EFI"
-cp $TARGET_PATH/initramfs.cpio.gz "$BOOTDIR/initramfs.cpio.gz"
+mkdir -p "$ROOTFS_DIR"
+mount "$ROOT_PART" "$ROOTFS_DIR"
 
-# Configuración opcional del loader
-echo "timeout 5" > "$BOOTDIR/loader.conf"
-echo "console=ttyAMA0 root=/dev/vda2 rw" > "$BOOTDIR/BOOTAA64.conf"
+# Generando contenido EFI_SYSTEM_PARTITION (boot)
+echo "Generando contenido para EFI System Partition"
+cp $TARGET_PATH/Image "$EFI_BOOTDIR/BOOTAA64.EFI"
+cp $TARGET_PATH/initramfs.cpio.gz "$EFI_BOOTDIR"
+
+echo "Generando BOOTAA64.conf"
+echo "timeout 5" > "$EFI_BOOTDIR/loader.conf"
+echo "console=ttyAMA0 root=/dev/vda2 rw" > "$EFI_BOOTDIR/BOOTAA64.conf"
+
+echo "Configuracion loader"
+echo "timeout 5" > "$EFI_BOOTDIR/loader.conf"
+echo "console=ttyAMA0 root=/dev/vda2 rw" > "$EFI_BOOTDIR/BOOTAA64.conf"
+
+# Generando contenido para rootfs
+echo "Generando contenido para ROOT Filesystem Partition"
+mkdir -p "$ROOTFS_DIR/boot"
+cp $TARGET_PATH/Image "$ROOTFS_DIR/boot"
+cp $TARGET_PATH/initramfs.cpio.gz "$ROOTFS_DIR/boot"
 
 # Finalizar
 echo "Sincronizando y desmontando..."
