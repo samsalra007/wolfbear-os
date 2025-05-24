@@ -85,4 +85,3 @@ umount "$MNT_DIR/boot/efi"
 umount "$MNT_DIR"
 
 echo "Imagen '$IMG' creada y preparada para boot EFI usando EFI stub loader."
-```
