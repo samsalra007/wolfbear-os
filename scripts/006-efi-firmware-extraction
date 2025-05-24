@@ -1,5 +1,5 @@
 #!/bin/sh
-et -euo pipefail
+set -euo pipefail
 
 echo "[efi-firmware] Starting efi firmware extraction from Debian"
 
