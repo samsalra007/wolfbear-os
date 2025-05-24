@@ -62,16 +62,16 @@ EFI_SYSTEM_PARTITION="$MNT_DIR/EFI_SYSTEM_PARTITION"
 ROOTFS_SYSTEM_PARTITION="$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION"
 ROOTFS_BOOTDIR="$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION/boot"
 
-mkdir -p "$EFI_BOOTDIR"
 mount "$EFI_PART" "$EFI_SYSTEM_PARTITION"
+mkdir -p "$EFI_BOOTDIR"
 
-mkdir -p "$ROOTFS_BOOTDIR"
 mount "$ROOT_PART" "$ROOTFS_SYSTEM_PARTITION"
+mkdir -p "$ROOTFS_BOOTDIR"
 
 # Generando contenido EFI_SYSTEM_PARTITION (boot)
 echo "Generando contenido para EFI System Partition"
 cp $TARGET_PATH/Image "$EFI_BOOTDIR/BOOTAA64.EFI"
-cp $TARGET_PATH/initramfs.cpio.gz "$EFI_BOOTDIR"
+cp $TARGET_PATH/initramfs.cpio.gz $EFI_BOOTDIR
 
 echo "Generando BOOTAA64.conf"
 echo "timeout 5" > "$EFI_BOOTDIR/loader.conf"
