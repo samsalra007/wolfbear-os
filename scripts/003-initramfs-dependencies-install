@@ -51,7 +51,8 @@ sudo /sbin/apk --root "$INITRAMFS_PATH" \
     util-linux \
     strace \
     openssh \
-    grub-efi
+    grub-efi \
+    parted
 
 # Estas librerías habilitan SDL2 y los graficos
 #    sdl2-dev sdl2 \
