@@ -8,7 +8,9 @@ cd /recovery
 cd $current
 
 while true; do
-	echo "WolfbearOS Development Version!"
+	clear
+	
+	echo "WolfbearOS initramfs"
 
 	/sbin/getty -L ttyAMA0 115200 vt1000
 
