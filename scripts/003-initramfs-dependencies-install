@@ -7,14 +7,14 @@ sleep 0.5
 echo "- ./initramfs path: '$INITRAMFS_PATH'"
 sleep 0.5
 
-echo "- ./overlay path: '$OVERLAY_PATH'"
+echo "- ./overlay path: '$OVERLAY_INITRAMFS_PATH'"
 sleep 0.5
 
 echo "- ./kernel-modules-cache path: '$MODULES_CACHE_PATH'"
 sleep 0.5
 
 echo "- Syncing overlay path to external path"
-rsync -a --links "$OVERLAY_PATH/" "$INITRAMFS_PATH/"
+rsync -a --links "$OVERLAY_INITRAMFS_PATH/" "$INITRAMFS_PATH/"
 
 echo "- Preparing ./initramfs directories"
 sleep 0.5

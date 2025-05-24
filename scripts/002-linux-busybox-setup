@@ -7,7 +7,7 @@ sleep 0.5
 echo "- ./rootfs path: '$INITRAMFS_PATH'"
 sleep 0.5
 
-echo "- ./overlay path: '$OVERLAY_PATH'"
+echo "- ./overlay path: '$OVERLAY_INITRAMFS_PATH'"
 sleep 0.5
 
 echo "- Platform: '$BUILD_ARCH'"
