@@ -8,26 +8,26 @@ echo "Disk generated.img: ./build --cleanup --linux-kernel --busybox --initramfs
 
 sleep 0.5
 
-PROJECT_PATH=$(pwd)
+export PROJECT_PATH=$(pwd)
 
-BUILD_SCRIPTS_PATH=$PROJECT_PATH/scripts
-CONFIG_FILES_PATH=$PROJECT_PATH/config
-DEPENDENCIES_PATH=$PROJECT_PATH/dependencies
-PATCHES_PATH=$PROJECT_PATH/patches
-TARGET_PATH=$PROJECT_PATH/target
-INITRAMFS_PATH=$PROJECT_PATH/initramfs
-MODULES_CACHE_PATH=$PROJECT_PATH/kernel-modules-cache
+export BUILD_SCRIPTS_PATH=$PROJECT_PATH/scripts
+export CONFIG_FILES_PATH=$PROJECT_PATH/config
+export DEPENDENCIES_PATH=$PROJECT_PATH/dependencies
+export PATCHES_PATH=$PROJECT_PATH/patches
+export TARGET_PATH=$PROJECT_PATH/target
+export INITRAMFS_PATH=$PROJECT_PATH/initramfs
+export MODULES_CACHE_PATH=$PROJECT_PATH/kernel-modules-cache
 
-LINUX_KERNEL_VERSION=6.12
-LINUX_KERNEL_PATH=$DEPENDENCIES_PATH/linux
+export LINUX_KERNEL_VERSION=6.12
+export LINUX_KERNEL_PATH=$DEPENDENCIES_PATH/linux
 
-BUSY_BOX_VERSION=1.37.0
-BUSY_BOX_PATH=$DEPENDENCIES_PATH/busybox
+export BUSY_BOX_VERSION=1.37.0
+export BUSY_BOX_PATH=$DEPENDENCIES_PATH/busybox
 
-OVERLAY_PATH=$PROJECT_PATH/overlay
-ROOTFS_PATH=$PROJECT_PATH/rootfs
+export OVERLAY_PATH=$PROJECT_PATH/overlay
+export ROOTFS_PATH=$PROJECT_PATH/rootfs
 
-BUILD_ARCH=$(uname -m)
+export BUILD_ARCH=$(uname -m)
 if [ "$BUILD_ARCH" = 'aarch64' ]; then
 	BUILD_ARCH='arm64'
 else 
@@ -171,7 +171,7 @@ if [ "$VAR_DISK_IMAGE_CREATION" = 'y' ]; then
 	sleep 0.5
 
 	cd $BUILD_SCRIPTS_PATH
-	doas source ./005-disk-image
+	doas sh ./005-disk-image
 
 	echo "[BUILD] Finished disk image creation"
 	sleep 0.5
