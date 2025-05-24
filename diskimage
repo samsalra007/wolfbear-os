@@ -5,6 +5,7 @@ set -euo pipefail
 IMG=disk.img
 SIZE_MB=512
 LOOPDEV=""
+MNT_DIR=/mnt/disk
 
 # Limpiar imagen previa
 echo "Eliminando imagen previa si existe..."
@@ -54,7 +55,6 @@ mkfs.ext4 "$ROOT_PART"
 
 # Montar particiones
 echo "Montando particiones en /mnt/disk..."
-MNT_DIR=/mnt/disk
 mkdir -p "$MNT_DIR"
 mount "$ROOT_PART" "$MNT_DIR"
 mkdir -p "$MNT_DIR/boot/efi"
