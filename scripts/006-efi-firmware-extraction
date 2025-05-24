@@ -18,7 +18,7 @@ wget -q "$deb_url" -O qemu-efi-aarch64.deb
 
 # Extraer contenido del .deb
 echo "Extrayendo contenido del .deb..."
-ar x qemu-efi-aarch64.deb
+dpkg-deb -x qemu-efi-aarch64.deb .
 
 # Extraer solo el firmware UEFI (QEMU_EFI.fd)
 echo "Extrayendo firmware UEFI..."
