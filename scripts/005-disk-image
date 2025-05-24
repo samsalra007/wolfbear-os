@@ -72,18 +72,25 @@ mkdir -p "$ROOTFS_BOOTDIR"
 
 # Generando contenido EFI_SYSTEM_PARTITION (boot)
 echo "Generando contenido para EFI System Partition"
-cp $TARGET_PATH/Image "$EFI_BOOTDIR/BOOTAA64.EFI"
-cp $TARGET_PATH/initramfs.cpio.gz $EFI_BOOTDIR
 
-echo "Configuracion loader"
-echo "timeout 5" > "$EFI_BOOTDIR/loader.conf"
-echo "console=ttyAMA0 root=/dev/ram0 rw init=/init" > "$EFI_BOOTDIR/BOOTAA64.conf"
+# cp "/boot/efi/EFI/alpine/grubaa64.efi" $EFI_BOOTDIR
+cp "/boot/efi/EFI/boot/bootaa64.efi" $EFI_BOOTDIR
+
+cat > $EFI_BOOTDIR/grub.cfg <<EOF
+set timeout=5
+set default=0
+
+menuentry "Initramfs boot ARM64" {
+    linux /boot/Image console=ttyAMA0 root=/dev/ram0 rw
+    initrd /boot/initramfs.cpio.gz
+}
+EOF
 
 # Generando contenido para rootfs
 echo "Generando contenido para ROOT Filesystem Partition"
 mkdir -p "$ROOTFS_BOOTDIR"
-cp $TARGET_PATH/Image "$ROOTFS_BOOTDIR"
-cp $TARGET_PATH/initramfs.cpio.gz "$ROOTFS_BOOTDIR"
+cp $TARGET_PATH/Image $ROOTFS_BOOTDIR
+cp $TARGET_PATH/initramfs.cpio.gz $ROOTFS_BOOTDIR
 
 # Finalizar
 echo "Sincronizando y desmontando..."
