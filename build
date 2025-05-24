@@ -2,7 +2,7 @@
 set -euo pipefail
 
 echo "Welcome to wolfbearOS development build script"
-echo "Command if you forget it: ./build --cleanup --linux-kernel --linux-kernel-clean --linux-kernel-modules --linux-menuconfig --busybox --buxybox-menuconfig --initramfs-build --initramfs-compress --disk-image --efi-firmware"
+echo "Command if you forget it: ./build --cleanup --linux-kernel --linux-kernel-clean --linux-kernel-modules --linux-menuconfig --busybox --busybox-menuconfig --initramfs-build --initramfs-compress --disk-image --efi-firmware"
 sleep 0.5
 
 PROJECT_PATH=$(pwd)
