@@ -91,11 +91,19 @@ EOF
 # el sistema de archivos FAT
 mkdir -p $EFI_BOOTDIR/grub
 
-export BUILD_ARCH=$(uname -m)
+BUILD_ARCH=$2
+
 if [ "$BUILD_ARCH" = 'arm64' ]; then
-	cp /usr/lib/grub/arm64-efi/fat.mod $EFI_BOOTDIR/grub/
+  file /usr/lib/grub/arm64-efi/fat.mod
+  file /usr/lib/grub/arm64-efi/part_gpt.mod
+  file /usr/lib/grub/arm64-efi/normal.mod
+
+  cp /usr/lib/grub/arm64-efi/fat.mod $EFI_BOOTDIR/grub/
   cp /usr/lib/grub/arm64-efi/part_gpt.mod $EFI_BOOTDIR/grub/
   cp /usr/lib/grub/arm64-efi/normal.mod $EFI_BOOTDIR/grub/
+
+  echo "Listing EFI SYSTEM PARTITION"
+  tree $EFI_SYSTEM_PARTITION
 fi
 
 
@@ -107,9 +115,8 @@ cp $TARGET_PATH/initramfs.cpio.xz $ROOTFS_BOOTDIR
 
 # Finalizar
 echo "Sincronizando y desmontando..."
-sync
-umount -l "$MNT_DIR/EFI_SYSTEM_PARTITION" || true
-umount -l "$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION" || true
+# umount -l "$MNT_DIR/EFI_SYSTEM_PARTITION" || true
+# umount -l "$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION" || true
 
 echo "Moving out $IMG to ./target path"
 mv $IMG $TARGET_PATH
