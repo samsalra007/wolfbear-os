@@ -50,7 +50,8 @@ sudo /sbin/apk --root "$INITRAMFS_PATH" \
     openresolv \
     util-linux \
     strace \
-    openssh
+    openssh \
+    grub-efi
 
 # Estas librerías habilitan SDL2 y los graficos
 #    sdl2-dev sdl2 \

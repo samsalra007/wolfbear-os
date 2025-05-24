@@ -1,0 +1,86 @@
+#!/bin/sh
+
+#!/bin/sh
+set -euo pipefail
+
+IMG=generated.img
+SIZE_MB=512
+LOOPDEV=""
+
+echo "Creando imagen de $SIZE_MB MiB..."
+dd if=/dev/zero of="$IMG" bs=1M count=$SIZE_MB
+
+echo "Asociando imagen a loop device..."
+LOOPDEV=$(losetup -f)
+losetup "$LOOPDEV" "$IMG"
+
+echo "Creando tabla GPT y particiones..."
+parted --script "$LOOPDEV" \
+  mklabel gpt \
+  mkpart ESP fat32 1MiB 100MiB \
+  set 1 esp on \
+  mkpart primary ext4 100MiB 100%
+
+echo "Recargando particiones..."
+partprobe "$LOOPDEV"
+
+echo "Desasociando y volviendo a asociar para actualizar particiones..."
+losetup -d "$LOOPDEV"
+LOOPDEV=$(losetup --find --show "$IMG")
+
+echo "Leyendo particiones con partx..."
+partx -a "$LOOPDEV"
+sleep 1
+
+EFI_PART="${LOOPDEV}p1"
+ROOT_PART="${LOOPDEV}p2"
+
+echo "Formateando partición EFI ($EFI_PART) como FAT32..."
+mkfs.vfat -F 32 "$EFI_PART"
+
+echo "Formateando partición root ($ROOT_PART) como ext4..."
+mkfs.ext4 "$ROOT_PART"
+
+MNT_DIR=/mnt/disk
+echo "Montando particiones..."
+mkdir -p "$MNT_DIR"
+mount "$ROOT_PART" "$MNT_DIR"
+mkdir -p "$MNT_DIR/boot/efi"
+mount "$EFI_PART" "$MNT_DIR/boot/efi"
+
+echo "Copiando kernel e initramfs..."
+mkdir -p "$MNT_DIR/boot"
+cp target/Image "$MNT_DIR/boot/"
+cp target/initramfs.cpio.gz "$MNT_DIR/boot/"
+
+ARCH=$(uname -r)
+GRUB_INSTALL_TARGET=''
+if [ "$ARCH" = 'arm64' || "$ARCH" = 'aarch64' ]; then
+	GRUB_INSTALL_TARGET="aarch64-efi"
+else
+	GRUB_INSTALL_TARGET="x86_64-efi"
+fi
+
+grub-install \
+  --target=$GRUB_INSTALL_TARGET \
+  --efi-directory=/mnt/disk/boot/efi \
+  --boot-directory=/mnt/disk/boot \
+  --removable \
+  --no-nvram
+
+cat > "$MNT_DIR/boot/grub/grub.cfg" <<EOF
+set default=0
+set timeout=5
+
+menuentry "Custom Linux Kernel" {
+    linux /boot/Image console=ttyAMA0
+    initrd /boot/initramfs.cpio.gz
+}
+EOF
+
+echo "Sincronizando y desmontando..."
+sync
+umount "$MNT_DIR/boot/efi"
+umount "$MNT_DIR"
+
+echo "Imagen creada y preparada para boot EFI."

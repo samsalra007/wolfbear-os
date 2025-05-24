@@ -3,7 +3,7 @@
 echo "[wolfbear-scripts] starting scripts workflow"
 
 ./000-mount-system-partitions
-./001-mount-graphics-cards
+# ./001-mount-graphics-cards
 # ./002-setup-network
 ./003-user-quick-fixes
 
