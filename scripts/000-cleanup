@@ -1,7 +1,7 @@
 #!/bin/sh
 set -euo pipefail
 
-echo "[wolfbear-cleanup] Starting cleanup script"
+echo "[cleanup] Starting cleanup script"
 sleep 0.5
 
 echo "- ./initramfs path: '$INITRAMFS_PATH'"
@@ -40,4 +40,4 @@ if [ "$VAR_KERNEL_MODULES_COMPILE" = 'y' ]; then
 	mkdir -p $MODULES_CACHE_PATH
 fi
 
-echo "[wolfbear-cleanup] Cleanup is done"
+echo "[cleanup] Cleanup is done"

@@ -43,6 +43,7 @@ VAR_INITRAMFS_BUILD='n'
 VAR_INITRAMFS_COMPRESS='n'
 VAR_KERNEL_MODULES_COMPILE='n'
 VAR_KERNEL_CLEAN='n'
+VAR_DISK_IMAGE_CREATION='n'
 
 # Procesar argumentos
 while [[ "$#" -gt 0 ]]; do
@@ -83,6 +84,10 @@ while [[ "$#" -gt 0 ]]; do
             VAR_INITRAMFS_COMPRESS='y'
             shift
             ;;
+        -dimg|--disk-image)
+            VAR_DISK_IMAGE_CREATION='y'
+            shift
+            ;;
     esac
 done
 
@@ -93,7 +98,7 @@ if [ "$VAR_CLEANUP" = 'y' ]; then
 	sleep 0.5
 
 	cd $BUILD_SCRIPTS_PATH
-	source ./wolfbear/wolfbear-cleanup	
+	source ./000-cleanup	
 
 	echo "[BUILD] Cleanup finished ./rootfs"
 	sleep 0.5
@@ -105,9 +110,9 @@ if [ "$VAR_COMPILE_LINUX_KERNEL" = 'y' ]; then
 
 	cd $BUILD_SCRIPTS_PATH
 	if [ "$VAR_COMPILE_LINUX_KERNEL_MENUCONFIG" = 'y' ]; then
-		source ./linux/linux-kernel-setup menuconfig
+		source ./001-linux-kernel-setup menuconfig
 	else
-		source ./linux/linux-kernel-setup oldconfig
+		source ./001-linux-kernel-setup oldconfig
 	fi
 	echo "[BUILD] Linux kernel was patched successfully"
 	sleep 0.5
@@ -120,9 +125,9 @@ if [ "$VAR_COMPILE_BUSYBOX" = 'y' ]; then
 
 	cd $BUILD_SCRIPTS_PATH
         if [ "$VAR_BUSYBOX_MENUCONFIG" = 'y' ]; then
-		source ./linux/linux-busybox-setup menuconfig
+		source ./002-linux-busybox-setup menuconfig
         else
-		source ./linux/linux-busybox-setup oldconfig
+		source ./002-linux-busybox-setup oldconfig
         fi	
 
 	echo "[BUILD] Busybox was compiled successfully"
@@ -134,7 +139,7 @@ if [ "$VAR_INITRAMFS_BUILD" = 'y' ]; then
         sleep 0.5
 
         cd $BUILD_SCRIPTS_PATH
-        source ./initramfs/initramfs-dependencies-install
+        source ./003-initramfs-dependencies-install
 
         echo "[BUILD] ./initramfs build finished"
         sleep 0.5
@@ -145,9 +150,20 @@ if [ "$VAR_INITRAMFS_COMPRESS" = 'y' ]; then
 	sleep 0.5
 
 	cd $BUILD_SCRIPTS_PATH
-	source ./wolfbear/wolfbear-rootfs-package
+	source ./004-package-initramfs
 
 	echo "[BUILD] Finished ./initramfs compression"
+	sleep 0.5
+fi
+
+if [ "$DISK_IMAGE_CREATION" = 'y' ]; then
+	echo "[BUILD] Invoking disk image creation"
+	sleep 0.5
+
+	cd $BUILD_SCRIPTS_PATH
+	source ./005-disk-image
+
+	echo "[BUILD] Finished disk image creation"
 	sleep 0.5
 fi
 
@@ -157,13 +173,3 @@ sleep 0.2
 
 mkdir -p ~/.abuild
 cd ~/.abuild
-
-# Genera clave privada:
-# openssl genrsa -out kernel_signing_key.pem 2048
-
-# Genera certificado auto-firmado:
-# openssl req -new -x509 \
-#    -key kernel_signing_key.pem \
-#    -out kernel_signing_key.x509 \
-#    -days 365 \
-#    -subj "/CN=kernel builder/"

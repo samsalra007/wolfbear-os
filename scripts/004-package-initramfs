@@ -1,10 +1,10 @@
 #! /bin/sh
 set -euo pipefail
 
-echo "[wolfbear-rootfs-package] Starting packaging ./rootfs"
+echo "[package-initramfs] Starting packaging ./initramfs"
 sleep 0.5
 
-echo "- ./rootfs path: '$ROOTFS_PATH'"
+echo "- ./initramfs path: '$ROOTFS_PATH'"
 sleep 0.5
 
 echo "- ./target path: '$TARGET_PATH'"
@@ -17,12 +17,11 @@ for fs in proc sys dev; do
   mountpoint -q "$INITRAMFS_PATH/$fs" && sudo umount -l "$INITRAMFS_PATH/$fs"
 done
 
-echo "- Compressing ./rootfs into initramfs.cpio.gz file"
+echo "- Compressing ./initramfs into initramfs.cpio.gz file"
 sleep 0.5
 
 cd $INITRAMFS_PATH
-#sudo find . -print0 | cpio --null -ov --format=newc | gzip -9 > $TARGET_PATH/initramfs.cpio.gz
 sudo find . | cpio -o -H newc | xz -T0 -z -C crc32 -6 > $TARGET_PATH/initramfs.cpio.gz
 
-echo "[wolfbear-rootfs-package] ./rootfs has been compressed successfully"
+echo "[package-initramfs] ./initramfs has been compressed successfully"
 sleep 0.5

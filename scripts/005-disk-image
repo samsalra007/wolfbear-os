@@ -63,16 +63,16 @@ mount "$EFI_PART" "$MNT_DIR/boot/efi"
 # Copiar kernel e initramfs
 echo "Copiando kernel e initramfs a /mnt/disk/boot..."
 mkdir -p "$MNT_DIR/boot"
-cp target/Image "$MNT_DIR/boot/"
-cp target/initramfs.cpio.gz "$MNT_DIR/boot/"
+cp $TARGET_PATH/Image "$MNT_DIR/boot/"
+cp $TARGET_PATH/initramfs.cpio.gz "$MNT_DIR/boot/"
 
 # Instalar EFI stub loader
 # Asegúrate de compilar el kernel con CONFIG_EFI_STUB=y
 echo "Instalando EFI stub loader..."
 BOOTDIR="$MNT_DIR/boot/efi/EFI/BOOT"
 mkdir -p "$BOOTDIR"
-cp target/Image           "$BOOTDIR/BOOTAA64.EFI"
-cp target/initramfs.cpio.gz "$BOOTDIR/initramfs.cpio.gz"
+cp $TARGET_PATH/Image           "$BOOTDIR/BOOTAA64.EFI"
+cp $TARGET_PATH/initramfs.cpio.gz "$BOOTDIR/initramfs.cpio.gz"
 
 # Configuración opcional del loader
 echo "timeout 5" > "$BOOTDIR/loader.conf"
@@ -85,6 +85,6 @@ umount "$MNT_DIR/boot/efi"
 umount "$MNT_DIR"
 
 echo "Moving out $IMG to ./target path"
-mv $IMG target/
+mv $IMG $TARGET_PATH/
 
 echo "Imagen '$IMG' creada y preparada para boot EFI usando EFI stub loader."
