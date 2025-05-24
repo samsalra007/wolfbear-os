@@ -1,0 +1,10 @@
+#!/bin/sh
+
+SYS_ARCH=$(uname -m)
+if [ "$SYS_ARCH" = 'aarch64' ] || [ "$SYS_ARCH" = 'arm64']; then
+    SYS_ARCH="arm64"
+elif
+    SYS_ARCH="amd64"
+fi
+
+echo $SYS_ARCH

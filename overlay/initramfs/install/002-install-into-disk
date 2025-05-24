@@ -1,5 +1,4 @@
 #!/bin/sh
-
 set -euo pipefail
 
 echo "Selecciona el dispositivo en el cual deseas instalar WolfbearOS:"
@@ -37,10 +36,9 @@ mkfs.ext4 "$ROOTFS_PARTITION"
 echo "Montando particiones"
 sleep 0.5
 
-TARGET_DISK_DIR="/mnt/target"
-BOOT_DIR="/mnt/target/boot"
-EFI_TARGET_DISK_DIR="/mnt/target/boot/efi"
-EFI_BOOT_TARGET_DISK_DIR="/mnt/target/boot/efi/EFI/BOOT"
+BOOT_DIR="$TARGET_DISK_DIR/boot"
+EFI_TARGET_DISK_DIR="$TARGET_DISK_DIR/boot/efi"
+EFI_BOOT_TARGET_DISK_DIR="$TARGET_DISK_DIR/boot/efi/EFI/BOOT"
 
 mkdir -p $TARGET_DISK_DIR
 mount "$ROOTFS_PARTITION" "$TARGET_DISK_DIR"
