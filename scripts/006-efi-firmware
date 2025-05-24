@@ -1,0 +1,45 @@
+#!/bin/sh
+et -euo pipefail
+
+echo "[efi-firmware] Starting efi firmware extraction from Debian"
+
+# Directorio donde descargar y extraer dependencias
+dep_path="${DEPENDENCIES_PATH:-./dependencies}"
+
+# Crear directorio de trabajo
+echo "Preparando directorio: $dep_path"
+mkdir -p "$dep_path"
+cd "$dep_path"
+
+# URL del paquete Debian que contiene el firmware
+deb_url="https://deb.debian.org/debian/pool/main/q/qemu-efi/qemu-efi-aarch64_2023.05-2_all.deb"
+echo "Descargando paquete: $deb_url"
+wget -q "$deb_url" -O qemu-efi-aarch64.deb
+
+# Extraer contenido del .deb
+echo "Extrayendo contenido del .deb..."
+ar x qemu-efi-aarch64.deb
+
+# Extraer solo el firmware UEFI (QEMU_EFI.fd)
+echo "Extrayendo firmware UEFI..."
+tar -xJf data.tar.xz usr/share/AAVMF/QEMU_EFI.fd
+
+# Identificar ruta del firmware
+echo "Buscando firmware .fd..."
+firmware_path=$(find usr/share -type f -name '*.fd' | head -n1)
+echo "Firmware encontrado: $firmware_path"
+
+# 5. Instalar en local (opcional)
+echo "Instalando firmware en Alpine en: $install_dir"
+install -Dm644 "$firmware_path" "$install_dir/QEMU_EFI.fd"
+
+# 6. Copiar firmware al directorio de exportación para macOS
+mkdir -p "$TARGET_PATH"
+echo "Copiando firmware a export path: $TARGET_PATH"
+cp "$install_dir/QEMU_EFI.fd" "$TARGET_PATH/"
+
+# 7. Mostrar ubicación final
+echo "Firmware listo en: $TARGET_PATH/QEMU_EFI.fd"
+
+echo "[efi-firmware] extraction finished"
+
