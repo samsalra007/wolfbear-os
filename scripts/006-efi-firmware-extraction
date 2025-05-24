@@ -3,8 +3,6 @@ set -euo pipefail
 
 echo "[efi-firmware] Starting efi firmware extraction from Debian"
 
-TARGET_PATH=$1
-
 # Directorio donde descargar y extraer dependencias
 dep_path="${DEPENDENCIES_PATH:-./dependencies}"
 
