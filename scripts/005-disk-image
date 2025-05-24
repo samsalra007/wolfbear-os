@@ -83,7 +83,7 @@ cat > $EFI_BOOTDIR/grub.cfg <<EOF
 set timeout=0
 set default=0
 
-menuentry "WolfbearOS for ARM64" {
+menuentry "WolfbearOS for ARM64 (initramfs)" {
     linux (hd0,gpt2)/boot/Image console=ttyAMA0 root=/dev/ram0 rw
     initrd (hd0,gpt2)/boot/initramfs.cpio.xz
 }
