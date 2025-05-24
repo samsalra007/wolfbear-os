@@ -2,9 +2,9 @@
 set -euo pipefail
 
 echo "Welcome to wolfbearOS development build script"
-echo "Complete command: ./build --cleanup --linux-kernel --linux-kernel-clean --linux-kernel-modules --linux-menuconfig --busybox --busybox-menuconfig --initramfs-build --initramfs-compress --disk-image --efi-firmware"
+echo "Complete command: ./build --cleanup --linux-kernel --linux-kernel-clean --linux-kernel-modules --linux-menuconfig --busybox --busybox-menuconfig --initramfs-build --initramfs-compress --disk-image"
 echo "Quick initramfs generation without modules: ./build --cleanup --linux-kernel --busybox --initramfs-build --initramfs-compress"
-echo "Disk generated.img: ./build --cleanup --linux-kernel --busybox --initramfs-build --initramfs-compress --disk-image --efi-firmware"
+echo "Disk generated.img: ./build --cleanup --linux-kernel --busybox --initramfs-build --initramfs-compress --disk-image"
 
 sleep 0.5
 
@@ -49,7 +49,6 @@ VAR_INITRAMFS_COMPRESS='n'
 VAR_KERNEL_MODULES_COMPILE='n'
 VAR_KERNEL_CLEAN='n'
 VAR_DISK_IMAGE_CREATION='n'
-VAR_EFI_FIRMWARE='n'
 
 # Procesar argumentos
 while [[ "$#" -gt 0 ]]; do
@@ -92,10 +91,6 @@ while [[ "$#" -gt 0 ]]; do
             ;;
         -dimg|--disk-image)
             VAR_DISK_IMAGE_CREATION='y'
-            shift
-            ;;
-        -efi|--efi-firmware)
-            VAR_EFI_FIRMWARE='y'
             shift
             ;;
     esac
@@ -174,17 +169,6 @@ if [ "$VAR_DISK_IMAGE_CREATION" = 'y' ]; then
 	doas sh ./005-disk-image $TARGET_PATH
 
 	echo "[BUILD] Finished disk image creation"
-	sleep 0.5
-fi
-
-if [ "$VAR_EFI_FIRMWARE" = 'y' ]; then
-	echo "[BUILD] Invoking efi firmware extraction"
-	sleep 0.5
-
-	cd $BUILD_SCRIPTS_PATH
-	source ./006-efi-firmware-extraction
-
-	echo "[BUILD] Finished efi firmware extraction"
 	sleep 0.5
 fi
 
