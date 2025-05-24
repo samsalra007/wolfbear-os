@@ -12,7 +12,7 @@ TARGET_PATH=$1
 echo "Eliminando imagen previa si existe..."
 umount -l "$MNT_DIR/EFI_SYSTEM_PARTITION" || true
 umount -l "$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION" || true
-rm -f "$IMG"
+rm -f "$TARGET_PATH/$IMG"
 
 # Crear imagen vacía
 echo "Creando imagen de $SIZE_MB MiB..."
@@ -90,8 +90,8 @@ cp $TARGET_PATH/initramfs.cpio.gz "$ROOTFS_BOOTDIR"
 # Finalizar
 echo "Sincronizando y desmontando..."
 sync
-# umount -l "$MNT_DIR/EFI_SYSTEM_PARTITION" || true
-# umount -l "$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION" || true
+umount -l "$MNT_DIR/EFI_SYSTEM_PARTITION" || true
+umount -l "$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION" || true
 
 echo "Moving out $IMG to ./target path"
 mv $IMG $TARGET_PATH
