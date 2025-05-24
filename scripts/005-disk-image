@@ -73,38 +73,46 @@ mkdir -p "$ROOTFS_BOOTDIR"
 # Generando contenido EFI_SYSTEM_PARTITION (boot)
 echo "Generando contenido para EFI System Partition"
 
-# Archivo EFI que lo copiamos desde nuestro sistema Alpine
-cp "/boot/efi/EFI/boot/bootaa64.efi" $EFI_BOOTDIR
+grub-mkimage \
+  -O arm64-efi \
+  -p "/EFI/BOOT" \
+  -o $EFI_BOOTDIR/BOOTAA64.EFI \
+    part_gpt fat ext2 normal configfile linux cpio gfxterm all_video
 
-# Generamos el archivo grub.cfg para que sepa donde tenemos el initramfs
 cat > $EFI_BOOTDIR/grub.cfg <<EOF
 set timeout=5
 set default=0
 
 menuentry "Initramfs boot ARM64" {
     linux /boot/Image console=ttyAMA0 root=/dev/ram0 rw
-    initrd /boot/initramfs.cpio.xz
+    initrd /boot/initramfs.cpio.gz
 }
 EOF
 
+# Archivo EFI que lo copiamos desde nuestro sistema Alpine
+#cp "/boot/efi/EFI/boot/bootaa64.efi" $EFI_BOOTDIR
+
+# Generamos el archivo grub.cfg para que sepa donde tenemos el initramfs
+#cat > $EFI_BOOTDIR/grub.cfg <<EOF
+#set timeout=5
+#set default=0
+
+#menuentry "Initramfs boot ARM64" {
+ #   linux /boot/Image console=ttyAMA0 root=/dev/ram0 rw
+ #   initrd /boot/initramfs.cpio.xz
+#}
+#EOF
+
 # Copiamos nuestro ESP del grub de Alpine para que reconozca
 # el sistema de archivos FAT
-mkdir -p $EFI_BOOTDIR/grub
+# mkdir -p $EFI_BOOTDIR/grub
 
-BUILD_ARCH=$2
-
-if [ "$BUILD_ARCH" = 'arm64' ]; then
-  file /usr/lib/grub/arm64-efi/fat.mod
-  file /usr/lib/grub/arm64-efi/part_gpt.mod
-  file /usr/lib/grub/arm64-efi/normal.mod
-
-  cp /usr/lib/grub/arm64-efi/fat.mod $EFI_BOOTDIR/grub/
-  cp /usr/lib/grub/arm64-efi/part_gpt.mod $EFI_BOOTDIR/grub/
-  cp /usr/lib/grub/arm64-efi/normal.mod $EFI_BOOTDIR/grub/
-
-  echo "Listing EFI SYSTEM PARTITION"
-  tree $EFI_SYSTEM_PARTITION
-fi
+# export BUILD_ARCH=$(uname -m)
+# if [ "$BUILD_ARCH" = 'arm64' ]; then
+# 	cp /usr/lib/grub/arm64-efi/fat.mod $EFI_BOOTDIR/grub/
+#   cp /usr/lib/grub/arm64-efi/part_gpt.mod $EFI_BOOTDIR/grub/
+ #  cp /usr/lib/grub/arm64-efi/normal.mod $EFI_BOOTDIR/grub/
+# -fi
 
 
 # Generando contenido para rootfs
@@ -115,8 +123,9 @@ cp $TARGET_PATH/initramfs.cpio.xz $ROOTFS_BOOTDIR
 
 # Finalizar
 echo "Sincronizando y desmontando..."
-# umount -l "$MNT_DIR/EFI_SYSTEM_PARTITION" || true
-# umount -l "$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION" || true
+sync
+umount -l "$MNT_DIR/EFI_SYSTEM_PARTITION" || true
+umount -l "$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION" || true
 
 echo "Moving out $IMG to ./target path"
 mv $IMG $TARGET_PATH
