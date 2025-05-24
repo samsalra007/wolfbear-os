@@ -93,8 +93,8 @@ mkdir -p $EFI_BOOTDIR/grub
 
 export BUILD_ARCH=$(uname -m)
 if [ "$BUILD_ARCH" = 'aarch64' ]; then
-	cp /usr/lib/grub/aarch64-efi/fat.mod $EFI_BOOTDIR/grub
-  cp /usr/lib/grub/aarch64-efi/part_gpt.mod $EFI_BOOTDIR/grub
+	cp /usr/lib/grub/arm64-efi/fat.mod $EFI_BOOTDIR/grub
+  cp /usr/lib/grub/arm64-efi/part_gpt.mod $EFI_BOOTDIR/grub
 fi
 
 
