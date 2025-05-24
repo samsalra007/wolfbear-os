@@ -3,7 +3,7 @@
 set -euo pipefail
 
 IMG=generated.img
-SIZE_MB=1024
+SIZE_MB=256
 LOOPDEV=""
 MNT_DIR=/mnt/disk
 TARGET_PATH=$1
@@ -80,41 +80,15 @@ grub-mkimage \
     part_gpt fat ext2 normal configfile linux cpio gfxterm all_video
 
 cat > $EFI_BOOTDIR/grub.cfg <<EOF
-set timeout=5
+set timeout=0
 set default=0
 
-menuentry "WolfbearOS Initramfs for ARM64" {
+menuentry "WolfbearOS for ARM64" {
     linux (hd0,gpt2)/boot/Image console=ttyAMA0 root=/dev/ram0 rw
-    initrd (hd0,gpt2)/boot/initramfs.cpio.gz
+    initrd (hd0,gpt2)/boot/initramfs.cpio.xz
 }
 
 EOF
-
-# Archivo EFI que lo copiamos desde nuestro sistema Alpine
-#cp "/boot/efi/EFI/boot/bootaa64.efi" $EFI_BOOTDIR
-
-# Generamos el archivo grub.cfg para que sepa donde tenemos el initramfs
-#cat > $EFI_BOOTDIR/grub.cfg <<EOF
-#set timeout=5
-#set default=0
-
-#menuentry "Initramfs boot ARM64" {
- #   linux /boot/Image console=ttyAMA0 root=/dev/ram0 rw
- #   initrd /boot/initramfs.cpio.xz
-#}
-#EOF
-
-# Copiamos nuestro ESP del grub de Alpine para que reconozca
-# el sistema de archivos FAT
-# mkdir -p $EFI_BOOTDIR/grub
-
-# export BUILD_ARCH=$(uname -m)
-# if [ "$BUILD_ARCH" = 'arm64' ]; then
-# 	cp /usr/lib/grub/arm64-efi/fat.mod $EFI_BOOTDIR/grub/
-#   cp /usr/lib/grub/arm64-efi/part_gpt.mod $EFI_BOOTDIR/grub/
- #  cp /usr/lib/grub/arm64-efi/normal.mod $EFI_BOOTDIR/grub/
-# -fi
-
 
 # Generando contenido para rootfs
 echo "Generando contenido para ROOT Filesystem Partition"
