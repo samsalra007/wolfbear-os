@@ -21,7 +21,7 @@ echo "- Compressing ./initramfs into initramfs.cpio.gz file"
 sleep 0.5
 
 cd $INITRAMFS_PATH
-sudo find . | cpio -o -H newc | xz -T0 -z -C crc32 -6 > $TARGET_PATH/initramfs.cpio.gz
+sudo find . | cpio -o -H newc | xz -T0 -z -C crc32 -6 > $TARGET_PATH/initramfs.cpio.xz
 
 echo "[package-initramfs] ./initramfs has been compressed successfully"
 sleep 0.5

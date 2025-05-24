@@ -28,7 +28,7 @@ export OVERLAY_PATH=$PROJECT_PATH/overlay
 export ROOTFS_PATH=$PROJECT_PATH/rootfs
 
 export BUILD_ARCH=$(uname -m)
-if [ "$BUILD_ARCH" = 'aarch64' ]; then
+if [ "$BUILD_ARCH" = 'aarch64' ] || [ "$BUILD_ARCH" = 'arm64' ]; then
 	BUILD_ARCH='arm64'
 else 
 	BUILD_ARCH='amd64'
