@@ -171,20 +171,20 @@ if [ "$VAR_DISK_IMAGE_CREATION" = 'y' ]; then
 	sleep 0.5
 
 	cd $BUILD_SCRIPTS_PATH
-	doas sh ./005-disk-image
+	doas sh ./005-disk-image $TARGET_PATH
 
 	echo "[BUILD] Finished disk image creation"
 	sleep 0.5
 fi
 
 if [ "$VAR_EFI_FIRMWARE" = 'y' ]; then
-	echo "[BUILD] Invoking disk image creation"
+	echo "[BUILD] Invoking efi firmware extraction"
 	sleep 0.5
 
 	cd $BUILD_SCRIPTS_PATH
 	source ./006-efi-firmware-extraction
 
-	echo "[BUILD] Finished disk image creation"
+	echo "[BUILD] Finished efi firmware extraction"
 	sleep 0.5
 fi
 
