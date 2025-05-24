@@ -87,10 +87,10 @@ cp $TARGET_PATH/initramfs.cpio.gz "$ROOTFS_DIR/boot"
 # Finalizar
 echo "Sincronizando y desmontando..."
 sync
-umount -l "$MNT_DIR/boot/efi"
-umount -l "$MNT_DIR"
+umount -l "$MNT_DIR/EFI_SYSTEM_PARTITION" || true
+umount -l "$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION" || true
 
 echo "Moving out $IMG to ./target path"
-mv $IMG $TARGET_PATH/
+mv $IMG $TARGET_PATH
 
 echo "Imagen '$IMG' creada y preparada para boot EFI usando EFI stub loader."
