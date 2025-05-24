@@ -57,13 +57,16 @@ mkfs.ext4 "$ROOT_PART"
 # Montar particiones
 echo "Montando particiones en /mnt/disk..."
 EFI_BOOTDIR="$MNT_DIR/EFI_SYSTEM_PARTITION/EFI/BOOT"
-ROOTFS_DIR="$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION"
+EFI_SYSTEM_PARTITION="$MNT_DIR/EFI_SYSTEM_PARTITION"
+
+ROOTFS_SYSTEM_PARTITION="$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION"
+ROOTFS_BOOTDIR="$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION/boot"
 
 mkdir -p "$EFI_BOOTDIR"
-mount "$EFI_PART" "$EFI_BOOTDIR"
+mount "$EFI_PART" "$EFI_SYSTEM_PARTITION"
 
 mkdir -p "$ROOTFS_DIR"
-mount "$ROOT_PART" "$ROOTFS_DIR"
+mount "$ROOT_PART" "$ROOTFS_SYSTEM_PARTITION"
 
 # Generando contenido EFI_SYSTEM_PARTITION (boot)
 echo "Generando contenido para EFI System Partition"
@@ -80,15 +83,15 @@ echo "console=ttyAMA0 root=/dev/vda2 rw" > "$EFI_BOOTDIR/BOOTAA64.conf"
 
 # Generando contenido para rootfs
 echo "Generando contenido para ROOT Filesystem Partition"
-mkdir -p "$ROOTFS_DIR/boot"
-cp $TARGET_PATH/Image "$ROOTFS_DIR/boot"
-cp $TARGET_PATH/initramfs.cpio.gz "$ROOTFS_DIR/boot"
+mkdir -p "$ROOTFS_BOOTDIR"
+cp $TARGET_PATH/Image "$ROOTFS_BOOTDIR"
+cp $TARGET_PATH/initramfs.cpio.gz "$ROOTFS_BOOTDIR"
 
 # Finalizar
 echo "Sincronizando y desmontando..."
 sync
-umount -l "$MNT_DIR/EFI_SYSTEM_PARTITION" || true
-umount -l "$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION" || true
+# umount -l "$MNT_DIR/EFI_SYSTEM_PARTITION" || true
+# umount -l "$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION" || true
 
 echo "Moving out $IMG to ./target path"
 mv $IMG $TARGET_PATH
