@@ -60,8 +60,9 @@ cp target/Image "$MNT_DIR/boot/"
 cp target/initramfs.cpio.gz "$MNT_DIR/boot/"
 
 ARCH=$(uname -m)
+
 GRUB_INSTALL_TARGET=''
-if [ "$ARCH" = 'arm64' || "$ARCH" = 'aarch64' ]; then
+if [ "$ARCH" = 'arm64' ] || [ "$ARCH" = 'aarch64' ]; then
 	GRUB_INSTALL_TARGET="aarch64-efi"
 else
 	GRUB_INSTALL_TARGET="x86_64-efi"
