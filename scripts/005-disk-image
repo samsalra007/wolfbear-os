@@ -87,7 +87,10 @@ menuentry "WolfbearOS for ARM64" {
     linux (hd0,gpt2)/boot/Image console=ttyAMA0 root=/dev/ram0 rw
     initrd (hd0,gpt2)/boot/initramfs.cpio.xz
 }
+EOF
 
+cat > $EFI_BOOTDIR/startup.nsh <<EOF
+fs0:\EFI\BOOT\BOOTAA64.EFI
 EOF
 
 # Generando contenido para rootfs
