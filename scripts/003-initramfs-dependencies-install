@@ -30,22 +30,22 @@ mkdir -p \
 echo "- Creando base de datos y world de apk-tools"
 sleep 0.5
 
-mkdir -p $TARGET_DISK_DIR/var/lib/apk/db
-touch    $TARGET_DISK_DIR/lib/apk/db/installed
-chmod 644 $TARGET_DISK_DIR/lib/apk/db/installed
+mkdir -p $INITRAMFS_PATH/var/lib/apk/db
+touch    $INITRAMFS_PATH/lib/apk/db/installed
+chmod 644 $INITRAMFS_PATH/lib/apk/db/installed
 
-mkdir -p $TARGET_DISK_DIR/etc/apk
-touch    $TARGET_DISK_DIR/apk/world
-chmod 644 $TARGET_DISK_DIR/apk/world
+mkdir -p $INITRAMFS_PATH/etc/apk
+touch    $INITRAMFS_PATH/apk/world
+chmod 644 $INITRAMFS_PATH/apk/world
 
 echo "-Actualizando keys del equipo local hacia initramfs"
 sleep 0.5
 
-mkdir -p $TARGET_DISK_DIR/etc/apk/keys
+mkdir -p $INITRAMFS_PATH/etc/apk/keys
 cp /etc/apk/keys/* $INITRAMFS_PATH/etc/apk/keys
 
 echo "- Actualizando base de datos"
-doas /sbin/apk update --root $TARGET_DISK_DIR
+doas /sbin/apk update --root $INITRAMFS_PATH
 
 echo "- Instalando dependencias"
 sleep 0.5
