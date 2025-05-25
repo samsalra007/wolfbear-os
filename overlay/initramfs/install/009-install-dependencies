@@ -31,7 +31,7 @@ echo "Actualizando base de datos"
 apk update --root $TARGET_DISK_DIR
 
 echo "Descargando e instalando paquetes"
-apk add --root $TARGET_DISK_DIR
+apk add --root $TARGET_DISK_DIR \
   apk-tools \
   shadow \
   dhcpcd \
