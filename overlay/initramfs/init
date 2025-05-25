@@ -3,12 +3,15 @@
 echo "=== Iniciando WolfbearOS ==="
 
 echo "- Creando directorios del sistema para montar particiones"
-mkdir -p /proc /sys /dev /dev/dri
+mkdir -p /proc /sys /dev /dev/dri /mnt/install
 
 echo "- Montando proc, sysfs and devtmpfs"
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 mount -t devtmpfs devtmpfs /dev
+
+echo "- Montando recursos de instalación"
+mount -t ext4 /dev/vda3 /mnt/install/
 
 while true; do
 	clear
