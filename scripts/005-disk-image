@@ -3,7 +3,7 @@
 set -euo pipefail
 
 IMG=generated.img
-SIZE_MB=512
+SIZE_MB=700
 LOOPDEV=""
 MNT_DIR=/mnt/disk
 
