@@ -4,8 +4,19 @@ set -euo pipefail
 echo "[install-dependencies] Instalando dependencias APK"
 sleep 0.5
 
-cp /etc/resolv.conf /mnt/target/etc/
-cp /etc/apk/repositories /mnt/target/apk
+mkdir -p "$TARGET_DISK_DIR"/etc/apk
+cp /etc/apk/repositories "$TARGET_D‌​ISK_DIR"/etc/apk/
+cp /etc/resolv.conf       "$TARGET_D‌​ISK_DIR"/etc/
+
+# 3) Crear manualmente las carpetas necesarias de APK
+mkdir -p "$TARGET_D‌​ISK_DIR"/var/lib/apk/db
+mkdir -p "$TARGET_D‌​ISK_DIR"/var/cache/apk
+
+chmod 755 -R "$TARGET_D‌​ISK_DIR"/etc/apk
+chmod 755 -R "$TARGET_D‌​ISK_DIR"/var/lib/apk/db
+chmod 755 -R "$TARGET_D‌​ISK_DIR"/var/cache/apk
+
+chmod 644 -R "$TARGET_D‌​ISK_DIR"/etc/resolv.conf
 
 /sbin/apk  update --root="$TARGET_DISK_DIR" \
   --cache-dir="$TARGET_DISK_DIR"/var/cache/apk
