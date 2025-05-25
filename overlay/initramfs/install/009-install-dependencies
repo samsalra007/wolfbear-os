@@ -5,18 +5,18 @@ echo "[install-dependencies] Instalando dependencias APK"
 sleep 0.5
 
 mkdir -p "$TARGET_DISK_DIR"/etc/apk
-cp /etc/apk/repositories "$TARGET_D‌​ISK_DIR"/etc/apk/
-cp /etc/resolv.conf       "$TARGET_D‌​ISK_DIR"/etc/
+cp /etc/apk/repositories "$TARGET_DISK_DIR"/etc/apk/
+cp /etc/resolv.conf "$TARGET_DISK_DIR"/etc/
 
 # 3) Crear manualmente las carpetas necesarias de APK
-mkdir -p "$TARGET_D‌​ISK_DIR"/var/lib/apk/db
-mkdir -p "$TARGET_D‌​ISK_DIR"/var/cache/apk
+mkdir -p "$TARGET_DISK_DIR"/var/lib/apk/db
+mkdir -p "$TARGET_DISK_DIR"/var/cache/apk
 
-chmod 755 -R "$TARGET_D‌​ISK_DIR"/etc/apk
-chmod 755 -R "$TARGET_D‌​ISK_DIR"/var/lib/apk/db
-chmod 755 -R "$TARGET_D‌​ISK_DIR"/var/cache/apk
+chmod 755 -R "$TARGET_DISK_DIR"/etc/apk
+chmod 755 -R "$TARGET_DISK_DIR"/var/lib/apk/db
+chmod 755 -R "$TARGET_DISK_DIR"/var/cache/apk
 
-chmod 644 -R "$TARGET_D‌​ISK_DIR"/etc/resolv.conf
+chmod 644 -R "$TARGET_DISK_DIR"/etc/resolv.conf
 
 /sbin/apk  update --root="$TARGET_DISK_DIR" \
   --cache-dir="$TARGET_DISK_DIR"/var/cache/apk
