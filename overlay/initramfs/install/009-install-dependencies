@@ -18,13 +18,14 @@ chmod 755 -R "$TARGET_DISK_DIR"/var/cache/apk
 
 chmod 644 -R "$TARGET_DISK_DIR"/etc/resolv.conf
 
-/sbin/apk  update --root="$TARGET_DISK_DIR" \
-  --cache-dir="$TARGET_DISK_DIR"/var/cache/apk
+chroot "$TARGET_D‌​ISK_DIR" /bin/sh -c "
+/sbin/apk  update --root=$TARGET_DISK_DIR \
+  --cache-dir=$TARGET_DISK_DIR/var/cache/apk
 
-/sbin/apk --root="$TARGET_DISK_DIR" \
+/sbin/apk --root=$TARGET_DISK_DIR \
   --keys-dir /etc/apk/keys \
   --repositories-file /etc/apk/repositories \
-  --cache-dir="$TARGET_DISK_DIR"/var/cache/apk \
+  --cache-dir=$TARGET_DISK_DIR/var/cache/apk \
   add \
     apk-tools \
     shadow \
@@ -44,6 +45,7 @@ chmod 644 -R "$TARGET_DISK_DIR"/etc/resolv.conf
     mesa-dri-gallium \
     libinput-dev \
     expat-dev libffi-dev
+"
 
 echo "[install-dependencies] Instalación de dependencias APK terminada"
 sleep 0.5
