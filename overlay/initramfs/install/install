@@ -16,7 +16,7 @@ BASEDIR=$(cd "$(dirname "$0")" && pwd)
 # Los scripts numerados están en el mismo directorio que este script
 SCRIPTS_DIR="$BASEDIR"
 
-if [ -z "$1" ]; then
+if [ -z "${1-}" ]; then
   echo "Ejecutando secuencialmente los scripts de instalación…"
 else
   SCRIPT_NAME_TO_EXECUTE=$1
