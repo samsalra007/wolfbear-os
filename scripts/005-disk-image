@@ -7,7 +7,7 @@ SIZE_MB=1024
 LOOPDEV=""
 MNT_DIR=/mnt/disk
 TARGET_PATH=$1
-
+OVERLAY_ROOTFS_PATH=$2
 # Limpiar imagen previa
 echo "Eliminando imagen previa si existe..."
 umount -l "$MNT_DIR/EFI_SYSTEM_PARTITION" || true

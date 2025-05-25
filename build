@@ -168,7 +168,7 @@ if [ "$VAR_DISK_IMAGE_CREATION" = 'y' ]; then
 	sleep 0.5
 
 	cd $BUILD_SCRIPTS_PATH
-	doas sh ./005-disk-image $TARGET_PATH $BUILD_ARCH
+	doas sh ./005-disk-image $TARGET_PATH $BUILD_ARCH $OVERLAY_ROOTFS_PATH
 
 	echo "[BUILD] Finished disk image creation"
 	sleep 0.5
