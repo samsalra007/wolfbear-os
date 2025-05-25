@@ -111,6 +111,8 @@ make -j$(nproc)
 
 echo "- Installing busybox in compilation path"
 sleep 0.5
+
+mkdir -p BUSY_BOX_COMPILED_DIR
 make CONFIG_PREFIX=$BUSY_BOX_COMPILED_DIR install
 
 echo "- Sincronizando hacia initramfs"

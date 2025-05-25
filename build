@@ -26,6 +26,7 @@ export BUSY_BOX_PATH=$DEPENDENCIES_PATH/busybox
 export BUSY_BOX_COMPILED_DIR=$DEPENDENCIES_PATH/busybox-compiled
 
 export OVERLAY_INITRAMFS_PATH=$PROJECT_PATH/overlay/initramfs
+export OVERLAY_ROOTFS_PATH=$PROJECT_PATH/overlay/rootfs
 export ROOTFS_PATH=$PROJECT_PATH/rootfs
 
 export BUILD_ARCH=$(uname -m)
