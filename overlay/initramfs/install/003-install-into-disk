@@ -82,8 +82,8 @@ EOF
 echo "Cargando contenido de kernel para rootfs"
 sleep 0.5
 
-cp /boot/Image "$BOOT_DIR/"
-cp /boot/initramfs.cpio.xz "$BOOT_DIR/"
+cp /mnt/install/linux-kernel/Image "$BOOT_DIR/"
+cp /mnt/install/linux-kernel/initramfs.cpio.xz "$BOOT_DIR/"
 
 echo "[install-into-disk] Instalación del sistema base en disco finalizada"
 sleep 0.5

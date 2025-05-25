@@ -119,6 +119,7 @@ echo "Sincronizando contenido de overlay de rootfs y modprobe"
 mkdir -p "$RESOURCES_PART_DIR/rootfs-overlay"
 mkdir -p "$RESOURCES_PART_DIR/modules-modprobe"
 mkdir -p "$RESOURCES_PART_DIR/busybox-compiled"
+mkdir -p "$RESOURCES_PART_DIR/linux-kernel"
 
 echo "rootfs-overlay    $OVERLAY_ROOTFS_PATH"
 echo "busybox-compiled  $BUSY_BOX_COMPILED_DIR"
@@ -127,6 +128,10 @@ echo "modules-modprobe  $MODPROBE_COMPILED_DIR"
 rsync -a --links "$OVERLAY_ROOTFS_PATH/" "$RESOURCES_PART_DIR/rootfs-overlay/"
 rsync -a --links "$MODPROBE_COMPILED_DIR/" "$RESOURCES_PART_DIR/modules-modprobe/"
 rsync -a --links "$BUSY_BOX_COMPILED_DIR/" "$RESOURCES_PART_DIR/busybox-compiled/"
+
+echo "Copiando 'Image' e 'initramfs.cpio.xz' en el directorio linux-kernel"
+cp $TARGET_PATH/Image "$RESOURCES_PATH_DIR/linux-kernel"
+cp $TARGET_PATH/initramfs.cpio.xz "$RESOURCES_PATH_DIR/linux-kernel"
 
 # Finalizar
 echo "Desmontando particiones"
