@@ -4,46 +4,46 @@ set -euo pipefail
 echo "[install-dependencies] Instalando dependencias APK"
 sleep 0.5
 
-mkdir -p "$TARGET_DISK_DIR"/etc/apk
-cp /etc/apk/repositories "$TARGET_DISK_DIR"/etc/apk/
+echo "Copiando archivo resolv.conf y asignando sus permisos"
+sleep 0.5
+
 cp /etc/resolv.conf "$TARGET_DISK_DIR"/etc/
+chmod 644 "$TARGET_DISK_DIR"/etc/resolv.conf
 
-# 3) Crear manualmente las carpetas necesarias de APK
-mkdir -p "$TARGET_DISK_DIR"/var/lib/apk/db
-mkdir -p "$TARGET_DISK_DIR"/var/cache/apk
+echo "Creando base de datos y world de apk-tools"
+sleep 0.5
 
-chmod 755 -R "$TARGET_DISK_DIR"/etc/apk
-chmod 755 -R "$TARGET_DISK_DIR"/var/lib/apk/db
-chmod 755 -R "$TARGET_DISK_DIR"/var/cache/apk
+mkdir -p $TARGET_DISK_DIR/var/lib/apk/db
+touch    $TARGET_DISK_DIR/var/lib/apk/db/installed
+chmod 644 $TARGET_DISK_DIR/var/lib/apk/db/installed
 
-chmod 644 -R "$TARGET_DISK_DIR"/etc/resolv.conf
+mkdir -p $TARGET_DISK_DIR/etc/apk
+touch    $TARGET_DISK_DIR/etc/apk/world
+chmod 644 $TARGET_DISK_DIR/etc/apk/world
 
-apk update --root=$TARGET_DISK_DIR \
-  --cache-dir=$TARGET_DISK_DIR/var/cache/apk
+echo "Actualizando base de datos"
+apk update --root $TARGET_DISK_DIR
 
-apk --root=$TARGET_DISK_DIR \
-  --keys-dir /etc/apk/keys \
-  --repositories-file /etc/apk/repositories \
-  --cache-dir=$TARGET_DISK_DIR/var/cache/apk \
-  add \
-    apk-tools \
-    shadow \
-    dhcpcd \
-    openresolv \
-    util-linux \
-    strace \
-    openssh \
-    grub-efi \
-    parted \
-    sdl2-dev sdl2 \
-    libdrm \
-    libdrm-dev \
-    mesa-gbm \
-    mesa-dev \
-    linux-headers \
-    mesa-dri-gallium \
-    libinput-dev \
-    expat-dev libffi-dev
+echo "Descargando e instalando paquetes"
+apk add --root $TARGET_DISK_DIR
+  apk-tools \
+  shadow \
+  dhcpcd \
+  openresolv \
+  util-linux \
+  strace \
+  openssh \
+  grub-efi \
+  parted \
+  sdl2-dev sdl2 \
+  libdrm \
+  libdrm-dev \
+  mesa-gbm \
+  mesa-dev \
+  linux-headers \
+  mesa-dri-gallium \
+  libinput-dev \
+  expat-dev libffi-dev
 
 echo "[install-dependencies] Instalación de dependencias APK terminada"
 sleep 0.5

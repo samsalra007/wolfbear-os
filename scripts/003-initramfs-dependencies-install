@@ -27,18 +27,30 @@ mkdir -p \
   "$INITRAMFS_PATH/etc/ssl/certs" \
   "$INITRAMFS_PATH/usr/lib"
 
-echo "- Copying keys and repositories from local apk"
-sleep 0.5
-cp -r /etc/apk/keys $INITRAMFS_PATH/etc/apk/keys
-cp /etc/apk/repositories $INITRAMFS_PATH/etc/apk/repositories
-
-echo "- Installing ./initramfs basic dependencies"
+echo "- Creando base de datos y world de apk-tools"
 sleep 0.5
 
-doas /sbin/apk --root="$INITRAMFS_PATH" \
-  --initdb \
-  --keys-dir /etc/apk/keys \
-  --repositories-file /etc/apk/repositories \
+mkdir -p $TARGET_DISK_DIR/var/lib/apk/db
+touch    $TARGET_DISK_DIR/lib/apk/db/installed
+chmod 644 $TARGET_DISK_DIR/lib/apk/db/installed
+
+mkdir -p $TARGET_DISK_DIR/etc/apk
+touch    $TARGET_DISK_DIR/apk/world
+chmod 644 $TARGET_DISK_DIR/apk/world
+
+echo "-Actualizando keys del equipo local hacia initramfs"
+sleep 0.5
+
+mkdir -p $TARGET_DISK_DIR/etc/apk/keys
+cp /etc/apk/keys/* $INITRAMFS_PATH/etc/apk/keys
+
+echo "- Actualizando base de datos"
+doas /sbin/apk update --root $TARGET_DISK_DIR
+
+echo "- Instalando dependencias"
+sleep 0.5
+
+doas /sbin/apk --root= $INITRAMFS_PATH \
   add \
     apk-tools \
     shadow \
