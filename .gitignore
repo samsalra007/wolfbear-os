@@ -6,3 +6,4 @@ kernel-modules-cache/*
 **.swp
 *.wbapp
 *.img
+.DS_STORE
