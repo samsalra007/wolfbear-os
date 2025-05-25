@@ -1,6 +1,9 @@
 #!/bin/sh
 set -euo pipefail
 
+echo "[install-into-disk] Iniciando instalación en disco"
+sleep 0.5
+
 echo "Selecciona el dispositivo en el cual deseas instalar WolfbearOS:"
 lsblk -d -o NAME,SIZE,MODEL | grep -E 'sd|vd|nvme'
 read -rp "¿En qué disco quieres instalar? (/dev/sdX o /dev/vdX): " INSTALLATION_DISK
@@ -9,8 +12,8 @@ DEV_DISK="/dev/$(basename "$INSTALLATION_DISK")"
 echo "¡¡¡ATENCIÓN!!! Recuerda que se eliminará todo en $DEV_DISK"
 read -rp "¿Estás seguro? (y/[n]): " CONF
 if [ "$CONF" != 'y' ]; then 
-  echo "Abortando."
-  exit 1
+  echo "El proceso de instalación no puede continuar. Reiniciando el sistema"
+  reboot
 fi
 
 echo "Planeando particiones"
@@ -81,3 +84,6 @@ sleep 0.5
 
 cp /boot/Image "$BOOT_DIR/"
 cp /boot/initramfs.cpio.xz "$BOOT_DIR/"
+
+echo "[install-into-disk] Instalación en disco finalizada"
+sleep 0.5

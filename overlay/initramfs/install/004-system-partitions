@@ -1,8 +1,0 @@
-#!/bin/bash
-set -euo pipefail
-
-echo "Montando particiones del sistema.."
-
-mount -t proc proc $TARGET_DISK_DIR/proc
-mount --rbind /sys $TARGET_DISK_DIR/sys
-mount --rbind /dev $TARGET_DISK_DIR/dev

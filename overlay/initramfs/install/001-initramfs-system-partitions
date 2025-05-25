@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+
+echo "[initramfs-system-partitions] Montando particiones del sistema y dispositivos de instalación"
+
+mkdir -p /proc /sys /dev /dev/dri /mnt/install/overlay /mnt/install/kernel
+
+echo "- Montando proc, sysfs and devtmpfs"
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t devtmpfs devtmpfs /dev
+
+echo "- Montando recursos de instalación"
+mount -t ext4 /dev/vda3 /mnt/install/overlay
+mount -t ext4 /dev/vda4 /mnt/install/kernel
+
+echo "[initramfs-system-partitions] Particiones montadas exitosamente"

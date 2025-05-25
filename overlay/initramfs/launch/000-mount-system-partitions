@@ -3,16 +3,12 @@
 echo "[mount-system-partitions] Iniciando script"
 
 echo "- Creando directorios del sistema para montar particiones"
-mkdir -p /proc /sys /dev /dev/dri /mnt/install/overlay /mnt/install/kernel
+mkdir -p /proc /sys /dev /dev/dri
 
 echo "- Montando proc, sysfs and devtmpfs"
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 mount -t devtmpfs devtmpfs /dev
-
-echo "- Montando recursos de instalación"
-mount -t ext4 /dev/vda3 /mnt/install/overlay
-mount -t ext4 /dev/vda4 /mnt/install/kernel
 
 echo "- Las particiones fueron creadas y montadas exitosamente"
 
