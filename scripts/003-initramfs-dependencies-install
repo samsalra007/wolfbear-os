@@ -12,7 +12,7 @@ sleep 0.5
 
 echo "- ./modprobe-compiled path: '$MODPROBE_COMPILED_DIR'"
 sleep 0.5
-touc
+
 echo "- Syncing overlay path to external path"
 rsync -a --links "$OVERLAY_INITRAMFS_PATH/" "$INITRAMFS_PATH/"
 
