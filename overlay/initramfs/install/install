@@ -1,12 +1,22 @@
 #!/bin/sh
 set -euo pipefail
 
+export TARGET_DISK_DIR="/mnt/target"
+export CURRENT_PATH=$( pwd )
+export SCRIPTS_DIR="$( dirname "$0" )/install"
+
+echo "Bienvenido a instalación de WolfbearOS"
+echo "El proceso comenzará en unos momentos"
+sleep 0.5
+
+export SYS_ARCH=$( ./000-arch-detection )
+
 # Obtén la ruta real del script "install"
 BASEDIR=$(cd "$(dirname "$0")" && pwd)
 # Los scripts numerados están en el mismo directorio que este script
 SCRIPTS_DIR="$BASEDIR"
 
-echo "🔄 Ejecutando secuencialmente los scripts de instalación…"
+echo "Ejecutando secuencialmente los scripts de instalación…"
 
 i=0
 while :; do
@@ -17,21 +27,24 @@ while :; do
   # Si no existe ningún fichero coincidente, $1 será literal y -e fallará
   if [ ! -e "$1" ]; then
     echo
-    echo "✅ Secuencia terminada en $prefix (no existe ${prefix}-*)"
+    echo "Secuencia terminada en $prefix (no existe ${prefix}-*)"
     break
   fi
 
-  # Ejecuta cada script existente y ejecutable
+  # Ejecuta cada script existente y ejecutable usando sh
   for script in "$SCRIPTS_DIR/${prefix}-"*; do
     [ -f "$script" ] || continue
-    [ -x "$script" ] || { echo "⚠️ Saltando $script (no es ejecutable)"; continue; }
+    if [ ! -x "$script" ]; then
+      echo "Saltando $script (no es ejecutable)"
+      continue
+    fi
     echo
-    echo "▶️  Ejecutando $script"
-    "$script"
+    echo "Ejecutando $script"
+    sh "$script"
   done
 
   i=$((i + 1))
 done
 
 echo
-echo "✅ Todos los scripts numerados han finalizado."
+echo "Todos los scripts numerados han finalizado."
