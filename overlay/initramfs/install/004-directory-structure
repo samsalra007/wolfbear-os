@@ -1,6 +1,9 @@
 #!/bin/sh
 set -euo pipefail
 
+echo "[directory-structure] Iniciando configuración de estructura de directorios"
+sleep 0.5
+
 echo "Creando directorios base de dependencias"
 mkdir -p "$TARGET_DISK_DIR/tmp"
 mkdir -p "$TARGET_DISK_DIR/sbin"
@@ -17,3 +20,5 @@ mkdir -p "$TARGET_DISK_DIR/apps"
 mkdir -p "$TARGET_DISK_DIR/games"
 mkdir -p "$TARGET_DISK_DIR/config"
 
+echo "[directory-structure] Configuración estructura de directorios terminada"
+sleep 0.5

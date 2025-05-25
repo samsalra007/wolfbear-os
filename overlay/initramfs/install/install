@@ -2,6 +2,7 @@
 set -euo pipefail
 
 TARGET_DISK_DIR="/mnt/target"
+CURRENT_PATH=$( pwd )
 
 echo "Bienvenido a instalación de WolfbearOS"
 echo "El proceso comenzará en unos momentos"
@@ -12,18 +13,3 @@ SYS_ARCH=$( ./000-arch-detection )
 echo "Hemos detectado que la arquitectura de tu sistema es '$SYS_ARCH'"
 sleep 0.5
 
-echo "Procederemos a detectar y configurar la red. Asegúrate de tener una conexión a internet estable."
-echo "Así como tu KIT deberá estar conectado por cable Ethernet y tu red local deberá admitir configuraciones DHCP."
-sleep 0.5
-./001-network-setup
-
-echo "Configuración de red finalizada."
-sleep 0.5
-
-echo "Procederemos a realizar el formato y configuración de tu unidad de almacenamiento."
-sleep 0.5
-./002-install-into-disk
-
-echo "Ahora procederemos con la creación de directorios del sistema."
-sleep 0.5
-./003-directory-structure

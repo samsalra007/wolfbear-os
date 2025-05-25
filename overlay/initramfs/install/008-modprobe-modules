@@ -4,7 +4,7 @@ set -euo pipefail
 echo "[modprobe-modules] Iniciando sincronización de módulos del sistema (modprobe) desde kernel"
 sleep 0.5
 
-rsync -a --links "/mnt/instal/kernel/modules" "$TARGET_DISK_DIR/"
+rsync -a --links "/mnt/install/kernel/modules" "$TARGET_DISK_DIR/"
 
 echo "[modprobe-modules] Sincronización de módulos (modprobe) terminada"
 sleep 0.5
