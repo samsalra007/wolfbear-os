@@ -49,7 +49,8 @@ sudo /sbin/apk --root "$INITRAMFS_PATH" \
     openssh \
     grub-efi \
     parted \
-    e2fsprogs
+    e2fsprogs \
+    rsync
 
 echo "- Setting up root user"
 sleep 0.5
