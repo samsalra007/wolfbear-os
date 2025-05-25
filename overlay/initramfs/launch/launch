@@ -1,10 +1,16 @@
-#!/bin/sh
+#!/bin/bash
+set -euo pipefail
 
 echo "[wolfbear-scripts] starting scripts workflow"
 
+cd /launch
 ./000-mount-system-partitions
+
 # ./001-mount-graphics-cards
+
 # ./002-setup-network
+
+cd /launch
 ./003-user-quick-fixes
 
 echo "[wolfbear-scripts] finishing scripts workflow"
