@@ -2,7 +2,8 @@
 
 echo "=== Starting WolfbearOS ==="
 
-./launch/launch
+cd launch
+./launch
 
 while true; do
 	clear
