@@ -31,12 +31,12 @@ echo "- Creando base de datos y world de apk-tools"
 sleep 0.5
 
 mkdir -p $INITRAMFS_PATH/var/lib/apk/db
-touch    $INITRAMFS_PATH/var/lib/apk/db/installed
-chmod 644 $INITRAMFS_PATH/var/lib/apk/db/installed
+doas touch    $INITRAMFS_PATH/var/lib/apk/db/installed
+doas chmod 644 $INITRAMFS_PATH/var/lib/apk/db/installed
 
 mkdir -p $INITRAMFS_PATH/etc/apk
-touch    $INITRAMFS_PATH/etc/apk/world
-chmod 644 $INITRAMFS_PATH/etc/apk/world
+doas touch    $INITRAMFS_PATH/etc/apk/world
+doas chmod 644 $INITRAMFS_PATH/etc/apk/world
 
 echo "-Actualizando keys del equipo local hacia initramfs"
 sleep 0.5
