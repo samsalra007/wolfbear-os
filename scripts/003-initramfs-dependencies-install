@@ -27,10 +27,6 @@ mkdir -p \
   "$INITRAMFS_PATH/etc/ssl/certs" \
   "$INITRAMFS_PATH/usr/lib"
 
-echo "- Syncing kernel modules"
-sleep 0.5
-rsync -a --links "$MODULES_CACHE_PATH/" "$INITRAMFS_PATH/" || true
-
 echo "- Copying keys and repositories from local apk"
 sleep 0.5
 cp -r /etc/apk/keys $INITRAMFS_PATH/etc/apk/keys
@@ -53,17 +49,6 @@ sudo /sbin/apk --root "$INITRAMFS_PATH" \
     openssh \
     grub-efi \
     parted
-
-# Estas librerías habilitan SDL2 y los graficos
-#    sdl2-dev sdl2 \
-#    libdrm \
-#    libdrm-dev \
-#    mesa-gbm \
-#    mesa-dev \
-#    linux-headers \
-#    mesa-dri-gallium \
-#    libinput-dev \
-#    expat-dev libffi-dev
 
 echo "- Setting up root user"
 sleep 0.5

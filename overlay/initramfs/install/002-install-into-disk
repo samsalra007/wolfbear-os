@@ -79,11 +79,5 @@ EOF
 echo "Cargando contenido de kernel para rootfs"
 sleep 0.5
 
-mkdir -p "$BOOT_DIR"
-cp $TARGET_PATH/Image "$BOOT_DIR/"
-cp $TARGET_PATH/initramfs.cpio.xz "$BOOT_DIR/"
-
-echo "Preparando entorno para chroot"
-mount -t proc proc /mnt/target/proc
-mount --rbind /sys  /mnt/target/sys
-mount --rbind /dev  /mnt/target/dev
+cp /boot/Image "$BOOT_DIR/"
+cp /boot/initramfs.cpio.xz "$BOOT_DIR/"

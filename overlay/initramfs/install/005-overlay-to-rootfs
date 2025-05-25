@@ -1,0 +1,10 @@
+#!/bin/sh
+set -euo pipefail
+
+echo "[overlay-to-rootfs] Sincronizando directorios desde /mnt/install/overlay a raiz '$TARGET_DISK_DIR"
+sleep 0.5
+
+rsync -a --links "/mnt/instal/overlay/" "$TARGET_DISK_DIR/"
+
+echo "[overlay-to-rootfs] Sincronización terminada '$TARGET_DISK_DIR"
+sleep 0.5

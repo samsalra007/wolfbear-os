@@ -2,10 +2,10 @@
 
 echo "=== Runing WolfbearOS init scripts ==="
 
-cd /recovery
-./scripts
-
-cd $current
+I_AM_INSTALLED=$( cat iminstalled )
+if [ "$I_AM_INSTALLED" = 'y' ]; then
+	exec /launch/scripts
+fi
 
 while true; do
 	clear

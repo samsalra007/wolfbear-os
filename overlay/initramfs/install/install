@@ -24,6 +24,6 @@ echo "Procederemos a realizar el formato y configuración de tu unidad de almace
 sleep 0.5
 ./002-install-into-disk
 
-echo "Ahora procederemos con la configuración de directorios del sistema y sus permisos."
+echo "Ahora procederemos con la creación de directorios del sistema."
 sleep 0.5
-./003-structure-permissions
+./003-directory-structure

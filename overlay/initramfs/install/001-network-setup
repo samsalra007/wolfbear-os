@@ -1,12 +1,12 @@
 #!/bin/sh
 set -euo pipefail
 
-echo "[setup-network] begin"
+echo "[network-setup] Iniciando configuración de internet"
 
-echo "- Creating dhcpd path"
+echo "Creando archivo de configuración DHCP"
 mkdir -p /run/dhcpcd
 
-echo "- Executing dhcpd in eth0"
+echo "Solicitando conexión a través de eth0"
 dhcpcd eth0
 
-echo "[setup-network] end"
+echo "[setup-network] Conexión a internet realizada con éxito"

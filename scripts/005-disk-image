@@ -3,7 +3,7 @@
 set -euo pipefail
 
 IMG=generated.img
-SIZE_MB=256
+SIZE_MB=1024
 LOOPDEV=""
 MNT_DIR=/mnt/disk
 TARGET_PATH=$1
@@ -12,6 +12,9 @@ TARGET_PATH=$1
 echo "Eliminando imagen previa si existe..."
 umount -l "$MNT_DIR/EFI_SYSTEM_PARTITION" || true
 umount -l "$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION" || true
+umount -l "$MNT_DIR/OVERLAY_PARTITION" || true
+umount -l "$MNT_DIR/KERNEL_FILES_PARTITION" || true
+
 rm -f "$TARGET_PATH/$IMG"
 
 # Crear imagen vacía
@@ -29,7 +32,9 @@ parted --script "$LOOPDEV" \
   mklabel gpt \
   mkpart ESP fat32 1MiB 100MiB \
   set 1 esp on \
-  mkpart primary ext4 100MiB 100%
+  mkpart primary ext4 100MiB 200MiB \
+  mkpart primary ext4 200MiB 300MiB \
+  mkpart primary ext4 300MiB 100%
 
 # Recargar particiones
 echo "Recargando particiones..."
@@ -46,13 +51,21 @@ echo "Detectando particiones..."
 partx -a "$LOOPDEV"
 EFI_PART="${LOOPDEV}p1"
 ROOT_PART="${LOOPDEV}p2"
+OVERLAY_PART="${LOOPDEV}p3"
+KERNEL_FILES_PART="${LOOPDEV}p4"
 
 # Formatear particiones
 echo "Formateando partición EFI ($EFI_PART) como FAT32..."
 mkfs.vfat -F 32 "$EFI_PART"
 
-echo "Formateando partición root ($ROOT_PART) como ext4..."
+echo "Formateando partición ROOT ($ROOT_PART) como ext4..."
 mkfs.ext4 "$ROOT_PART"
+
+echo "Formateando partición OVERLAY ($OVERLAY_PART) como ext4..."
+mkfs.ext4 "$OVERLAY_PART"
+
+echo "Formateando partición KERNEL ($KERNEL_FILES_PART) como ext4..."
+mkfs.ext4 "$KERNEL_FILES_PART"
 
 # Montar particiones
 echo "Montando particiones en /mnt/disk..."
@@ -62,6 +75,9 @@ EFI_SYSTEM_PARTITION="$MNT_DIR/EFI_SYSTEM_PARTITION"
 ROOTFS_SYSTEM_PARTITION="$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION"
 ROOTFS_BOOTDIR="$MNT_DIR/ROOTFS_FILESYSTEM_PARTITION/boot"
 
+OVERLAY_PART_DIR="$MNT_DIR/OVERLAY"
+KERNEL_PART_DIR="$MNT_DIR/KERNEL"
+
 mkdir -p "$EFI_SYSTEM_PARTITION"
 mount "$EFI_PART" "$EFI_SYSTEM_PARTITION"
 mkdir -p "$EFI_BOOTDIR"
@@ -69,6 +85,12 @@ mkdir -p "$EFI_BOOTDIR"
 mkdir -p "$ROOTFS_SYSTEM_PARTITION"
 mount "$ROOT_PART" "$ROOTFS_SYSTEM_PARTITION"
 mkdir -p "$ROOTFS_BOOTDIR"
+
+mkdir -p "$OVERLAY_PART_DIR"
+mount "$OVERLAY_PART" "$OVERLAY_PART_DIR"
+
+mkdir -p "$KERNEL_PART_DIR"
+mount "$KERNEL_FILES_PART" "$KERNEL_FILES_PART"
 
 # Generando contenido EFI_SYSTEM_PARTITION (boot)
 echo "Generando contenido para EFI System Partition"

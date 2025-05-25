@@ -1,0 +1,32 @@
+#!/bin/sh
+set -euo pipefail
+
+echo "[install-dependencies] Instalando dependencias APK"
+sleep 0.5
+
+/sbin/apk --root "$TARGET_DISK_DIR" \
+  --initdb \
+  --keys-dir /etc/apk/keys \
+  --repositories-file /etc/apk/repositories \
+  add \
+    apk-tools \
+    shadow \
+    dhcpcd \
+    openresolv \
+    util-linux \
+    strace \
+    openssh \
+    grub-efi \
+    parted \
+    sdl2-dev sdl2 \
+    libdrm \
+    libdrm-dev \
+    mesa-gbm \
+    mesa-dev \
+    linux-headers \
+    mesa-dri-gallium \
+    libinput-dev \
+    expat-dev libffi-dev
+
+echo "[install-dependencies] Instalación de dependencias APK terminada"
+sleep 0.5
