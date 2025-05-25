@@ -5,8 +5,6 @@ export TARGET_DISK_DIR="/mnt/target"
 export CURRENT_PATH=$( pwd )
 export SCRIPTS_DIR="$( dirname "$0" )/install"
 
-$1
-
 echo "Bienvenido a instalación de WolfbearOS"
 echo "El proceso comenzará en unos momentos"
 sleep 0.5
@@ -18,13 +16,13 @@ BASEDIR=$(cd "$(dirname "$0")" && pwd)
 # Los scripts numerados están en el mismo directorio que este script
 SCRIPTS_DIR="$BASEDIR"
 
-if [ -n "$1" ]; then
+if [ -z "$1" ]; then
+  echo "Ejecutando secuencialmente los scripts de instalación…"
+else
   SCRIPT_NAME_TO_EXECUTE=$1
   echo "Ejecutando específicamente el script $SCRIPT_NAME_TO_EXECUTE"
   sh "$SCRIPT_NAME_TO_EXECUTE"
-  exit
-else
-  echo "Ejecutando secuencialmente los scripts de instalación…"
+  exit 0
 fi
 
 i=0
