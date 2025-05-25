@@ -4,7 +4,8 @@ set -euo pipefail
 echo "[install-dependencies] Instalando dependencias APK"
 sleep 0.5
 
-apk --root "$TARGET_DISK_DIR" \
+apk --root="$TARGET_DISK_DIR" update
+apk --root="$TARGET_DISK_DIR" \
   --initdb \
   --keys-dir /etc/apk/keys \
   --repositories-file /etc/apk/repositories \
