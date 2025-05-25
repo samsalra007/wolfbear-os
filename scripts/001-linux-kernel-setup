@@ -104,7 +104,7 @@ if [ "$VAR_KERNEL_MODULES_COMPILE" = 'y' ]; then
 
 	echo "- Instaling Linux modules"
 	sleep 0.5
-	make -j$(nproc) modules_install INSTALL_MOD_PATH=$MODULES_CACHE_PATH
+	make -j$(nproc) modules_install INSTALL_MOD_PATH=$MODPROBE_COMPILED_DIR
 fi
 
 echo "- Determining compilation path according arch"

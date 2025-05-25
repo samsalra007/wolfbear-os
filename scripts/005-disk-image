@@ -6,9 +6,11 @@ IMG=generated.img
 SIZE_MB=1024
 LOOPDEV=""
 MNT_DIR=/mnt/disk
+
 TARGET_PATH=$1
 OVERLAY_ROOTFS_PATH=$2
 BUSY_BOX_COMPILED_DIR=$3
+MODPROBE_COMPILED_DIR=$4
 
 # Limpiar imagen previa
 echo "Eliminando imagen previa si existe..."
@@ -116,12 +118,15 @@ cp $TARGET_PATH/initramfs.cpio.xz $ROOTFS_BOOTDIR
 echo "Sincronizando contenido de overlay de rootfs y modprobe"
 mkdir -p "$RESOURCES_PART_DIR/rootfs-overlay"
 mkdir -p "$RESOURCES_PART_DIR/modules-modprobe"
+mkdir -p "$RESOURCES_PART_DIR/busybox-compiled"
 
-echo "overlay/rootfs $OVERLAY_ROOTFS_PATH"
-echo "busybox-compiled $BUSY_BOX_COMPILED_DIR"
+echo "rootfs-overlay    $OVERLAY_ROOTFS_PATH"
+echo "busybox-compiled  $BUSY_BOX_COMPILED_DIR"
+echo "modules-modprobe  $MODPROBE_COMPILED_DIR"
 
 rsync -a --links "$OVERLAY_ROOTFS_PATH/" "$RESOURCES_PART_DIR/rootfs-overlay/"
-rsync -a --links "$BUSY_BOX_COMPILED_DIR/" "$RESOURCES_PART_DIR/modules-modprobe/"
+rsync -a --links "$MODPROBE_COMPILED_DIR/" "$RESOURCES_PART_DIR/modules-modprobe/"
+rsync -a --links "$BUSY_BOX_COMPILED_DIR/" "$RESOURCES_PART_DIR/busybox-compiled/"
 
 # Finalizar
 echo "Desmontando particiones"

@@ -2,7 +2,7 @@ dependencies/*
 rootfs/*
 target/*
 initramfs/*
-kernel-modules-cache/*
+modprobe-compiled/*
 **.swp
 *.wbapp
 *.img

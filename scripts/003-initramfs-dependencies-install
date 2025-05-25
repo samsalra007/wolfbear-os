@@ -10,7 +10,7 @@ sleep 0.5
 echo "- ./overlay path: '$OVERLAY_INITRAMFS_PATH'"
 sleep 0.5
 
-echo "- ./kernel-modules-cache path: '$MODULES_CACHE_PATH'"
+echo "- ./modprobe-compiled path: '$MODPROBE_COMPILED_DIR'"
 sleep 0.5
 
 echo "- Syncing overlay path to external path"

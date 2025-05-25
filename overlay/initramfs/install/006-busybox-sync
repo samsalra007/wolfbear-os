@@ -1,10 +1,10 @@
 #!/bin/sh
 set -euo pipefail
 
-echo "[busybox-sync] Sincronizando directorios desde /mnt/install/modules-modprobe a raiz '$TARGET_DISK_DIR"
+echo "[busybox-sync] Sincronizando directorios desde /mnt/install/busybox-compiled a raiz '$TARGET_DISK_DIR"
 sleep 0.5
 
-rsync -a --links "/mnt/install/modules-modprobe/" "$TARGET_DISK_DIR/"
+rsync -a --links "/mnt/install/busybox-compiled/" "$TARGET_DISK_DIR/"
 
 echo "[busybox-sync] Sincronización terminada '$TARGET_DISK_DIR"
 sleep 0.5
