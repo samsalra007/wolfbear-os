@@ -14,7 +14,9 @@ echo "- Montando recursos de instalación"
 mount -t ext4 /dev/vda3 /mnt/install/
 
 while true; do
-	echo "WolfbearOS initramfs"
+	clear
+    
+	echo "WolfbearOS Development Version"
 
 	/sbin/getty -L ttyAMA0 115200 vt1000
 

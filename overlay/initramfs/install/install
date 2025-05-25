@@ -3,6 +3,7 @@ set -euo pipefail
 
 TARGET_DISK_DIR="/mnt/target"
 CURRENT_PATH=$( pwd )
+SCRIPTS_DIR="$( dirname "$0" )/install"
 
 echo "Bienvenido a instalación de WolfbearOS"
 echo "El proceso comenzará en unos momentos"
@@ -13,3 +14,27 @@ SYS_ARCH=$( ./000-arch-detection )
 echo "Hemos detectado que la arquitectura de tu sistema es '$SYS_ARCH'"
 sleep 0.5
 
+
+echo "🔄 Ejecutando secuencialmente los scripts…"
+
+i=0
+while :; do
+  # Genera el prefijo con ceros: 000, 001, ..., 010, ...
+  prefix=$(printf "%03d" "$i")
+  # Buscamos ANY script que empiece con ese prefijo
+  # El glob no expande si no hay coincidencias; así que usamos 'ls' para probar.
+  if ls "$SCRIPTS_DIR/${prefix}-"* >/dev/null 2>&1; then
+    # Si hay varios, los ejecutamos en orden alfabético
+    for script in "$SCRIPTS_DIR/${prefix}-"*; do
+      [ -f "$script" ] || continue
+      [ -x "$script" ] || { echo "⚠️  Saltando $script (no es ejecutable)"; continue; }
+      echo "▶️  Ejecutando $script"
+      "$script"
+    done
+    i=$((i + 1))
+  else
+    # No existe el script con este número → fin de la secuencia
+    echo "✅ Secuencia terminada en $prefix (script no encontrado)."
+    break
+  fi
+done
