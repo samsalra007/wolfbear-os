@@ -2,9 +2,19 @@
 set -euo pipefail
 
 echo "[rootfs-system-partitions] Montando particiones del sistema y dispositivos en el sistema operativo final"
+sleep 0.5
+
+echo "Creando directorios para particiones en '$TARGET_DIS_DIR'"
+sleep 0.5
+
+mkdir -p $TARGET_DISK_DIR/proc $TARGET_DISK_DIR/sys $TARGET_DISK_DIR/dev
+
+echo "Montando particiones del sistema en directorios creados"
+sleep 0.5
 
 mount -t proc proc $TARGET_DISK_DIR/proc
 mount --rbind /sys $TARGET_DISK_DIR/sys
 mount --rbind /dev $TARGET_DISK_DIR/dev
 
 echo "[rootfs-system-partitions] Particiones montadas exitosamente"
+sleep 0.5
