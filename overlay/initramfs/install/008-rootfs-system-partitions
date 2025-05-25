@@ -4,7 +4,7 @@ set -euo pipefail
 echo "[rootfs-system-partitions] Montando particiones del sistema y dispositivos en el sistema operativo final"
 sleep 0.5
 
-echo "Creando directorios para particiones en '$TARGET_DIS_DIR'"
+echo "Creando directorios para particiones en '$TARGET_DISK_DIR'"
 sleep 0.5
 
 mkdir -p $TARGET_DISK_DIR/proc $TARGET_DISK_DIR/sys $TARGET_DISK_DIR/dev
