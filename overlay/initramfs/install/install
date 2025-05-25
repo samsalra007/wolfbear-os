@@ -1,9 +1,10 @@
 #!/bin/sh
 set -euo pipefail
 
-# Asume que tu script 'install' está junto al subdirectorio 'install/'
+# Obtén la ruta real del script "install"
 BASEDIR=$(cd "$(dirname "$0")" && pwd)
-SCRIPTS_DIR="$BASEDIR/install"
+# Los scripts numerados están en el mismo directorio que este script
+SCRIPTS_DIR="$BASEDIR"
 
 echo "🔄 Ejecutando secuencialmente los scripts de instalación…"
 
@@ -11,16 +12,16 @@ i=0
 while :; do
   prefix=$(printf "%03d" "$i")
 
-  # Esta línea expande el patrón y pone las coincidencias en "$@"
+  # Expande el patrón (efectúa globbing)
   set -- "$SCRIPTS_DIR/${prefix}-"*
-  # Si la primera posición no existe, no hay ningún fichero
+  # Si no existe ningún fichero coincidente, $1 será literal y -e fallará
   if [ ! -e "$1" ]; then
     echo
     echo "✅ Secuencia terminada en $prefix (no existe ${prefix}-*)"
     break
   fi
 
-  # Ejecuta cada script que sí exista y sea ejecutable
+  # Ejecuta cada script existente y ejecutable
   for script in "$SCRIPTS_DIR/${prefix}-"*; do
     [ -f "$script" ] || continue
     [ -x "$script" ] || { echo "⚠️ Saltando $script (no es ejecutable)"; continue; }
