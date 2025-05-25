@@ -129,7 +129,7 @@ rsync -a --links "$OVERLAY_ROOTFS_PATH/" "$RESOURCES_PART_DIR/rootfs-overlay/"
 rsync -a --links "$MODPROBE_COMPILED_DIR/" "$RESOURCES_PART_DIR/modules-modprobe/"
 rsync -a --links "$BUSY_BOX_COMPILED_DIR/" "$RESOURCES_PART_DIR/busybox-compiled/"
 
-echo "Copiando 'Image' e 'initramfs.cpio.xz' en el directorio linux-kernel"
+echo "Copiando 'Image' e 'initramfs.cpio.xz' en el directorio linux-kernel desde $TARGET_PATH"
 cp $TARGET_PATH/Image "$RESOURCES_PATH_DIR/linux-kernel"
 cp $TARGET_PATH/initramfs.cpio.xz "$RESOURCES_PATH_DIR/linux-kernel"
 
