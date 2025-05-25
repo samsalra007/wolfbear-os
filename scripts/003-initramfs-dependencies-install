@@ -50,7 +50,8 @@ doas /sbin/apk --root="$INITRAMFS_PATH" \
     grub-efi \
     parted \
     e2fsprogs \
-    rsync
+    rsync \
+    nano
 
 echo "- Setting up root user"
 sleep 0.5
