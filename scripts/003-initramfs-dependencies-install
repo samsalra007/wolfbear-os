@@ -50,7 +50,7 @@ doas /sbin/apk update --root $INITRAMFS_PATH
 echo "- Instalando dependencias"
 sleep 0.5
 
-doas /sbin/apk --root= $INITRAMFS_PATH \
+doas /sbin/apk --root $INITRAMFS_PATH \
   add \
     apk-tools \
     shadow \
