@@ -35,7 +35,7 @@ cp /etc/apk/repositories $INITRAMFS_PATH/etc/apk/repositories
 echo "- Installing ./initramfs basic dependencies"
 sleep 0.5
 
-sudo /sbin/apk --root "$INITRAMFS_PATH" \
+sudo apk --root "$INITRAMFS_PATH" \
   --initdb \
   --keys-dir /etc/apk/keys \
   --repositories-file /etc/apk/repositories \
