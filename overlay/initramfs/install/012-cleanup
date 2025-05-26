@@ -1,0 +1,12 @@
+#!/bin/bash
+echo "[cleanup] Iniciando limpieza final"
+sleep 0.5
+
+echo "Desmontando particiones"
+sleep 0.5
+
+umount -l "$TARGET_DISK_DIR/dev"
+umount -l "$TARGET_DSK_DIR/sys"
+umount -l "$TARGET_DISK_DIR/proc"
+
+echo "[cleanup] Limpieza final terminada"
