@@ -1,23 +1,53 @@
 #!/bin/sh
 
-echo "=== Iniciando WolfbearOS ==="
+#!/bin/sh
 
-echo "- Creando directorios del sistema para montar particiones"
-mkdir -p /proc /sys /dev /dev/dri /mnt/install
+echo "[initramfs] Buscando instalación..."
 
-echo "- Montando proc, sysfs and devtmpfs"
-mount -t proc proc /proc
-mount -t sysfs sysfs /sys
-mount -t devtmpfs devtmpfs /dev
+# 1. Intenta montar la raíz del sistema
+mkdir -p /mnt/vda-root
+mount /dev/vda2 /mnt/vda-root || {
+    echo "Error: No se pudo montar /dev/vda2"
+    exec sh
+}
 
-echo "- Montando recursos de instalación"
-mount -t ext4 /dev/vda3 /mnt/install/
+# 2. Comprueba si el sistema está instalado (usa lo que prefieras)
+if [ -x /mnt/vda-root/init ] || [ -f /mnt/vda-root/.wolfbearOSInstalled ]; then
+    echo "[initramfs] Sistema detectado. Cambiando al root real."
 
-while true; do
-	echo "WolfbearOS initramfs"
+    # Montar /dev, /proc, /sys dentro del nuevo root
+    mount --rbind /dev /mnt/vda-root/dev
+    mount --rbind /proc /mnt/vda-root/proc
+    mount --rbind /sys /mnt/vda-root/sys
 
-	/sbin/getty -L ttyAMA0 115200 vt1000
+    # Ejecutar switch_root
+    exec switch_root /mnt/vda-root /init
+else
+    echo "[initramfs] WolfbearOS no se detectó en el sistema y se procederá con la instalación"
 
-	echo "Woof bye!"
-	sleep 2
-done
+    # Ir al instalador
+    exec /launch/run
+fi
+
+
+# echo "=== Iniciando WolfbearOS ==="
+
+# echo "- Creando directorios del sistema para montar particiones"
+# mkdir -p /proc /sys /dev /dev/dri /mnt/install
+
+# echo "- Montando proc, sysfs and devtmpfs"
+# mount -t proc proc /proc
+# mount -t sysfs sysfs /sys
+# mount -t devtmpfs devtmpfs /dev
+
+# echo "- Montando recursos de instalación"
+# mount -t ext4 /dev/vda3 /mnt/install/
+
+# while true; do
+# 	echo "WolfbearOS initramfs"
+# 
+# 	/sbin/getty -L ttyAMA0 115200 vt1000
+
+# 	echo "Woof bye!"
+# 	sleep 2
+# done
