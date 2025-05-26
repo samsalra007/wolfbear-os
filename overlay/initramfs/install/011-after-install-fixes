@@ -10,6 +10,6 @@ chmod u+s $TARGET_DISK_DIR/bin/ping
 INSTALLED_FLAG="$TARGET_DISK_DIR/.wolfbearOSInstalled"
 echo "- Marcando WolfbearOS como instalado '$INSTALLED_FLAG'"
 
-touch $INSTALLED_FLAG
+touch "$INSTALLED_FLAG"
 
 echo "[after-install-fixes] Recursos ajustados exitosamente"
