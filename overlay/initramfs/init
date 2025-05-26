@@ -1,18 +1,18 @@
 #!/bin/sh
 
-#!/bin/sh
-
 echo "[initramfs] Buscando instalación..."
 
 # 1. Intenta montar la raíz del sistema
 mkdir -p /mnt/vda-root
 mount /dev/vda2 /mnt/vda-root || {
     echo "Error: No se pudo montar /dev/vda2"
-    exec sh
+
+     # Ir al instalador
+    exec /install/run
 }
 
 # 2. Comprueba si el sistema está instalado (usa lo que prefieras)
-if [ -x /mnt/vda-root/init ] || [ -f /mnt/vda-root/.wolfbearOSInstalled ]; then
+if [ -f /mnt/vda-root/.wolfbearOSInstalled ]; then
     echo "[initramfs] Sistema detectado. Cambiando al root real."
 
     # Montar /dev, /proc, /sys dentro del nuevo root
@@ -26,7 +26,7 @@ else
     echo "[initramfs] WolfbearOS no se detectó en el sistema y se procederá con la instalación"
 
     # Ir al instalador
-    exec /launch/run
+    exec /install/run
 fi
 
 
