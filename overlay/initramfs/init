@@ -17,7 +17,8 @@ lsblk
 
 mount /dev/vda2 /mnt/vda-root || {
     echo "[initramfs] WolfbearOS no detectó una partición válida del sistema operativo."
-    echo "            Iniciando proceso de instalación.."
+    echo "            O bien, esta es la imagen de instalación. Favor de expulsarla si no"
+    echo "            desea instalar el sistema."
     sleep 1
 
     exec /install/run
