@@ -6,6 +6,13 @@ echo "- Creando directorios del sistema para montar particiones"
 sleep 0.5
 
 mkdir -p /mnt/vda-root
+mount /dev/vda2 /mnt/vda-root
+
+mkdir -p /mnt/vda-root/boot/efi
+umount /dev/vda1 2>/dev/null
+sck.vfat -a /dev/vda1
+mount /dev/vda1 /mnt/vda-root/boot/efi
+
 mkdir -p /mnt/vda-root/proc
 mkdir -p /mnt/vda-root/sys
 mkdir -p /mnt/vda-root/dev
