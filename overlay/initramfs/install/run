@@ -5,9 +5,16 @@ export TARGET_DISK_DIR="/mnt/target"
 export CURRENT_PATH=$( pwd )
 export SCRIPTS_DIR="$( dirname "$0" )/install"
 
-echo "Bienvenido a instalación de WolfbearOS"
-echo "El proceso comenzará en unos momentos"
-sleep 0.5
+echo "Bienvenido a instalación de WolfbearOS Developer"
+echo "- Por favor, lee las instrucciones antes de comenzar."
+echo "- También puedes regresar a cualquier paso de la instalación con tan solo ejecutar:"
+echo "  ./run [script]"
+echo "- Donde [script] tiene el formato xxx-nombre"
+echo "- De otra forma el asistente ejecutará todos los scripts en orden."
+echo " "
+echo "- También puedes detener el proceso de instalación a través del comando estándar CTRL+C y reanudar en cualquier momento"
+echo " "
+sleep 5
 
 export SYS_ARCH=$( ./000-arch-detection )
 
@@ -17,10 +24,10 @@ BASEDIR=$(cd "$(dirname "$0")" && pwd)
 SCRIPTS_DIR="$BASEDIR"
 
 if [ -z "${1-}" ]; then
-  echo "Ejecutando secuencialmente los scripts de instalación…"
+  echo "Has solicitado ejecutar todos los scripts del directorio."
 else
   SCRIPT_NAME_TO_EXECUTE=$1
-  echo "Ejecutando específicamente el script $SCRIPT_NAME_TO_EXECUTE"
+  echo "Has solicitado ejecutar el script '$SCRIPT_NAME_TO_EXECUTE'."
   sh "$SCRIPT_NAME_TO_EXECUTE"
   exit 0
 fi
@@ -34,7 +41,7 @@ while :; do
   # Si no existe ningún fichero coincidente, $1 será literal y -e fallará
   if [ ! -e "$1" ]; then
     echo
-    echo "Secuencia terminada en $prefix (no existe ${prefix}-*)"
+    echo "Se ha terminado la ejecución de los scripts (ya no existe el script ${prefix}-*)"
     break
   fi
 
@@ -42,11 +49,11 @@ while :; do
   for script in "$SCRIPTS_DIR/${prefix}-"*; do
     [ -f "$script" ] || continue
     if [ ! -x "$script" ]; then
-      echo "Saltando $script (no es ejecutable)"
+      echo "Saltando script $script (no es ejecutable)"
       continue
     fi
     echo
-    echo "Ejecutando $script"
+    echo "Corriendo script $script"
     sh "$script"
   done
 
@@ -54,4 +61,4 @@ while :; do
 done
 
 echo
-echo "Todos los scripts numerados han finalizado."
+echo "El script de instalación de WolfbearOS ha finalizado exitosamente"
