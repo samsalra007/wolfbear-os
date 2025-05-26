@@ -50,7 +50,9 @@ apk add --root $TARGET_DISK_DIR \
   mesa-dri-gallium \
   libinput-dev \
   expat-dev libffi-dev \
-  kmod
+  kmod \
+  e2fsprogs \
+  dosfstools
 
 echo "[install-dependencies] Instalación de dependencias APK terminada"
 sleep 0.5
