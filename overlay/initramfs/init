@@ -20,11 +20,9 @@ mount /dev/vda2 /mnt/vda-root || {
     echo "            Iniciando proceso de instalación.."
     sleep 1
 
-    echo ""
     exec /install/run
 
-    echo "Instalación completa, por favor reinicie su equipo.."
-    sleep 60
+    echo "Instalación finaliada, por favor reinicie su equipo o bien siga probando la terminal"
 }
 
 if [ -f /mnt/vda-root/.wolfbearOSInstalled ]; then
@@ -37,7 +35,6 @@ else
 
     /sbin/getty -L ttyAMA0 115200 vt1000
 
-    echo ""
     exec /install/run
 fi
 
