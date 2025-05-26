@@ -20,7 +20,8 @@ mkdir -p /mnt/vda-root/dev
 echo "- Montando en el nuevo root (rootfs)"
 sleep 0.5
 
-mount --types proc /proc /mnt/vda-root/proc
+# Montar /dev, /proc, /sys dentro del nuevo root
+mount --rbind /proc /mnt/vda-root/proc
 mount --rbind /dev /mnt/vda-root/dev
 mount --rbind /sys /mnt/vda-root/sys
 
