@@ -8,20 +8,26 @@ mkdir -p /mnt/vda-root
 lsblk
 
 mount /dev/vda2 /mnt/vda-root || {
-    echo "Error: No se pudo montar /dev/vda2"
-	sleep 15
-	exit
+    echo "[initramfs] WolfbearOS no detectó una partición válida del sistema operativo."
+    echo "            Iniciando proceso de instalación.."
+    sleep 1
+
+    echo ""
+    exec /install/run
+
+    echo "Instalación completa, por favor reinicie su equipo.."
+    sleep 60
 }
 
-# 2. Comprueba si el sistema está instalado (usa lo que prefieras)
 if [ -f /mnt/vda-root/.wolfbearOSInstalled ]; then
-    echo "[initramfs] Sistema detectado. Cambiando al root real."
-
+    echo "[initramfs] WolfbearOS detectó un sistema instalado"
 	exec /launch/run
 else
-    echo "[initramfs] WolfbearOS no se detectó en el sistema y se procederá con la instalación"
+    echo "[initramfs] WolfbearOS detectó un disco pero no contiene el sistema operativo."
+    echo "            Iniciando proceso de instalación.."
+    sleep 1
 
-    # Ir al instalador
+    echo ""
     exec /install/run
 fi
 
