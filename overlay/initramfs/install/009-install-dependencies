@@ -49,7 +49,8 @@ apk add --root $TARGET_DISK_DIR \
   linux-headers \
   mesa-dri-gallium \
   libinput-dev \
-  expat-dev libffi-dev
+  expat-dev libffi-dev \
+  kmod
 
 echo "[install-dependencies] Instalación de dependencias APK terminada"
 sleep 0.5
