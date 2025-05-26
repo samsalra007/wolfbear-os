@@ -8,6 +8,7 @@ echo "- Solucionando problemas de ejecución del comando ping"
 chmod u+s $TARGET_DISK_DIR/bin/ping
 
 echo "- Marcando WolfbearOS como instalado"
-touch $TARGET_DISK_DIR/.wolfbearOSInstalled
+INSTALLED_FLAG=$TARGET_DISK_DIR/.wolfbearOSInstalled
+touch $INSTALLED_FLAG
 
 echo "[after-install-fixes] Recursos ajustados exitosamente"
