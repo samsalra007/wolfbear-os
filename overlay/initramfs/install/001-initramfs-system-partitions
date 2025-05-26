@@ -3,12 +3,10 @@ set -euo pipefail
 
 echo "[initramfs-system-partitions] Montando particiones del sistema y dispositivos de instalación"
 
-mkdir -p /proc /sys /dev /dev/dri /mnt/install/
+mkdir -p /mnt/install/
 
-echo "- Montando proc, sysfs and devtmpfs"
-mount -t proc proc /proc
-mount -t sysfs sysfs /sys
-mount -t devtmpfs devtmpfs /dev
+# Las particiones del sistema dev sys y proc ya las estamos montando en el init de initramfs
+# por lo que no es necesario volverlas a montar aqui, solo los recursos de instalación
 
 echo "- Montando recursos de instalación"
 mount -t ext4 /dev/vda3 /mnt/install/
