@@ -2,22 +2,18 @@
 
 echo "=== Iniciando WolfbearOS ==="
 
-echo "- Creando directorios del sistema para montar particiones"
-mkdir -p /proc /sys /dev /dev/dri /mnt/install
+# Las particiones del sistema se montaron en el launch de initramfs
 
-echo "- Montando proc, sysfs and devtmpfs"
-mount -t proc proc /proc
-mount -t sysfs sysfs /sys
-mount -t devtmpfs devtmpfs /dev
-
-echo "- Montando recursos de instalación"
-mount -t ext4 /dev/vda3 /mnt/install/
+# Pero aquí si es necesario exportar las variables para drivers de video
+export LIBGL_DRIVERS_PATH=/usr/lib/dri
+export SDL_VIDEODRIVER=KMSDRM
+export SDL_KMSDRM_DEVICE=/dev/dri/card0
+export SDL_KMSDRM_RENDER_NODE=/dev/dri/renderD128
 
 while true; do
 	clear
     
-	echo "WolfbearOS Development Version"
-
+	echo "[ROOTFS] WolfbearOS Development Version"
 	/sbin/getty -L ttyAMA0 115200 vt1000
 
 	echo "Woof bye!"

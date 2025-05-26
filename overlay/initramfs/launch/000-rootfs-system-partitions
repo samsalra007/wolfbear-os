@@ -1,0 +1,20 @@
+#!/bin/sh
+
+echo "[rootfs-system-partitions] Montar particiones en rootfs"
+
+echo "- Creando directorios del sistema para montar particiones"
+sleep 0.5
+
+mkdir -p /mnt/vda-root
+mkdir -p /mnt/vda-root/proc
+mkdir -p /mnt/vda-root/sys
+mkdir -p /mnt/vda-root/dev
+
+echo "- Montando en el nuevo root (rootfs)"
+sleep 0.5
+
+mount --types proc /proc /mnt/vda-root/proc
+mount --rbind /dev /mnt/vda-root/dev
+mount --rbind /sys /mnt/vda-root/sys
+
+echo "[rootfs-system-partitions] Particiones montadas exitosamente"
