@@ -4,6 +4,6 @@ set -euo pipefail
 echo "[after-install-fixes] Ajustando recursos post instalación"
 
 sleep 0.5
-sudo chmod u+s $TARGET_DISK_DIR/bin/ping
+chmod u+s $TARGET_DISK_DIR/bin/ping
 
 echo "[after-install-fixes] Recursos ajustados exitosamente"

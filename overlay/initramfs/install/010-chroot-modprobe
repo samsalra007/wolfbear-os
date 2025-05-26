@@ -2,6 +2,6 @@
 set -euo pipefail
 
 echo "Configurando módulos para la aceleración de gráficos DRM y VIRTIO"
-chroot $TARGET_DISK_DIR modprobe drm
-chroot $TARGET_DISK_DIR modprobe virtio_gpu
-chroot $TARGET_DISK_DIR modprobe drm_kms_helper
+chroot $TARGET_DISK_DIR -c "modprobe drm"
+chroot $TARGET_DISK_DIR -c "modprobe virtio_gpu"
+chroot $TARGET_DISK_DIR -c "modprobe drm_kms_helper"
