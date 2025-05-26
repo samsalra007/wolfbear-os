@@ -10,6 +10,8 @@ export SDL_VIDEODRIVER=KMSDRM
 export SDL_KMSDRM_DEVICE=/dev/dri/card0
 export SDL_KMSDRM_RENDER_NODE=/dev/dri/renderD128
 
+./launch/run
+
 while true; do
 	clear
     
