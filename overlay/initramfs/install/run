@@ -60,5 +60,5 @@ while :; do
   i=$((i + 1))
 done
 
-echo
 echo "El script de instalación de WolfbearOS ha finalizado exitosamente"
+exit 0

@@ -4,7 +4,7 @@ set -euo pipefail
 export CURRENT_PATH=$( pwd )
 export SCRIPTS_DIR="$( dirname "$0" )/install"
 
-echo "Launcher de WolfbearOS en ROOTFS empezó"
+echo "Launcher de WolfbearOS en initramfs empezó"
 
 # Obtén la ruta real del script "install"
 BASEDIR=$(cd "$(dirname "$0")" && pwd)
@@ -48,5 +48,5 @@ while :; do
   i=$((i + 1))
 done
 
-echo
-echo "Launcher de WolfbearOS en ROOTFS terminó"
+echo "Launcher de WolfbearOS en initramfs terminó"
+exit 0

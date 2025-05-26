@@ -48,5 +48,5 @@ while :; do
   i=$((i + 1))
 done
 
-echo
 echo "Launcher de WolfbearOS en ROOTFS terminó"
+exit 0
