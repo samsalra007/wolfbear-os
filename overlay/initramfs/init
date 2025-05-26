@@ -3,7 +3,7 @@
 echo "[initramfs] Inicializando sistemas virtuales..."
 mount -t devtmpfs dev /dev
 mount -t proc proc /proc
-mount -t sysfs sys /sys
+mount -t sysfs sysfs /sys
 
 echo "[initramfs] Buscando instalación de WolfbearOS"
 echo "            Montando vda-root"
