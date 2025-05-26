@@ -1,6 +1,8 @@
 #!/bin/sh
 
 echo "[initramfs] Inicializando sistemas virtuales..."
+mkdir -p /proc /sys /dev
+
 mount -t devtmpfs dev /dev
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
