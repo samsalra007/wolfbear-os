@@ -31,7 +31,8 @@ if [ -f /mnt/vda-root/.wolfbearOSInstalled ]; then
 	exec /launch/run
 else
     echo "[initramfs] WolfbearOS detectó un disco pero no contiene el sistema operativo."
-    echo "            Iniciando proceso de instalación.."
+    echo "            O bien, esta es la imagen de instalación. Favor de expulsarla si no"
+    echo "            desea instalar el sistema."
     sleep 1
 
     /sbin/getty -L ttyAMA0 115200 vt1000
