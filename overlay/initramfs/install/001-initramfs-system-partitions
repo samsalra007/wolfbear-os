@@ -1,8 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-source ./util-log
-
 SCRIPT_NAME=$0
 
 log_message $SCRIPT_NAME "Montando particiones del sistema y dispositivos de instalación."

@@ -19,8 +19,8 @@ mount /dev/vda2 /mnt/vda-root || {
     echo "[initramfs] WolfbearOS no detectó una partición válida del sistema operativo."
     echo "            O bien, esta es la imagen de instalación. Favor de expulsarla si no"
     echo "            desea instalar el sistema."
-    sleep 1
 
+    source /install/util-log
     exec /install/run
 
     echo "Instalación finaliada, por favor reinicie su equipo o bien siga probando la terminal"
@@ -33,10 +33,8 @@ else
     echo "[initramfs] WolfbearOS detectó un disco pero no contiene el sistema operativo."
     echo "            O bien, esta es la imagen de instalación. Favor de expulsarla si no"
     echo "            desea instalar el sistema."
-    sleep 1
 
-    /sbin/getty -L ttyAMA0 115200 vt1000
-
+    source /install/util-log
     exec /install/run
 fi
 
