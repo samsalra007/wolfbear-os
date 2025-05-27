@@ -6,7 +6,7 @@ echo "Desmontando particiones"
 sleep 0.5
 
 umount -l "$TARGET_DISK_DIR/dev"
-umount -l "$TARGET_DSK_DIR/sys"
+umount -l "$TARGET_DISK_DIR/sys"
 umount -l "$TARGET_DISK_DIR/proc"
 
 echo "[cleanup] Limpieza final terminada"

@@ -1,8 +1,6 @@
 #!/bin/sh
 set -euo pipefail
 
-source /install/util-log
-
 export TARGET_DISK_DIR="/mnt/target"
 export CURRENT_PATH=$( pwd )
 export SCRIPTS_DIR="$( dirname "$0" )/install"
@@ -56,7 +54,7 @@ while :; do
     fi
     echo
     echo "Corriendo script $script"
-    . "$script"
+    sh "$script"
   done
 
   i=$((i + 1))
