@@ -1,7 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
+source $CURRENT_PATH/util-log
+
 echo "[initramfs-system-partitions] Montando particiones del sistema y dispositivos de instalación"
+sleep 0.5
 
 mkdir -p /mnt/install/
 
@@ -9,6 +12,9 @@ mkdir -p /mnt/install/
 # por lo que no es necesario volverlas a montar aqui, solo los recursos de instalación
 
 echo "- Montando recursos de instalación"
+sleep 0.5
+
 mount -t ext4 /dev/vda3 /mnt/install/
 
 echo "[initramfs-system-partitions] Particiones montadas exitosamente"
+sleep 0.5

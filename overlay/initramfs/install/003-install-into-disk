@@ -5,23 +5,31 @@ echo "[install-into-disk] Iniciando formateo e instalación de sistema base en d
 sleep 0.5
 
 echo "Selecciona el dispositivo en el cual deseas instalar WolfbearOS:"
+sleep 0.5
+
 lsblk -d -o NAME,SIZE,MODEL | grep -E 'sd|vd|nvme'
-read -rp "¿En qué disco quieres instalar? (/dev/sdX o /dev/vdX): " INSTALLATION_DISK
+read -rp "¿En qué unidad quieres instalar? (/dev/sdX o /dev/vdX): " INSTALLATION_DISK
 DEV_DISK="/dev/$(basename "$INSTALLATION_DISK")"
 
-echo "¡¡¡ATENCIÓN!!! Recuerda que se eliminará todo en $DEV_DISK"
-read -rp "¿Estás seguro? (y/[n]): " CONF
+echo "IMPORTANTE: Recuerda que se eliminará todo el contenido en en $DEV_DISK"
+sleep 0.5
+
+read -rp "¿Deseas continuar? (y/[n]): " CONF
+
 if [ "$CONF" != 'y' ]; then 
   echo "El proceso de instalación no puede continuar. Reiniciando el sistema"
+  sleep 0.5
+
   reboot
 fi
 
-echo "Planeando particiones"
+echo "- Calculando directorios de particiones"
 sleep 0.5
+
 EFI_PARTITION="${DEV_DISK}1"
 ROOTFS_PARTITION="${DEV_DISK}2"
 
-echo "Generando tabla de particiones en el disco"
+echo "- Generando tabla de particiones en el disco"
 sleep 0.5
 
 parted --script "$DEV_DISK" \

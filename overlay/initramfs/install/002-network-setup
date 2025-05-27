@@ -2,11 +2,15 @@
 set -euo pipefail
 
 echo "[network-setup] Iniciando configuración de internet"
+sleep 0.5
 
 echo "Creando archivo de configuración DHCP"
+sleep 0.5
 mkdir -p /run/dhcpcd
 
 echo "Solicitando conexión a través de eth0"
+sleep 0.5
 dhcpcd eth0
 
 echo "[setup-network] Conexión a internet realizada con éxito"
+sleep 0.5
