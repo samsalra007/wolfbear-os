@@ -20,7 +20,6 @@ mount /dev/vda2 /mnt/vda-root || {
     echo "            O bien, esta es la imagen de instalación. Favor de expulsarla si no"
     echo "            desea instalar el sistema."
 
-    source /install/util-log
     exec /install/run
 
     echo "Instalación finaliada, por favor reinicie su equipo o bien siga probando la terminal"
@@ -34,7 +33,6 @@ else
     echo "            O bien, esta es la imagen de instalación. Favor de expulsarla si no"
     echo "            desea instalar el sistema."
 
-    source /install/util-log
     exec /install/run
 fi
 

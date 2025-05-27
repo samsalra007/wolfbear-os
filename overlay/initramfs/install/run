@@ -1,6 +1,8 @@
 #!/bin/sh
 set -euo pipefail
 
+source /install/util-log
+
 export TARGET_DISK_DIR="/mnt/target"
 export CURRENT_PATH=$( pwd )
 export SCRIPTS_DIR="$( dirname "$0" )/install"
