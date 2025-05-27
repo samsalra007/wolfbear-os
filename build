@@ -1,7 +1,7 @@
 #!/bin/sh
 set -euo pipefail
 
-echo "Welcome to wolfbearOS development build script"
+doas echo "Welcome to wolfbearOS development build script"
 echo "Complete command: ./build --cleanup --linux-kernel --linux-kernel-clean --linux-kernel-modules --linux-menuconfig --busybox --busybox-menuconfig --initramfs-build --initramfs-compress --disk-image"
 echo "Quick initramfs generation without modules: ./build --cleanup --linux-kernel --busybox --initramfs-build --initramfs-compress"
 echo "Disk generated.img: ./build --cleanup --linux-kernel --busybox --initramfs-build --initramfs-compress --disk-image"
