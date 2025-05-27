@@ -21,14 +21,15 @@ mount /dev/vda2 /mnt/vda-root || {
     echo "            desea instalar el sistema."
 
     /sbin/getty -L ttyAMA0 115200 vt1000
-    
+
     exec /install/run
 
     echo "Instalación finaliada, por favor reinicie su equipo o bien siga probando la terminal"
 }
 
 if [ -f /mnt/vda-root/.wolfbearOSInstalled ]; then
-    echo "[initramfs] WolfbearOS detectó un sistema instalado"
+    echo "[initramfs] WolfbearOS detectó que está instalado en el equipo"
+    echo "            Espere a que se inicie el sistema."
 	exec /launch/run
 else
     echo "[initramfs] WolfbearOS detectó un disco pero no contiene el sistema operativo."
