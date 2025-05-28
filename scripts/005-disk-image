@@ -36,8 +36,8 @@ parted --script "$LOOPDEV" \
   mklabel gpt \
   mkpart ESP fat32 1MiB 100MiB \
   set 1 esp on \
-  mkpart primary ext4 100MiB 200MiB \
-  mkpart primary ext4 200MiB 100%
+  mkpart primary ext4 100MiB 250MiB \
+  mkpart primary ext4 250MiB 100%
 
 # Recargar particiones
 echo "Recargando particiones..."
