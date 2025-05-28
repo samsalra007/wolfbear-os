@@ -7,4 +7,4 @@ else
     SYS_ARCH="amd64"
 fi
 
-echo $SYS_ARCH
+# echo $SYS_ARCH
