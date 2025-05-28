@@ -25,6 +25,7 @@ export BUSY_BOX_PATH=$DEPENDENCIES_PATH/busybox
 export BUSY_BOX_COMPILED_DIR=$DEPENDENCIES_PATH/busybox-compiled
 
 export MODPROBE_COMPILED_DIR=$PROJECT_PATH/modprobe-compiled
+export SYSAPPS_DIR=$PROJECT_PATH/overlay/sys-apps
 
 export OVERLAY_INITRAMFS_PATH=$PROJECT_PATH/overlay/initramfs
 export OVERLAY_ROOTFS_PATH=$PROJECT_PATH/overlay/rootfs
@@ -169,7 +170,7 @@ if [ "$VAR_DISK_IMAGE_CREATION" = 'y' ]; then
 	sleep 0.5
 
 	cd $BUILD_SCRIPTS_PATH
-	doas sh ./005-disk-image $TARGET_PATH $OVERLAY_ROOTFS_PATH $BUSY_BOX_COMPILED_DIR $MODPROBE_COMPILED_DIR
+	doas sh ./005-disk-image $TARGET_PATH $OVERLAY_ROOTFS_PATH $BUSY_BOX_COMPILED_DIR $MODPROBE_COMPILED_DIR $SYSAPPS_DIR
 
 	echo "[BUILD] Finished disk image creation"
 	sleep 0.5

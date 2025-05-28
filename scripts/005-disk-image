@@ -11,6 +11,7 @@ TARGET_PATH=$1
 OVERLAY_ROOTFS_PATH=$2
 BUSY_BOX_COMPILED_DIR=$3
 MODPROBE_COMPILED_DIR=$4
+SYSAPPS_DIR=$5
 
 # Limpiar imagen previa
 echo "Eliminando imagen previa si existe..."
@@ -120,14 +121,17 @@ mkdir -p "$RESOURCES_PART_DIR/rootfs-overlay"
 mkdir -p "$RESOURCES_PART_DIR/modules-modprobe"
 mkdir -p "$RESOURCES_PART_DIR/busybox-compiled"
 mkdir -p "$RESOURCES_PART_DIR/linux-kernel"
+mkdir -p "$RESOURCES_PART_DIR/sys-apps"
 
 echo "rootfs-overlay    $OVERLAY_ROOTFS_PATH"
 echo "busybox-compiled  $BUSY_BOX_COMPILED_DIR"
 echo "modules-modprobe  $MODPROBE_COMPILED_DIR"
+echo "sys-apps          $SYSAPPS_DIR"
 
 rsync -a --links "$OVERLAY_ROOTFS_PATH/" "$RESOURCES_PART_DIR/rootfs-overlay/"
 rsync -a --links "$MODPROBE_COMPILED_DIR/" "$RESOURCES_PART_DIR/modules-modprobe/"
 rsync -a --links "$BUSY_BOX_COMPILED_DIR/" "$RESOURCES_PART_DIR/busybox-compiled/"
+rsync -a --links "$SYSAPPS_DIR/" "$RESOURCES_PART_DIR/sys-apps/"
 
 echo "Copiando 'Image' e 'initramfs.cpio.xz' en el directorio linux-kernel desde $TARGET_PATH"
 cp $TARGET_PATH/Image "$RESOURCES_PART_DIR/linux-kernel"

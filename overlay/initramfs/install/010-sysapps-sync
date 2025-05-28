@@ -1,0 +1,10 @@
+#!/bin/sh
+set -euo pipefail
+source /install/util-log
+SCRIPT_NAME=$0
+
+log_message $SCRIPT_NAME "Sincronizando aplicaciones del sistema '$TARGET_DISK_DIR'"
+
+rsync -a --links "/mnt/install/sys-apps/" "$TARGET_DISK_DIR/"
+
+log_message $SCRIPT_NAME "Sincronización de aplicaciones del sistema terminada '$TARGET_DISK_DIR"
