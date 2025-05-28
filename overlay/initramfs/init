@@ -1,51 +1,47 @@
 #!/bin/sh
+set -euo pipefail
 
-echo "[initramfs] Inicializando sistemas virtuales..."
+# Script init para initramfs de WolfbearOS
+# Monta la partición, comprueba la instalación y lanza instalador si es necesario
+
+echo "[initramfs] Arrancando sistemas virtuales..."
 mkdir -p /proc /sys /dev
-
 mount -t devtmpfs dev /dev
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 
-echo "[initramfs] Buscando instalación de WolfbearOS"
-echo "            Montando vda-root"
-mkdir -p /mnt/vda-root
+# Definir punto de montaje
+defined_mnt="/mnt/vda-root"
+mkdir -p "$defined_mnt"
 
-echo "[initramfs] Listando discos y sus particiones"
-
-lsblk
-
-mount /dev/vda2 /mnt/vda-root || {
-    echo "[initramfs] WolfbearOS no detectó una partición válida del sistema operativo."
-    echo "            O bien, esta es la imagen de instalación. Favor de expulsarla si no"
-    echo "            desea instalar el sistema."
-
-    /sbin/getty -L ttyAMA0 115200 vt1000
-
-    exec /install/run
-
-    echo "Instalación finaliada, por favor reinicie su equipo o bien siga probando la terminal"
-}
-
-if [ -f /mnt/vda-root/.wolfbearOSInstalled ]; then
-    echo "[initramfs] WolfbearOS detectó que está instalado en el equipo"
-    echo "            Espere a que se inicie el sistema."
-	exec /launch/run
+# Intento de montaje
+if mount /dev/vda2 "$defined_mnt"; then
+    # Si está instalado, lanzamos el sistema
+    if [ -f "$defined_mnt/.wolfbearOSInstalled" ]; then
+        echo "[initramfs] Sistema instalado detectado. Iniciando..."
+        sh /launch/run || echo "[initramfs] Error al iniciar el sistema."
+    else
+        # Partición OK pero sin instalación
+        motivo="sin_instalar"
+    fi
 else
-    echo "[initramfs] WolfbearOS detectó un disco pero no contiene el sistema operativo."
-    echo "            O bien, esta es la imagen de instalación. Favor de expulsarla si no"
-    echo "            desea instalar el sistema."
-
-    /sbin/getty -L ttyAMA0 115200 vt1000
-
-    exec /install/run
+    # No se montó la partición
+    motivo="sin_particion"
 fi
 
+# Si hay motivo, ejecutamos instalador
+if [ -n "${motivo-}" ]; then
+    caso="$motivo"
+    [ "$caso" = "sin_particion" ] && msg="no montó la partición"
+    [ "$caso" = "sin_instalar" ]  && msg="no hay instalación"
+    echo "[initramfs] Lanzando instalador: $msg."
+    /sbin/getty -L ttyAMA0 115200 vt100
+    sh /install/run || echo "[initramfs] Instalador falló."
+fi
+
+# Bucle para mantener consola activa
 while true; do
-    echo "WolfbearOS initramfs"
-
-    /sbin/getty -L ttyAMA0 115200 vt1000
-
-    echo "Woof bye!"
+    echo "[initramfs] Consola de emergencia."
+    /sbin/getty -L ttyAMA0 115200 vt100
     sleep 2
 done
