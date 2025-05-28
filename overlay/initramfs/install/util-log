@@ -6,7 +6,7 @@ log_message(){
     message=${2:-""}
     sleep_time=${3:-0.5}
 
-    printf "\033[0;34m[ %s ]\033[0;34m \033[0;32m[ LOG ]\033[0;32m \033[0m - %s" "$script_name" "$message"
+    printf "\n\033[0;34m[ %s ]\033[0;34m \033[0;32m[ LOG ]\033[0;32m \033[0m - %s" "$script_name" "$message"
     sleep $sleep_time
 } 
 
@@ -15,7 +15,7 @@ debug_message(){
     message=${2:-""}
     sleep_time=${3:-0.5}
 
-    printf "\033[0;34m[ %s ]\033[0;34m \033[0;35m[ DEBUG ]\033[0;35m \033[0m - %s" "$script_name" "$message"
+    printf "\n\033[0;34m[ %s ]\033[0;34m \033[0;35m[ DEBUG ]\033[0;35m \033[0m - %s" "$script_name" "$message"
     sleep $sleep_time
 }
 
@@ -24,7 +24,7 @@ error_message(){
     message=${2:-""}
     sleep_time=${3:-0.5}
 
-    printf "\033[0;34m[ %s ]\033[0;34m \033[0;31m[ ERROR ]\033[0;31m \033[0m - %s" "$script_name" "$message"
+    printf "\n\033[0;34m[ %s ]\033[0;34m \033[0;31m[ ERROR ]\033[0;31m \033[0m - %s" "$script_name" "$message"
     sleep $sleep_time
 } 
 
@@ -33,6 +33,6 @@ warn_message(){
     message=${2:-""}
     sleep_time=${3:-0.5}
 
-    printf "\033[0;34m[ %s ]\033[0;34m \033[0;33m[ WARN ]\033[0;33m \033[0m - %s" "$script_name" "$message"
+    printf "\n\033[0;34m[ %s ]\033[0;34m \033[0;33m[ WARN ]\033[0;33m \033[0m - %s" "$script_name" "$message"
     sleep $sleep_time
 }
