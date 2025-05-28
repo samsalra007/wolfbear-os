@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
     SDL_Window *window = SDL_CreateWindow(
         "Hello SDL",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        640, 480,
+        1366, 768,
         SDL_WINDOW_SHOWN
     );
     if (!window) {
