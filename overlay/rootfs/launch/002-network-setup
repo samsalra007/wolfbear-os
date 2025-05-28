@@ -1,6 +1,6 @@
 #!/bin/sh
 set -euo pipefail
-source /install/util-log
+source /launch/util-log
 SCRIPT_NAME=$0
 
 log_message $SCRIPT_NAME "Iniciando configuración de internet"
