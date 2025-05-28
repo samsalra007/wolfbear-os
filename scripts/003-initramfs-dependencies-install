@@ -87,7 +87,7 @@ tar xzf SDL2-2.30.9.tar.gz
 cd SDL2-2.30.9
 
 mkdir build && cd build
-cmake -G Ninja .. \
+doas cmake -G Ninja .. \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX=/usr \
   -DSDL_VIDEO_DRIVER_X11=OFF \
@@ -100,7 +100,7 @@ cmake -G Ninja .. \
   -DSDL_INPUT_DRIVER_UDEV=OFF \
   -DSDL_INPUT_DRIVER_EVDEV=ON
 
-ninja && DESTDIR=$INITRAMFS_PATH ninja install
+doas ninja && DESTDIR=$INITRAMFS_PATH ninja install
 
 rm -rf $INITRAMFS_PATH/tmp/SDL2-build
 
