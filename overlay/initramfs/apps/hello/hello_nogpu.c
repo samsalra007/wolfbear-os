@@ -13,6 +13,20 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    // Mostrar el video driver activo
+    const char *video_driver = SDL_GetCurrentVideoDriver();
+    printf("Driver de video actual: %s\n", video_driver ? video_driver : "desconocido");
+
+    // Mostrar los render drivers disponibles
+    int num_render_drivers = SDL_GetNumRenderDrivers();
+    printf("Render drivers disponibles: %d\n", num_render_drivers);
+    for (int i = 0; i < num_render_drivers; ++i) {
+        SDL_RendererInfo info;
+        if (SDL_GetRenderDriverInfo(i, &info) == 0) {
+            printf("  [%d] %s\n", i, info.name);
+        }
+    }
+
     SDL_ShowCursor(SDL_DISABLE); // ocultar cursor
 
     SDL_Window *window = SDL_CreateWindow(
