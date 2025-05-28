@@ -1,10 +1,11 @@
 #!/bin/sh
 set -euo pipefail
+source /install/util-log
+SCRIPT_NAME=$0
 
-echo "[directory-structure] Iniciando configuración de estructura de directorios"
-sleep 0.5
+log_message $SCRIPT_NAME "Iniciando configuración de estructura de directorios"
 
-echo "Creando directorios base de dependencias"
+debug_message $SCRIPT_NAME  "Creando directorios base de dependencias"
 mkdir -p "$TARGET_DISK_DIR/tmp"
 mkdir -p "$TARGET_DISK_DIR/sbin"
 mkdir -p "$TARGET_DISK_DIR/lib/apk/db"
@@ -12,7 +13,7 @@ mkdir -p "$TARGET_DISK_DIR/etc/apk"
 mkdir -p "$TARGET_DISK_DIR/etc/ssl/certs"
 mkdir -p "$TARGET_DISK_DIR/usr/lib"
 
-echo "Creando directorios base de WolfbearOS"
+debug_message $SCRIPT_NAME "Creando directorios base de WolfbearOS"
 mkdir -p "$TARGET_DISK_DIR/players"
 mkdir -p "$TARGET_DISK_DIR/players/cheese"
 mkdir -p "$TARGET_DISK_DIR/saves"
@@ -20,5 +21,4 @@ mkdir -p "$TARGET_DISK_DIR/apps"
 mkdir -p "$TARGET_DISK_DIR/games"
 mkdir -p "$TARGET_DISK_DIR/config"
 
-echo "[directory-structure] Configuración estructura de directorios terminada"
-sleep 0.5
+log_message $SCRIPT_NAME "Configuración estructura de directorios terminada"

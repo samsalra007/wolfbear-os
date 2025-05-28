@@ -1,10 +1,10 @@
 #!/bin/sh
 set -euo pipefail
+source /install/util-log
+SCRIPT_NAME=$0
 
-echo "[overlay-to-rootfs] Sincronizando directorios desde /mnt/install/rootfs-overlay a raiz '$TARGET_DISK_DIR"
-sleep 0.5
+log_message $SCRIPT_NAME "Sincronizando capa de overlay/rootfs a '$TARGET_DISK_DIR'"
 
 rsync -a --links "/mnt/install/rootfs-overlay/" "$TARGET_DISK_DIR/"
 
-echo "[overlay-to-rootfs] Sincronización terminada '$TARGET_DISK_DIR"
-sleep 0.5
+log_message $SCRIPT_NAME "Los cambios han sido sincronizados hacia '$TARGET_DISK_DIR'"

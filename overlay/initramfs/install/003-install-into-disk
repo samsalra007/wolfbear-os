@@ -1,36 +1,36 @@
 #!/bin/sh
 set -euo pipefail
+source /install/util-log
+SCRIPT_NAME=$0
 
-echo "[install-into-disk] Iniciando formateo e instalación de sistema base en disco"
-sleep 0.5
+log_message $SCRIPT_NAME "Iniciando formateo e instalación de sistema base en disco"
 
-echo "Selecciona el dispositivo en el cual deseas instalar WolfbearOS:"
-sleep 0.5
+debug_message $SCRIPT_NAME "Selecciona el dispositivo en el cual deseas instalar WolfbearOS:"
 
 lsblk -d -o NAME,SIZE,MODEL | grep -E 'sd|vd|nvme'
+
+debug_message $SCRIPT_NAME ""
 read -rp "¿En qué unidad quieres instalar? (/dev/sdX o /dev/vdX): " INSTALLATION_DISK
+
 DEV_DISK="/dev/$(basename "$INSTALLATION_DISK")"
 
+debug_message $SCRIPT_NAME ""
 echo "IMPORTANTE: Recuerda que se eliminará todo el contenido en en $DEV_DISK"
-sleep 0.5
 
+debug_message $SCRIPT_NAME ""
 read -rp "¿Deseas continuar? (y/[n]): " CONF
 
 if [ "$CONF" != 'y' ]; then 
-  echo "El proceso de instalación no puede continuar. Reiniciando el sistema"
-  sleep 0.5
-
+  error_message $SCRIPT_NAME "El proceso de instalación no puede continuar. Reiniciando el sistema"
   reboot
 fi
 
-echo "- Calculando directorios de particiones"
-sleep 0.5
+debug_message $SCRIPT_NAME "Calculando directorios de particiones"
 
 EFI_PARTITION="${DEV_DISK}1"
 ROOTFS_PARTITION="${DEV_DISK}2"
 
-echo "- Generando tabla de particiones en el disco"
-sleep 0.5
+debug_message $SCRIPT_NAME "Generando tabla de particiones en el disco"
 
 parted --script "$DEV_DISK" \
   mklabel gpt \
@@ -38,14 +38,12 @@ parted --script "$DEV_DISK" \
   set 1 esp on \
   mkpart primary ext4 100MiB 100%
 
-echo "Formateando la unidad y sus particiones"
-sleep 0.5
+debug_message $SCRIPT_NAME "Formateando la unidad y sus particiones"
 
 mkfs.vfat -F 32 "$EFI_PARTITION"
 mkfs.ext4 "$ROOTFS_PARTITION"
 
-echo "Montando particiones"
-sleep 0.5
+debug_message $SCRIPT_NAME "Montando particiones"
 
 BOOT_DIR="$TARGET_DISK_DIR/boot"
 EFI_TARGET_DISK_DIR="$TARGET_DISK_DIR/boot/efi"
@@ -58,8 +56,7 @@ mkdir -p $EFI_TARGET_DISK_DIR
 mount "$EFI_PARTITION" "$EFI_TARGET_DISK_DIR"
 mkdir -p "$EFI_BOOT_TARGET_DISK_DIR"
 
-echo "Generando imagen de GRUB"
-sleep 0.5
+debug_message $SCRIPT_NAME "Generando imagen de GRUB"
 
 grub-mkimage \
   -O arm64-efi \
@@ -67,8 +64,7 @@ grub-mkimage \
   -o $EFI_BOOT_TARGET_DISK_DIR/BOOTAA64.EFI \
     part_gpt fat ext2 normal configfile linux cpio gfxterm all_video
 
-echo "Generando archivo $EFI_BOOT_TARGET_DISK_DIR/grub.cfg"
-sleep 0.5
+debug_message $SCRIPT_NAME "Generando archivo $EFI_BOOT_TARGET_DISK_DIR/grub.cfg"
 
 cat > $EFI_BOOT_TARGET_DISK_DIR/grub.cfg <<EOF
 set timeout=0
@@ -80,18 +76,15 @@ menuentry "WolfbearOS for ARM64 (rootfs)" {
 }
 EOF
 
-echo "Generando archivo $EFI_BOOT_TARGET_DISK_DIR/startup.nsh"
-sleep 0.5
+debug_message $SCRIPT_NAME "Generando archivo $EFI_BOOT_TARGET_DISK_DIR/startup.nsh"
 
 cat > $EFI_BOOT_TARGET_DISK_DIR/startup.nsh <<EOF
 fs0:\EFI\BOOT\BOOTAA64.EFI
 EOF
 
-echo "Cargando contenido de kernel para rootfs"
-sleep 0.5
+debug_message $SCRIPT_NAME "Cargando contenido de kernel para rootfs"
 
 cp /mnt/install/linux-kernel/Image "$BOOT_DIR/"
 cp /mnt/install/linux-kernel/initramfs.cpio.xz "$BOOT_DIR/"
 
-echo "[install-into-disk] Instalación del sistema base en disco finalizada"
-sleep 0.5
+log_message $SCRIPT_NAME "Instalación del sistema base en disco finalizada"

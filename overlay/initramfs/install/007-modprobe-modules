@@ -1,10 +1,10 @@
 #!/bin/sh
 set -euo pipefail
+source /install/util-log
+SCRIPT_NAME=$0
 
-echo "[modprobe-modules] Sincronizando directorios desde /mnt/install/modules-modprobe a raiz '$TARGET_DISK_DIR"
-sleep 0.5
+log_message $SCRIPT_NAME "Sincronizando cambios de módulos modprobe a raiz '$TARGET_DISK_DIR'"
 
 rsync -a --links "/mnt/install/modules-modprobe/" "$TARGET_DISK_DIR/"
 
-echo "[modprobe-modules] Sincronización terminada '$TARGET_DISK_DIR"
-sleep 0.5
+log_message $SCRIPT_NAME "Sincronización de módulos modprobe terminada '$TARGET_DISK_DIR"

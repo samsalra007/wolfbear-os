@@ -1,18 +1,16 @@
 #!/bin/sh
 set -euo pipefail
+source /install/util-log
+SCRIPT_NAME=$0
 
-echo "[install-dependencies] Instalando dependencias APK"
-sleep 0.5
+log_message $SCRIPT_NAME "Iniciando instalación de dependencias apkt-tools"
 
-echo "Copiando archivo resolv.conf y asignando sus permisos"
-sleep 0.5
+debug_message $SCRIPT_NAME "Copiando archivo resolv.conf y asignando sus permisos"
 
 cp /etc/resolv.conf "$TARGET_DISK_DIR"/etc/
 chmod 644 "$TARGET_DISK_DIR"/etc/resolv.conf
 
-echo "Creando base de datos y world de apk-tools"
-sleep 0.5
-
+debug_message $SCRIPT_NAME "Creando base de datos y world de apk-tools"
 mkdir -p $TARGET_DISK_DIR/var/lib/apk/db
 touch    $TARGET_DISK_DIR/var/lib/apk/db/installed
 chmod 644 $TARGET_DISK_DIR/var/lib/apk/db/installed
@@ -21,16 +19,15 @@ mkdir -p $TARGET_DISK_DIR/etc/apk
 touch    $TARGET_DISK_DIR/etc/apk/world
 chmod 644 $TARGET_DISK_DIR/etc/apk/world
 
-echo "-Actualizando keys del initramfs a rootfs"
-sleep 0.5
+debug_message $SCRIPT_NAME "Sincronizando llaves de apk-tools"
 
 mkdir -p $TARGET_DISK_DIR/etc/apk/keys
 cp /etc/apk/keys/* $TARGET_DISK_DIR/etc/apk/keys
 
-echo "Actualizando base de datos"
+debug_message $SCRIPT_NAME "Actualizando base de datos de apk-tools"
 apk update --root $TARGET_DISK_DIR
 
-echo "Descargando e instalando paquetes"
+debug_message $SCRIPT_NAME "Descargando e instalando paquetes del sistema"
 apk add --root $TARGET_DISK_DIR \
   apk-tools \
   shadow \
@@ -54,5 +51,4 @@ apk add --root $TARGET_DISK_DIR \
   e2fsprogs \
   dosfstools
 
-echo "[install-dependencies] Instalación de dependencias APK terminada"
-sleep 0.5
+log_message $SCRIPT_NAME "Instalación de dependencias APK terminada"

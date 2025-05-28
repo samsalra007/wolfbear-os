@@ -1,20 +1,16 @@
-#!/bin/bash
+#!/bin/sh
 set -euo pipefail
+source /install/util-log
+SCRIPT_NAME=$0
 
-echo "[rootfs-system-partitions] Montando particiones del sistema y dispositivos en el sistema operativo final"
-sleep 0.5
+log_message $SCRIPT_NAME "Preparando montaje de particiones del sistema hacia rootfs"
 
-echo "Creando directorios para particiones en '$TARGET_DISK_DIR'"
-sleep 0.5
-
+debug_message $SCRIPT_NAME "Creando directorios para particiones en '$TARGET_DISK_DIR'"
 mkdir -p $TARGET_DISK_DIR/proc $TARGET_DISK_DIR/sys $TARGET_DISK_DIR/dev
 
-echo "Montando particiones del sistema en directorios creados"
-sleep 0.5
-
+debug_message $SCRIPT_NAME "Montando particiones del sistema en directorios creados"
 mount -t proc proc $TARGET_DISK_DIR/proc
 mount --rbind /sys $TARGET_DISK_DIR/sys
 mount --rbind /dev $TARGET_DISK_DIR/dev
 
-echo "[rootfs-system-partitions] Particiones montadas exitosamente"
-sleep 0.5
+log_message $SCRIPT_NAME "Particiones montadas exitosamente"

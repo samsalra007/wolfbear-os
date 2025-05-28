@@ -1,10 +1,10 @@
 #!/bin/sh
 set -euo pipefail
+source /install/util-log
+SCRIPT_NAME=$0
 
-echo "[busybox-sync] Sincronizando directorios desde /mnt/install/busybox-compiled a raiz '$TARGET_DISK_DIR"
-sleep 0.5
+log_message $SCRIPT_NAME "Sincronizado de cambios Busybox'$TARGET_DISK_DIR'"
 
 rsync -a --links "/mnt/install/busybox-compiled/" "$TARGET_DISK_DIR/"
 
-echo "[busybox-sync] Sincronización terminada '$TARGET_DISK_DIR"
-sleep 0.5
+log_message $SCRIPT_NAME "Sincronización de cambios Busybox terminada '$TARGET_DISK_DIR'"

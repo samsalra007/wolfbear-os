@@ -1,7 +1,0 @@
-#!/bin/sh
-set -euo pipefail
-
-echo "Configurando módulos para la aceleración de gráficos DRM y VIRTIO"
-chroot $TARGET_DISK_DIR /bin/sh -c "modprobe drm"
-chroot $TARGET_DISK_DIR /bin/sh -c "modprobe virtio_gpu"
-chroot $TARGET_DISK_DIR /bin/sh -c "modprobe drm_kms_helper"

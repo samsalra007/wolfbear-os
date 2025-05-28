@@ -1,16 +1,16 @@
 #!/bin/sh
 set -euo pipefail
+source /install/util-log
+SCRIPT_NAME=$0
 
-echo "[network-setup] Iniciando configuración de internet"
-sleep 0.5
+log_message $SCRIPT_NAME "Iniciando configuración de internet"
 
-echo "Creando archivo de configuración DHCP"
-sleep 0.5
+debug_message $SCRIPT_NAME "Creando archivo de configuración DHCP"
 mkdir -p /run/dhcpcd
 
-echo "Solicitando conexión a través de eth0"
-sleep 0.5
+debug_message $SCRIPT_NAME "Solicitando conexión a través de eth0"
 dhcpcd eth0
 
-echo "[setup-network] Conexión a internet realizada con éxito"
-sleep 0.5
+debug_message $SCRIPT_NAME "Conexión a internet realizada con éxito"
+
+log_message $SCRIPT_NAME "Configuración de conexión a internet terminada"
