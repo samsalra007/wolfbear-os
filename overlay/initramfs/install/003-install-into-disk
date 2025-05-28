@@ -14,10 +14,9 @@ read -rp "¿En qué unidad quieres instalar? (/dev/sdX o /dev/vdX): " INSTALLATI
 
 DEV_DISK="/dev/$(basename "$INSTALLATION_DISK")"
 
-debug_message $SCRIPT_NAME ""
-echo "IMPORTANTE: Recuerda que se eliminará todo el contenido en en $DEV_DISK"
 
-debug_message $SCRIPT_NAME ""
+debug_message $SCRIPT_NAME "IMPORTANTE: Recuerda que se eliminará todo el contenido en en $DEV_DISK"
+new_line
 read -rp "¿Deseas continuar? (y/[n]): " CONF
 
 if [ "$CONF" != 'y' ]; then 

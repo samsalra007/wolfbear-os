@@ -52,3 +52,4 @@ while :; do
 done
 
 log_message $RUN_SCRIPT_NAME "El script de instalación de WolfbearOS ha finalizado exitosamente"
+new_line

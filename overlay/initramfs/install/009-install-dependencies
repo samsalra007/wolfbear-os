@@ -25,9 +25,11 @@ mkdir -p $TARGET_DISK_DIR/etc/apk/keys
 cp /etc/apk/keys/* $TARGET_DISK_DIR/etc/apk/keys
 
 debug_message $SCRIPT_NAME "Actualizando base de datos de apk-tools"
+new_line
 apk update --root $TARGET_DISK_DIR
 
 debug_message $SCRIPT_NAME "Descargando e instalando paquetes del sistema"
+new_line
 apk add --root $TARGET_DISK_DIR \
   apk-tools \
   shadow \
