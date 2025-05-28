@@ -100,8 +100,10 @@ cmake -G Ninja .. \
   -DSDL_INPUT_DRIVER_UDEV=OFF \
   -DSDL_INPUT_DRIVER_EVDEV=ON
 
+export DESTDIR=$INITRAMFS_PATH
+
 ninja
-doas DESTDIR=$INITRAMFS_PATH ninja install
+doas ninja install
 
 rm -rf $INITRAMFS_PATH/tmp/SDL2-build
 
