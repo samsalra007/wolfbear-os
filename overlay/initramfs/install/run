@@ -21,7 +21,7 @@ if [ -z "${1-}" ]; then
   log_message $RUN_SCRIPT_NAME "Se ejecutarán todos los scripts en el directorio ./install/" 2
 else
   SCRIPT_NAME_TO_EXECUTE=$1
-  echo "Has solicitado ejecutar el script '$SCRIPT_NAME_TO_EXECUTE'."
+  log_message $RUN_SCRIPT_NAME "Has solicitado ejecutar el script '$SCRIPT_NAME_TO_EXECUTE'."
   sh "$SCRIPT_NAME_TO_EXECUTE"
   exit 0
 fi
@@ -32,7 +32,7 @@ while :; do
 
   # Expande el patrón (efectúa globbing)
   set -- "$SCRIPTS_DIR/${prefix}-"*
-  
+
   # Si no existe ningún fichero coincidente, $1 será literal y -e fallará
   if [ ! -e "$1" ]; then
     echo
