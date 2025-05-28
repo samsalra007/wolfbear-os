@@ -7,9 +7,7 @@ export TARGET_DISK_DIR="/mnt/target"
 export CURRENT_PATH=$( pwd )
 export SCRIPTS_DIR="$( dirname "$0" )/install"
 
-log_message $RUN_SCRIPT_NAME "Bienvenido a instalación de WolfbearOS Developer\n"
-
-export SYS_ARCH=$( ./000-arch-detection )
+log_message $RUN_SCRIPT_NAME "Bienvenido a instalación de WolfbearOS Developer"
 
 # Obtén la ruta real del script "install"
 BASEDIR=$(cd "$(dirname "$0")" && pwd)

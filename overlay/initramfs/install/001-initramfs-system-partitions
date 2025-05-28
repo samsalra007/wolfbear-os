@@ -11,7 +11,7 @@ mkdir -p /mnt/install/
 # Las particiones del sistema dev sys y proc ya las estamos montando en el init de initramfs
 # por lo que no es necesario volverlas a montar aqui, solo los recursos de instalación
 
-debug_message $SCRIPT_NAME "Montando recursos de instalación."
+debug_message $SCRIPT_NAME "Montando recursos de instalación: \n"
 mount -t ext4 /dev/vda3 /mnt/install/
 
 debug_message $SCRIPT_NAME "Particiones montadas exitosamente"
