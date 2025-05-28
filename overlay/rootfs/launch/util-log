@@ -2,53 +2,41 @@
 set -euo pipefail
 
 log_message(){
-    script_name=$1
-    message=$2
-    sleep_time=$3
+    script_name=${1:-unknown}
+    message=${2:-""}
+    sleep_time=${3:-0}
 
-    echo "\033[0;34m[ $script_name ]\033[0;34m \033[0;32m[ LOG ]\033[0;32m \033[0m - $message"
-    if [ -z "$sleepTime" ]; then
-        sleep $sleep_time
-    else
-        sleep 0.5
-    fi
+    printf "\n\033[0;34m[ %s ]\033[0;34m \033[0;32m[ LOG ]\033[0;32m \033[0m %s" "$script_name" "$message"
+    sleep $sleep_time
 } 
 
 debug_message(){
-    script_name=$1
-    message=$2
-    sleep_time=$3
+    script_name=${1:-unknown}
+    message=${2:-""}
+    sleep_time=${3:-0}
 
-    echo "\033[0;34m[ $script_name ]\033[0;34m \033[0;35m[ DEBUG ]\033[0;35m \033[0m - $message"
-    if [ -z "$sleepTime" ]; then
-        sleep $sleep_time
-    else
-        sleep 0.5
-    fi
+    printf "\n\033[0;34m[ %s ]\033[0;34m \033[0;35m[ DEBUG ]\033[0;35m \033[0m %s" "$script_name" "$message"
+    sleep $sleep_time
 }
 
 error_message(){
-    script_name=$1
-    message=$2
-    sleep_time=$3
+    script_name=${1:-unknown}
+    message=${2:-""}
+    sleep_time=${3:-0}
 
-    echo "\033[0;34m[ $script_name ]\033[0;34m \033[0;31m[ ERROR ]\033[0;31m \033[0m - $message"
-    if [ -z "$sleepTime" ]; then
-        sleep $sleep_time
-    else
-        sleep 0.5
-    fi
+    printf "\n\033[0;34m[ %s ]\033[0;34m \033[0;31m[ ERROR ]\033[0;31m \033[0m %s" "$script_name" "$message"
+    sleep $sleep_time
 } 
 
 warn_message(){
-    script_name=$1
-    message=$2
-    sleep_time=$3
+    script_name=${1:-unknown}
+    message=${2:-""}
+    sleep_time=${3:-0}
 
-    echo "\033[0;34m[ $script_name ]\033[0;34m \033[0;33m[ WARN ]\033[0;33m \033[0m - $message"
-    if [ -z "$sleepTime" ]; then
-        sleep $sleep_time
-    else
-        sleep 0.5
-    fi
+    printf "\n\033[0;34m[ %s ]\033[0;34m \033[0;33m[ WARN ]\033[0;33m \033[0m %s" "$script_name" "$message"
+    sleep $sleep_time
+}
+
+new_line(){
+    printf "\n"
 }
