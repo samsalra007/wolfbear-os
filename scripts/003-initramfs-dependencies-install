@@ -77,37 +77,38 @@ sudo chmod u+s $INITRAMFS_PATH/bin/ping
 
 # Compilar SDL para ARM64 con fbdev habilitado
 
-rm -rf $INITRAMFS_PATH/tmp/SDL2-build
-mkdir -p $INITRAMFS_PATH/tmp/SDL2-build
-cd $INITRAMFS_PATH/tmp/SDL2-build
+# rm -rf $INITRAMFS_PATH/tmp/SDL2-build
+# mkdir -p $INITRAMFS_PATH/tmp/SDL2-build
+# cd $INITRAMFS_PATH/tmp/SDL2-build
 
-wget https://libsdl.org/release/SDL2-2.30.9.tar.gz
-tar xzf SDL2-2.30.9.tar.gz
-cd SDL2-2.30.9
+# wget https://libsdl.org/release/SDL2-2.30.9.tar.gz
+# tar xzf SDL2-2.30.9.tar.gz
+# cd SDL2-2.30.9
 
-mkdir build && cd build
-cmake -G Ninja .. \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_INSTALL_PREFIX=/usr \
-  -DBUILD_SHARED_LIBS=ON \
-  -DBUILD_STATIC_LIBS=OFF \
-  -DBUILD_TESTS=OFF \
-  -DSDL_VIDEO_DRIVER_X11=OFF \
-  -DSDL_VIDEO_DRIVER_WAYLAND=OFF \
-  -DSDL_VIDEO_DRIVER_KMSDRM=OFF \
-  -DSDL_VIDEO_DRIVER_DIRECTFB=OFF \
-  -DSDL_VIDEO_DRIVER_FBDEV=ON \
-  -DSDL_VIDEO_DRIVER_OFFSCREEN=OFF \
-  -DSDL_VIDEO_DRIVER_DUMMY=OFF \
-  -DSDL_INPUT_DRIVER_UDEV=OFF \
-  -DSDL_INPUT_DRIVER_EVDEV=ON
+# mkdir build && cd build
+# cmake -G Ninja .. \
+#   -DCMAKE_BUILD_TYPE=Release \
+#   -DCMAKE_INSTALL_PREFIX=/usr \
+#   -DBUILD_SHARED_LIBS=ON \
+#   -DBUILD_STATIC_LIBS=OFF \
+#  -DBUILD_TESTS=OFF \
+#  -DSDL_VIDEO_DRIVER_X11=OFF \
+#  -DSDL_VIDEO_DRIVER_WAYLAND=OFF \
+#  -DSDL_VIDEO_DRIVER_KMSDRM=OFF \
+#  -DSDL_VIDEO_DRIVER_DIRECTFB=OFF \
+#  -DSDL_VIDEO_DRIVER_FBDEV=ON \
+#  -DSDL_VIDEO_DRIVER_OFFSCREEN=OFF \
+#  -DSDL_VIDEO_DRIVER_DUMMY=OFF \
+#  -DSDL_INPUT_DRIVER_UDEV=OFF \
+#  -DSDL_INPUT_DRIVER_EVDEV=ON
 
-export DESTDIR=$INITRAMFS_PATH
+#export DESTDIR=$INITRAMFS_PATH
 
-ninja
-doas sh -c "DESTDIR=$INITRAMFS_PATH ninja install"
+#ninja
 
-rm -rf $INITRAMFS_PATH/tmp/SDL2-build
+#doas sh -c "DESTDIR=$INITRAMFS_PATH ninja install"
+
+#rm -rf $INITRAMFS_PATH/tmp/SDL2-build
 
 echo "[initramfs-dependencies-install] build finished"
 sleep 0.5
