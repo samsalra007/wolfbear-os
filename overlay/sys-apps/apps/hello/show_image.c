@@ -39,6 +39,16 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    int img_w = image->w, img_h = image->h;
+    printf("Imagen cargada: %dx%d\n", img_w, img_h);
+
+    int tex_w, tex_h;
+    if (SDL_QueryTexture(texture, NULL, NULL, &tex_w, &tex_h) == 0) {
+        printf("Textura creada: %dx%d\n", tex_w, tex_h);
+    } else {
+        printf("Error en SDL_QueryTexture: %s\n", SDL_GetError());
+    }
+
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, image);
     SDL_FreeSurface(image);
 
