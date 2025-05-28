@@ -105,7 +105,7 @@ cmake -G Ninja .. \
 export DESTDIR=$INITRAMFS_PATH
 
 ninja
-doas ninja install
+doas sh -c "DESTDIR=$INITRAMFS_PATH ninja install"
 
 rm -rf $INITRAMFS_PATH/tmp/SDL2-build
 
