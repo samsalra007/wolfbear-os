@@ -65,7 +65,7 @@ doas /sbin/apk --root $INITRAMFS_PATH \
     dosfstools \
     rsync \
     nano \
-    sdl2
+    build-base cmake ninja linux-headers libxkbcommon-dev
 
 echo "- Setting up root user"
 sleep 0.5
@@ -75,6 +75,35 @@ echo 'root::14600:0:99999:7:::' >> $INITRAMFS_PATH/etc/shadow
 echo "- Fixing ping command sudo execution"
 sleep 0.5
 sudo chmod u+s $INITRAMFS_PATH/bin/ping
+
+# Compilar SDL para ARM64 con fbdev habilitado
+
+mkdir -p $INITRAMFS_PATH/tmp/SDL2-build
+cd $INITRAMFS_PATH/tmp/SDL2-build
+
+wget https://libsdl.org/release/SDL2-2.30.9.tar.gz
+tar xzf SDL2-2.30.9.tar.gz
+cd SDL2-2.30.9
+
+mkdir build && cd build
+cmake .. \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=/usr \
+  -DSDL_VIDEO_X11=OFF \
+  -DSDL_VIDEO_WAYLAND=OFF \
+  -DSDL_VIDEO_KMSDRM=ON \
+  -DSDL_VIDEO_DIRECTFB=OFF \
+  -DSDL_VIDEO_FBDEV=ON \
+  -DSDL_VIDEO_OFFSCREEN=OFF \
+  -DSDL_VIDEO_DUMMY=OFF \
+  -DSDL_INPUT_UDEV=OFF \
+  -DSDL_INPUT_EVDEV=ON \
+  -DBUILD_SHARED_LIBS=ON
+
+ninja
+DESTDIR=$INITRAMFS_PATH ninja install
+
+rm -rf $INITRAMFS_PATH/tmp/SDL2-build
 
 echo "[initramfs-dependencies-install] build finished"
 sleep 0.5
