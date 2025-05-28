@@ -18,7 +18,7 @@ mkdir -p "$defined_mnt"
 if mount /dev/vda2 "$defined_mnt"; then
     # Si está instalado, lanzamos el sistema
     if [ -f "$defined_mnt/.wolfbearOSInstalled" ]; then
-        echo "[initramfs] Sistema instalado detectado. Iniciando..."
+        echo "[initramfs] WolfbearOS detectado. Iniciando sistema.."
         sh /launch/run || echo "[initramfs] Error al iniciar el sistema."
     else
         # Partición OK pero sin instalación
@@ -32,16 +32,15 @@ fi
 # Si hay motivo, ejecutamos instalador
 if [ -n "${motivo-}" ]; then
     caso="$motivo"
-    [ "$caso" = "sin_particion" ] && msg="no montó la partición"
-    [ "$caso" = "sin_instalar" ]  && msg="no hay instalación"
+    [ "$caso" = "sin_particion" ] && msg="no se pudo montar la partición"
+    [ "$caso" = "sin_instalar" ]  && msg="no existe una instalación de WolfbearOS"
     echo "[initramfs] Lanzando instalador: $msg."
-    /sbin/getty -L ttyAMA0 115200 vt100
-    sh /install/run || echo "[initramfs] Instalador falló."
+    sh /install/run || echo "[initramfs] La instalación falló"
 fi
 
 # Bucle para mantener consola activa
 while true; do
-    echo "[initramfs] Consola de emergencia."
+    echo "[initramfs] WolfbearOS recovery terminal."
     /sbin/getty -L ttyAMA0 115200 vt100
     sleep 2
 done
