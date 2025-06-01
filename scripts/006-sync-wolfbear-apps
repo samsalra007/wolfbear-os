@@ -1,3 +1,8 @@
 #! /bin/sh
 
-scp 192.168.64.9:~/wolfbear-utils/target/LauncherApp.zip .
+WOLFBEAR_OS_DIR=$( dirname $(pwd) )
+WOLFBEAR_APPS_COMPILED_HOST="192.168.64.9"
+
+echo "wolfbear-os dir: '$WOLFBEAR_OS_DIR'"
+
+scp $WOLFBEAR_APPS_COMPILED:~/wolfbear-utils/target/LauncherApp.zip $WOLFBEAR_OS_DIR
