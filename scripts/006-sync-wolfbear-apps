@@ -9,9 +9,12 @@ echo "wolfbear-os dir: '$WOLFBEAR_OS_DIR'"
 echo "overlay/sys-apps/ dir: '$OVERLAY_SYSAPPS_DIR'"
 echo "compilation host: '$WOLFBEAR_APPS_COMPILED_HOST'"
 
-scp $WOLFBEAR_APPS_COMPILED_HOST:~/wolfbear-utils/target/LauncherApp.zip $OVERLAY_SYSAPPS_DIR/apps
+rm -rf $OVERLAY_SYSAPPS_DIR/apps/wolfbear-apps
+mkdir -p $OVERLAY_SYSAPPS_DIR/apps/wolfbear-apps
 
-rm -rf $OVERLAY_SYSAPPS_DIR/apps/LauncherApp.d
-mkdir -p $OVERLAY_SYSAPPS_DIR/apps/LauncherApp.d
+scp $WOLFBEAR_APPS_COMPILED_HOST:~/wolfbear-utils/target/LauncherApp.zip $OVERLAY_SYSAPPS_DIR/apps/wolfbear-apps/
 
-unzip $OVERLAY_SYSAPPS_DIR/apps/LauncherApp.zip -d $OVERLAY_SYSAPPS_DIR/apps/LauncherApp.d
+rm -rf $OVERLAY_SYSAPPS_DIR/apps/wolfbear-apps/LauncherApp.d
+mkdir -p $OVERLAY_SYSAPPS_DIR/apps/wolfbear-apps/LauncherApp.d
+
+unzip $OVERLAY_SYSAPPS_DIR/apps/wolfbear-apps/LauncherApp.zip -d $OVERLAY_SYSAPPS_DIR/apps/wolfbear-apps/LauncherApp.d

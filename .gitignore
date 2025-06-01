@@ -8,3 +8,4 @@ modprobe-compiled/*
 *.wba
 *.img
 .DS_STORE
+overlay/sys-apps/apps/wolfbear-apps
