@@ -59,5 +59,10 @@ apk add --root $TARGET_DISK_DIR \
   qt6-qtbase qt6-qtdeclarative qt6-qtshadertools qt6-qtimageformats qt6-qt5compat \
   libxkbcommon mesa-egl
 
+# Instala compatibilidad con vulkan 
+doas apk add --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main --root $TARGET_DISK_DIR \
+  libxshmfence \
+  vulkan-loader \
+  vulkan-tools
 
 log_message $SCRIPT_NAME "Instalación de dependencias APK terminada"
