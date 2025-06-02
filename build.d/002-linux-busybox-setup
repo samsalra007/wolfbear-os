@@ -1,0 +1,122 @@
+#!/bin/sh
+set -euo pipefail
+
+echo "[linux-busybox-setup] Starting busybox setup"
+sleep 0.5
+
+echo "- ./rootfs path: '$INITRAMFS_PATH'"
+sleep 0.5
+
+echo "- ./overlay path: '$OVERLAY_INITRAMFS_PATH'"
+sleep 0.5
+
+echo "- Platform: '$BUILD_ARCH'"
+sleep 0.5
+
+echo "- ./busybox compilation path: '$BUSY_BOX_PATH'"
+sleep 0.5
+
+echo "- ./dependenciess path: '$DEPENDENCIES_PATH'"
+sleep 0.5
+
+echo "- ./config path: '$CONFIG_FILES_PATH'"
+sleep 0.5
+
+echo "- Opening ./dependencies path"
+sleep 0.5
+
+cd $DEPENDENCIES_PATH
+
+if [ ! -d $BUSY_BOX_PATH ]; then
+	echo "- Busybox was not found, downloading it.."
+	sleep 0.5
+
+	wget https://busybox.net/downloads/busybox-$BUSY_BOX_VERSION.tar.bz2
+
+	echo "- Uncompressing busybox"
+	sleep 0.5
+
+	tar -xjf busybox-$BUSY_BOX_VERSION.tar.bz2
+
+	echo "- Moving busybox to it's dependency path"
+	sleep 0.5
+
+	mv busybox-$BUSY_BOX_VERSION busybox
+else
+	echo "- Busybox is already downloaded in dependencies path"
+	sleep 0.5
+fi
+
+cd $BUSY_BOX_PATH
+
+echo "- Using .config file located in ./config/busybox-config"
+sleep 0.5
+
+rm -f .config
+cp $CONFIG_FILES_PATH/busybox-config-$BUILD_ARCH .config
+
+echo "- Checking if busybox patch is needed"
+sleep 0.5
+
+if [ "$BUILD_ARCH" = 'arm64' ]; then
+	echo "- Validating busybox ARM64 patches"
+	sleep 0.5
+
+	if patch --dry-run --forward -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch > /dev/null; then
+       		echo "- Busybox needs to be patched by ARM64 changes"
+ 		sleep 0.5
+         	patch -p0 < $PATCHES_PATH/busybox-arm64-shaNI.patch
+	else
+        	echo "- Busybox is already patched and no patch is needed (ARM64)"
+ 		sleep 0.5
+	fi
+else 
+	echo "- Validating busybox AMD64 patches"
+	sleep 0.5
+
+	if patch --dry-run --forward -p0 < $PATCHES_PATH/001-busybox-disable-dochecklxdialog.patch > /dev/null; then
+                echo "- Busybox needs to be patched by AMD64 changes"
+                sleep 0.5
+                patch -p0 < $PATCHES_PATH/001-busybox-disable-dochecklxdialog.patch
+        else
+                echo "- Busybox is already patched and no patch is needed (AMD64)"
+                sleep 0.5
+        fi
+fi
+
+if [ "$1" = 'menuconfig' ]; then
+        echo "- User requested to open Busybox menu config"
+        sleep 0.5
+
+        make menuconfig
+
+        echo "- Applying new configuration into /config/buxybox-config"
+        sleep 0.5
+
+        rm -f $CONFIG_FILES_PATH/busybox-config-$BUILD_ARCH
+        cp .config $CONFIG_FILES_PATH/busybox-config-$BUILD_ARCH
+
+        echo "- Configuration is done"
+        sleep 0.5
+else
+        echo "- Using oldconfig to compile Busybox"
+        sleep 0.5
+
+        make oldconfig
+fi
+
+echo "- Compiling busybox"
+sleep 0.5
+make -j$(nproc)
+
+echo "- Installing busybox in compilation path"
+sleep 0.5
+
+mkdir -p BUSY_BOX_COMPILED_DIR
+make CONFIG_PREFIX=$BUSY_BOX_COMPILED_DIR install
+
+echo "- Sincronizando hacia initramfs"
+rsync -a --links "$BUSY_BOX_COMPILED_DIR/" "$INITRAMFS_PATH/"
+
+echo "- Busybox was installed successfully"
+sleep 0.5

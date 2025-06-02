@@ -1,0 +1,114 @@
+#!/bin/sh
+set -euo pipefail
+
+echo "[initramfs-dependencies-install] starting dependency install"
+sleep 0.5
+
+echo "- ./initramfs path: '$INITRAMFS_PATH'"
+sleep 0.5
+
+echo "- ./overlay path: '$OVERLAY_INITRAMFS_PATH'"
+sleep 0.5
+
+echo "- ./modprobe-compiled path: '$MODPROBE_COMPILED_DIR'"
+sleep 0.5
+
+echo "- Syncing overlay path to external path"
+rsync -a --links "$OVERLAY_INITRAMFS_PATH/" "$INITRAMFS_PATH/"
+
+echo "- Preparing ./initramfs directories"
+sleep 0.5
+
+mkdir -p \
+  "$INITRAMFS_PATH/tmp" \
+  "$INITRAMFS_PATH/sbin" \
+  "$INITRAMFS_PATH/lib/apk/db" \
+  "$INITRAMFS_PATH/etc/apk" \
+  "$INITRAMFS_PATH/etc/ssl/certs" \
+  "$INITRAMFS_PATH/usr/lib"
+
+echo "- Creando base de datos y world de apk-tools"
+sleep 0.5
+
+mkdir -p $INITRAMFS_PATH/var/lib/apk/db
+doas touch    $INITRAMFS_PATH/var/lib/apk/db/installed
+doas chmod 644 $INITRAMFS_PATH/var/lib/apk/db/installed
+
+mkdir -p $INITRAMFS_PATH/etc/apk
+doas touch    $INITRAMFS_PATH/etc/apk/world
+doas chmod 644 $INITRAMFS_PATH/etc/apk/world
+
+echo "-Actualizando keys del equipo local hacia initramfs"
+sleep 0.5
+
+mkdir -p $INITRAMFS_PATH/etc/apk/keys
+cp /etc/apk/keys/* $INITRAMFS_PATH/etc/apk/keys
+
+echo "- Actualizando base de datos"
+doas /sbin/apk update --root $INITRAMFS_PATH
+
+echo "- Instalando dependencias"
+sleep 0.5
+
+doas /sbin/apk --root $INITRAMFS_PATH \
+  add \
+    apk-tools \
+    shadow \
+    dhcpcd \
+    openresolv \
+    util-linux \
+    strace \
+    openssh \
+    grub-efi \
+    parted \
+    e2fsprogs \
+    dosfstools \
+    rsync \
+    nano
+
+echo "- Setting up root user"
+sleep 0.5
+echo 'root:x:0:0:root:/root:/bin/sh' >> $INITRAMFS_PATH/etc/passwd
+echo 'root::14600:0:99999:7:::' >> $INITRAMFS_PATH/etc/shadow
+
+echo "- Fixing ping command sudo execution"
+sleep 0.5
+sudo chmod u+s $INITRAMFS_PATH/bin/ping
+
+# Compilar SDL para ARM64 con fbdev habilitado
+
+# rm -rf $INITRAMFS_PATH/tmp/SDL2-build
+# mkdir -p $INITRAMFS_PATH/tmp/SDL2-build
+# cd $INITRAMFS_PATH/tmp/SDL2-build
+
+# wget https://libsdl.org/release/SDL2-2.30.9.tar.gz
+# tar xzf SDL2-2.30.9.tar.gz
+# cd SDL2-2.30.9
+
+# mkdir build && cd build
+# cmake -G Ninja .. \
+#   -DCMAKE_BUILD_TYPE=Release \
+#   -DCMAKE_INSTALL_PREFIX=/usr \
+#   -DBUILD_SHARED_LIBS=ON \
+#   -DBUILD_STATIC_LIBS=OFF \
+#  -DBUILD_TESTS=OFF \
+#  -DSDL_VIDEO_DRIVER_X11=OFF \
+#  -DSDL_VIDEO_DRIVER_WAYLAND=OFF \
+#  -DSDL_VIDEO_DRIVER_KMSDRM=OFF \
+#  -DSDL_VIDEO_DRIVER_DIRECTFB=OFF \
+#  -DSDL_VIDEO_DRIVER_FBDEV=ON \
+#  -DSDL_VIDEO_DRIVER_OFFSCREEN=OFF \
+#  -DSDL_VIDEO_DRIVER_DUMMY=OFF \
+#  -DSDL_INPUT_DRIVER_UDEV=OFF \
+#  -DSDL_INPUT_DRIVER_EVDEV=ON
+
+#export DESTDIR=$INITRAMFS_PATH
+
+#ninja
+
+#doas sh -c "DESTDIR=$INITRAMFS_PATH ninja install"
+
+#rm -rf $INITRAMFS_PATH/tmp/SDL2-build
+
+echo "[initramfs-dependencies-install] build finished"
+sleep 0.5

@@ -1,0 +1,129 @@
+#!/bin/sh
+set -euo pipefail
+
+echo "[linux-kernel-setup] Starting Linux kernel setup"
+sleep 0.5
+
+echo "- Project path: '$PROJECT_PATH'"
+sleep 0.5
+
+echo "- Kernek version: 'v$LINUX_KERNEL_VERSION'"
+sleep 0.5
+
+echo "- Platform: '$BUILD_ARCH'"
+sleep 0.5
+
+echo "- ./patches path: '$PATCHES_PATH'"
+sleep 0.5
+
+echo "- ./initramfs path: '$INITRAMFS_PATH'"
+sleep 0.5
+
+echo "- ./target path: '$TARGET_PATH'"
+sleep 0.5
+
+echo "- Is it requested to recompile kernel modules?: $VAR_KERNEL_MODULES_COMPILE"
+sleep 0.5
+
+if [ ! -d $LINUX_KERNEL_PATH ]; then
+	echo "- Linux kernel dependency was not found, so we need to download it.."
+	sleep 0.5
+
+	git clone -b v$LINUX_KERNEL_VERSION --single-branch https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git $LINUX_KERNEL_PATH
+
+	echo "- Linux kernel has been cloned successfully"
+else 
+	echo "- Linux kernel is already in dependencies and no download is needed"
+	sleep 0.5
+fi
+
+cd $LINUX_KERNEL_PATH
+
+echo "- Syncing ./config/linux-config into ./dependencies/linux/.config file"
+sleep 0.5
+
+rm -f .config
+cp $CONFIG_FILES_PATH/linux-config-$BUILD_ARCH .config
+
+echo "- Checking if Linux kernel needs to be patched with WolbearOS changes"
+sleep 0.5
+
+if patch --dry-run --forward -p1 < $PATCHES_PATH/001-linux-blk-iocost-c-unsigned-int-format > /dev/null; then
+	echo "- Patch 001-linux-blk-iocost-c-unsigned-int-format"
+	sleep 0.5
+	patch -p1 < $PATCHES_PATH/001-linux-blk-iocost-c-unsigned-int-format
+fi
+
+if patch --dry-run --forward -p1 < $PATCHES_PATH/000-linux-uts-name.patch > /dev/null; then
+ 	echo "- Applying WolfbearOS patches"
+ 	sleep 0.5
+
+	patch -p1 < $PATCHES_PATH/000-linux-uts-name.patch
+
+	echo "- Patches applied successfully"
+	sleep 0.5
+else
+	echo "- Linux kernel is already patched and no patch-action is needed"
+	sleep 0.5
+fi
+
+if [ "$1" = 'menuconfig' ]; then
+	echo "- User requested to open Linux kernel menu config"
+	sleep 0.5
+
+	make menuconfig
+
+	echo "- Applying new configuration into /config/linux-config"
+	sleep 0.5
+
+	rm -f $PROJECT_PATH/config/linux-config-$BUILD_ARCH
+	cp .config $PROJECT_PATH/config/linux-config-$BUILD_ARCH
+
+	echo "- Configuration is done"
+	sleep 0.5
+else
+	echo "- Using oldconfig to compile Linux"
+	sleep 0.5
+
+	make olddefconfig
+fi
+
+if [ "$VAR_KERNEL_CLEAN" = 'y' ]; then
+	make clean
+fi
+
+echo "- Compiling Linux kernel"
+sleep 0.5
+make -j$(nproc)
+
+if [ "$VAR_KERNEL_MODULES_COMPILE" = 'y' ]; then
+
+	echo "- Compiling Linux modules"
+	sleep 0.5
+	make -j$(nproc) modules
+
+	echo "- Instaling Linux modules"
+	sleep 0.5
+	make -j$(nproc) modules_install INSTALL_MOD_PATH=$MODPROBE_COMPILED_DIR
+fi
+
+echo "- Determining compilation path according arch"
+sleep 0.5
+
+if [ "$BUILD_ARCH" = "arm64" ]; then
+  SRC_ARCH=arm64
+  IMG=Image
+elif [ "$BUILD_ARCH" = "amd64" ] || [ "$BUILD_ARCH" = "x86_64" ]; then
+  SRC_ARCH=x86
+  IMG=bzImage
+else
+  echo "[error] Unsupported architecture: $BUILD_ARCH" >&2
+  exit 1
+fi
+
+echo "-  Moving compiled kernel image to compilation path"
+sleep 0.5
+mv $LINUX_KERNEL_PATH/arch/$SRC_ARCH/boot/$IMG $TARGET_PATH
+
+echo "[linux-kernel-setup] Linux kernel setup is finished"
+sleep 0.5
