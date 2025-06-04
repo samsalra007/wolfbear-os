@@ -60,7 +60,7 @@ apk add --root $TARGET_DISK_DIR \
   libxkbcommon mesa-egl
 
 # Instala compatibilidad con vulkan 
-doas apk add --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main --root $TARGET_DISK_DIR \
+apk add --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main --root $TARGET_DISK_DIR \
   libxshmfence \
   vulkan-loader \
   vulkan-tools
