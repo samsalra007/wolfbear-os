@@ -13,7 +13,7 @@ else
     debug_message $SCRIPT_NAME "No se detectó IP en eth0, ejecutando dhcpcd"
     mkdir -p /run/dhcpcd
 
-    if timeout 5 dhcpcd eth0; then
+    if timeout 10 dhcpcd eth0; then
         debug_message $SCRIPT_NAME "Conexión a internet realizada con éxito"
     else
         log_message $SCRIPT_NAME "dhcpcd falló o no respondió a tiempo"
