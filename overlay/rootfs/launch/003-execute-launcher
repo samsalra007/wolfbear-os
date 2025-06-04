@@ -1,0 +1,11 @@
+#!/bin/sh
+set -euo pipefail
+source /launch/util-log
+SCRIPT_NAME=$0
+
+log_message $SCRIPT_NAME "Solicitando la inicialización del launcher"
+
+cd /apps/wolfbear-apps/LauncherApp.d/
+./LauncherApp -platform eglfs &
+
+log_message $SCRIPT_NAME "Launcher inicializado"
