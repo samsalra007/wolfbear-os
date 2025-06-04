@@ -3,7 +3,7 @@
 echo "[miscellaneous] Pequeños ajustes del sistema."
 
 echo "- Exportando /sbin en PATH"
-export PATH=$PATH:/sbin
+export PATH=$PATH:/sbin:/bin:/usr/sbin:/usr/bin
 
 echo "- Cambiando hostname según archivo de configuración."
 if [ -f /etc/hostname ]; then
