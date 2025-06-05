@@ -7,7 +7,7 @@ SCRIPT_NAME=$0
 log_message $SCRIPT_NAME "Iniciando configuración del kernel de linux '$DEPENDENCY_LINUX_DIR'"
 log_message $SCRIPT_NAME "Se compilará el kernel para la arquitectura '$SYS_ARCH'"
 
-debug_message $SCRIPT_NAME "Eliminando archivo de configuración si existe en '$$DEPENDENCY_LINUX_DIR/.config'"
+debug_message $SCRIPT_NAME "Eliminando archivo de configuración si existe en '$DEPENDENCY_LINUX_DIR/.config'"
 rm -f "$DEPENDENCY_LINUX_DIR"/.config
 
 CONFIG_IN_PROJECT="$CONFIG_FILES_DIR/linux-config-$SYS_ARCH"
@@ -18,8 +18,7 @@ debug_message $SCRIPT_NAME "Desde '$CONFIG_IN_PROJECT' hasta '$CONFIG_IN_LINUX_D
 
 cp $CONFIG_FILES_DIR/linux-config-$SYS_ARCH $DEPENDENCY_LINUX_DIR/.config
 
-debug_message $SCRIPT_NAME "Revisando que el archivo haya sido copiado exitosamente '$$DEPENDENCY_LINUX_DIR/.config'"
-cat $DEPENDENCY_LINUX_DIR/.config
+debug_message $SCRIPT_NAME "Revisando que el archivo haya sido copiado exitosamente '$DEPENDENCY_LINUX_DIR/.config'"
 exit
 
 echo "- Checking if Linux kernel needs to be patched with WolbearOS changes"
