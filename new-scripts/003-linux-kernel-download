@@ -1,0 +1,21 @@
+#!/bin/sh
+set -euo pipefail
+source $SCRIPTS_DIR/util-log
+
+SCRIPT_NAME=$0
+
+log_message $SCRIPT_NAME "Iniciando descarga del kernel de linux '$DEPENDENCY_LINUX_DIR'"
+
+if [ ! -d $DEPENDENCY_LINUX_DIR ]; then
+	echo "- Linux kernel dependency was not found, so we need to download it.."
+	sleep 0.5
+
+	git clone -b v$VERSION_LINUX_KERNEL --single-branch https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git $DEPENDENCY_LINUX_DIR
+
+	echo "- Linux kernel has been cloned successfully"
+else 
+	echo "- Linux kernel is already in dependencies and no download is needed"
+	sleep 0.5
+fi
+
+log_message $SCRIPT_NAME "Descarga de Linux kernel finalizada en: '$DEPENDENCY_LINUX_DIR'"
