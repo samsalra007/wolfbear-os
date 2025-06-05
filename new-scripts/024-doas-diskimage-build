@@ -139,4 +139,6 @@ umount -l "$MNT_DIR/RESOURCES" || true
 debug_message $SCRIPT_NAME "Moviendo '$IMG' hacia '$TARGET_DIR'"
 mv $IMG $TARGET_DIR
 
+chown wolfbear:wolfbear $TARGET_DIR/$IMG
+
 log_message $SCRIPT_NAME "Imagen '$IMG' creada y preparada para boot EFI usando EFI stub loader"
