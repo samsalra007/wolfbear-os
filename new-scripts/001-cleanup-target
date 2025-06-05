@@ -12,4 +12,4 @@ sudo rm -rf "$TARGET_DIR"
 debug_message $SCRIPT_NAME "Creando directorio vacío '$TARGET_DIR'"
 mkdir -p "$TARGET_DIR"
 
-log_message $SCRIPT_NAME "Limpieza de ./target finalizada"
+log_message $SCRIPT_NAME "Limpieza de '$TARGET_DIR' finalizada"
