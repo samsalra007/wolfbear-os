@@ -1,0 +1,40 @@
+#!/bin/sh
+set -euo pipefail
+source $SCRIPTS_DIR/util-log
+
+SCRIPT_NAME=$0
+
+log_message $SCRIPT_NAME "El usuario solicitó abrir el menú de configuración de Busybox para cambiar la configuración"
+debug_message $SCRIPT_NAME "Abriendo directorio '$DEPENDENCY_BUSYBOX_DIR'"
+
+cd $DEPENDENCY_BUSYBOX_DIR
+
+debug_message $SCRIPT_NAME "Solicitando 'make menuconfig'"
+make olddefconfig
+
+PROJECT_CONFIG="$WOLFBEAR_OS_DIR/config/busybox-config-$SYS_ARCH"
+DEPENDENCY_CONFIG="$DEPENDENCY_BUSYBOX_DIR/.config"
+
+debug_message $SCRIPT_NAME "Sincronizando cambios hechos desde '$DEPENDENCY_CONFIG' hasta '$PROJECT_CONFIG'"
+
+rm -f $PROJECT_CONFIG
+cp $DEPENDENCY_CONFIG $PROJECT_CONFIG
+
+log_message $SCRIPT_NAME "Archivo de configuración sincronizado exitosamente en '$PROJECT_CONFIG'"
+
+
+echo "- Compiling busybox"
+sleep 0.5
+make -j$(nproc)
+
+echo "- Installing busybox in compilation path"
+sleep 0.5
+
+mkdir -p BUSY_BOX_COMPILED_DIR
+make CONFIG_PREFIX=$BUSY_BOX_COMPILED_DIR install
+
+echo "- Sincronizando hacia initramfs"
+rsync -a --links "$BUSY_BOX_COMPILED_DIR/" "$INITRAMFS_PATH/"
+
+echo "- Busybox was installed successfully"
+sleep 0.5

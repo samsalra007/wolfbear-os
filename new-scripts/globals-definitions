@@ -11,6 +11,7 @@ else
 fi
 
 export VERSION_LINUX_KERNEL=6.12
+export BUSY_BOX_VERSION=1.37.0
 
 export WOLFBEAR_OS_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
@@ -24,3 +25,5 @@ export CONFIG_FILES_DIR="$WOLFBEAR_OS_DIR/config"
 export DEPENDENCIES_DIR="$WOLFBEAR_OS_DIR/dependencies"
 export DEPENDENCY_LINUX_DIR="$DEPENDENCIES_DIR/linux"
 export DEPENDENCIES_LINUX_MODULES_DIR="$DEPENDENCIES_DIR/linux-modules"
+export DEPENDENCY_BUSYBOX_DIR="$DEPENDENCIES_DIR/busybox"
+export DEPENDENCY_BUSYBOX_COMPILED_DIR="$DEPENDENCIES_DIR/busybox-compiled"

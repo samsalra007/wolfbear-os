@@ -1,0 +1,30 @@
+#!/bin/sh
+set -euo pipefail
+source $SCRIPTS_DIR/util-log
+
+SCRIPT_NAME=$0
+
+log_message $SCRIPT_NAME "Revisando que parches son necesarios según la arquitectura"
+cd $DEPENDENCY_BUSYBOX_DIR
+
+if [ "$SYS_ARCH" = 'arm64' ]; then
+	debug_message $SCRIPT_NAME "Verificando parches para la arquitectura ARM64"
+
+	if patch --dry-run --forward -p0 < $PATCHES_DIR/busybox-arm64-shaNI.patch > /dev/null; then
+       		debug_message $SCRIPT_NAME "Aplicando parches para la arquitectura ARM64"
+         	patch -p0 < $PATCHES_DIR/busybox-arm64-shaNI.patch
+	else
+        	debug_message $SCRIPT_NAME "Busybox ya tiene el parche para ARM64" 0.5
+	fi
+else 
+	debug_message $SCRIPT_NAME "Verificando parches para la arquitectura x86 AMD64"
+
+	if patch --dry-run --forward -p0 < $PATCHES_DIR/001-busybox-disable-dochecklxdialog.patch > /dev/null; then
+                debug_message $SCRIPT_NAME "Aplicando parches para la arquitectura AMD64"
+                patch -p0 < $PATCHES_DIR/001-busybox-disable-dochecklxdialog.patch
+        else
+                debug_message $SCRIPT_NAME "Busybox ya tiene el parche para AMD64" 0.5
+        fi
+fi
+
+log_message $SCRIPT_NAME "Proceso de parcheo terminado exitosamente"

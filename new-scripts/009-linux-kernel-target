@@ -19,7 +19,7 @@ fi
 
 IMAGE_DIR="$DEPENDENCY_LINUX_DIR/arch/$SRC_ARCH/boot/$IMG"
 
-error_message $SCRIPT_NAME "Se moverá el archivo '$IMAGE_DIR' hacia el directorio '$TARGET_DIR'"
+debug_message $SCRIPT_NAME "Se moverá el archivo '$IMAGE_DIR' hacia el directorio '$TARGET_DIR'"
 mv $IMAGE_DIR $TARGET_DIR
 
 log_message $SCRIPT_NAME "Se han movido los archivos compilados de Linux Kernel exitosamente"

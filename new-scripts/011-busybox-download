@@ -1,0 +1,30 @@
+#!/bin/sh
+set -euo pipefail
+source $SCRIPTS_DIR/util-log
+
+SCRIPT_NAME=$0
+
+log_message $SCRIPT_NAME "Iniciando descarga de Busybox '$DEPENDENCY_BUSYBOX_DIR' en su versión '$BUSY_BOX_VERSION'"
+
+debug_message $SCRIPT_NAME "Abriendo directorio de dependencias '$DEPENDENCIES_PATH'"
+cd $DEPENDENCIES_PATH
+
+if [ ! -d "$DEPENDENCY_BUSYBOX_DIR" ] || [ -z "$(ls -A "$DEPENDENCY_BUSYBOX_DIR")" ]; then
+	log_message $SCRIPT_NAME "La dependencia de Busybox no se encontró en el sistema"
+	log_message $SCRIPT_NAME "Busybox será descargado desde su repositorio oficial"
+	new_line
+
+	wget https://busybox.net/downloads/busybox-$BUSY_BOX_VERSION.tar.bz2
+
+	log_message $SCRIPT_NAME "Descomprimiendo Busybox"
+	tar -xjf busybox-$BUSY_BOX_VERSION.tar.bz2
+
+	log_message $SCRIPT_NAME "Moviendo a su directorio sin versión"
+	mv busybox-$BUSY_BOX_VERSION busybox
+
+	log_message $SCRIPT_NAME "Busybox ha sido descargado exitosamente"
+else 
+	log_message $SCRIPT_NAME "No es necesario descargar Busybox ya que fue encontrado en la carpeta de dependencias"
+fi
+
+log_message $SCRIPT_NAME "El script para descargar Busybox ha finalizado"

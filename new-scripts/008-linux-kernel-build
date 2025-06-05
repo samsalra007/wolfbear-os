@@ -9,7 +9,9 @@ log_message $SCRIPT_NAME "Iniciando compilación de Linux Kernel"
 debug_message $SCRIPT_NAME "Accediendo al directorio '$DEPENDENCY_LINUX_DIR'"
 cd $DEPENDENCY_LINUX_DIR
 
-debug_message $SCRIPT_NAME "Compilando kernel"
+debug_message $SCRIPT_NAME "Compilando kernel" 2
+new_line
+
 make -j$(nproc)
 
 log_message $SCRIPT_NAME "Compilación realizada exitosamente"
