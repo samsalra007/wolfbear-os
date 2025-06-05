@@ -15,7 +15,7 @@ export BUSY_BOX_VERSION=1.37.0
 
 export WOLFBEAR_OS_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
-export SCRIPTS_DIR="$WOLFBEAR_OS_DIR/new-scripts"
+export SCRIPTS_DIR="$WOLFBEAR_OS_DIR/build.d"
 
 export TARGET_DIR="$WOLFBEAR_OS_DIR/target"
 export PATCHES_DIR="$WOLFBEAR_OS_DIR/patches"
