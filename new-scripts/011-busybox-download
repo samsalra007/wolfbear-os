@@ -6,8 +6,8 @@ SCRIPT_NAME=$0
 
 log_message $SCRIPT_NAME "Iniciando descarga de Busybox '$DEPENDENCY_BUSYBOX_DIR' en su versión '$BUSY_BOX_VERSION'"
 
-debug_message $SCRIPT_NAME "Abriendo directorio de dependencias '$DEPENDENCIES_PATH'"
-cd $DEPENDENCIES_PATH
+debug_message $SCRIPT_NAME "Abriendo directorio de dependencias '$DEPENDENCIES_DIR'"
+cd $DEPENDENCIES_DIR
 
 if [ ! -d "$DEPENDENCY_BUSYBOX_DIR" ] || [ -z "$(ls -A "$DEPENDENCY_BUSYBOX_DIR")" ]; then
 	log_message $SCRIPT_NAME "La dependencia de Busybox no se encontró en el sistema"
