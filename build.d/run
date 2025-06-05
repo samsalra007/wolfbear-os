@@ -28,6 +28,7 @@ echo "Has solicitado ejecutar todos los scripts del directorio."
 echo "scripts dir $SCRIPTS_DIR"
 i=0
 while :; do
+  cd $SCRIPTS_DIR
   prefix=$(printf "%03d" "$i")
   found_any=false
 
