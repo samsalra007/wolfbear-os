@@ -10,7 +10,7 @@ debug_message $SCRIPT_NAME "Abriendo directorio '$DEPENDENCY_BUSYBOX_DIR'"
 cd $DEPENDENCY_BUSYBOX_DIR
 
 debug_message $SCRIPT_NAME "Solicitando 'make menuconfig'"
-make olddefconfig
+make oldconfig
 
 PROJECT_CONFIG="$WOLFBEAR_OS_DIR/config/busybox-config-$SYS_ARCH"
 DEPENDENCY_CONFIG="$DEPENDENCY_BUSYBOX_DIR/.config"
