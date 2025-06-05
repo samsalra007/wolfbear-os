@@ -28,6 +28,8 @@ mkdir -p $INITRAMFS_DIR/etc/apk/keys
 cp /etc/apk/keys/* $INITRAMFS_DIR/etc/apk/keys
 
 debug_message $SCRIPT_NAME "Soliciatndo actualización de base de datos apk update"
+new_line
+
 doas /sbin/apk update --root $INITRAMFS_DIR
 
 log_message $SCRIPT_NAME "Configuración de base de datos terminada"

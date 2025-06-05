@@ -5,7 +5,6 @@ source $SCRIPTS_DIR/util-log
 SCRIPT_NAME=$0
 
 log_message $SCRIPT_NAME "Generando imagen de disco '$INITRAMFS_DIR'"
-doas echo ""
 
 IMG=generated.img
 SIZE_MB=1024
@@ -23,7 +22,7 @@ debug_message $SCRIPT_NAME "Creando imagen de $SIZE_MB MiB"
 dd if=/dev/zero of="$IMG" bs=1M count=$SIZE_MB
 
 debug_message $SCRIPT_NAME "Asociando imagen a loop device"
-LOOPDEV=$(losetup -f)
+LOOPDEV=$( doas losetup -f)
 losetup "$LOOPDEV" "$IMG"
 
 debug_message $SCRIPT_NAME "Creando tabla GPT y particiones"
@@ -39,7 +38,7 @@ partprobe "$LOOPDEV"
 
 debug_message $SCRIPT_NAME "Reasociando loop device para detectar particiones"
 losetup -d "$LOOPDEV"
-LOOPDEV=$(losetup --find --show "$IMG")
+LOOPDEV=$( doas losetup --find --show "$IMG" )
 sleep 1
 
 debug_message $SCRIPT_NAME "Detectando particiones..."
