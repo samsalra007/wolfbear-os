@@ -2,7 +2,7 @@
 set -euo pipefail
 
 WOLFBEAR_OS_DIR=$( pwd )
-DIRNAME_DIR=$( dirname )
+DIRNAME_DIR=$( dirname "$0" )
 
 echo "Definiendo variables de directorios"
 
