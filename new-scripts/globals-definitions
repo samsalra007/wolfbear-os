@@ -1,0 +1,10 @@
+#!/bin/sh
+set -euo pipefail
+
+WOLFBEAR_OS_DIR=$( pwd )
+DIRNAME_DIR=$( dirname )
+
+echo "Definiendo variables de directorios"
+
+echo "WOLFBEAR_OS_DIR: $WOLFBEAR_OS_DIR"
+echo "DIRNAME_DIR: $DIRNAME_DIR"

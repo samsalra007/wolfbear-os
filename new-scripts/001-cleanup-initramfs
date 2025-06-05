@@ -1,0 +1,19 @@
+#!/bin/sh
+set -euo pipefail
+source scripts-new/util-log
+SCRIPT_NAME=$0
+
+log_message $SCRIPT_NAME "Iniciando limpieza de ./initramfs"
+log_debug $SCRIPT_NAME "Desmontando particiones montadas en '$INITRAMFS_DIR'"
+
+for fs in proc sys dev; do
+  mountpoint -q "$INITRAMFS_DIR/$fs" && sudo umount -l "$INITRAMFS_DIR/$fs"
+done
+
+log_debug $SCRIPT_NAME "Eliminando directorio '$INITRAMFS_DIR'"
+sudo rm -rf "$INITRAMFS_DIR"
+
+log_debug $SCRIPT_NAME "Creando directorio vacío '$INITRAMFS_DIR'"
+mkdir -p "$INITRAMFS_DIR"
+
+log_message $SCRIPT_NAME "Limpieza de ./initramfs finalizada"
