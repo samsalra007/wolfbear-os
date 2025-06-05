@@ -4,18 +4,15 @@ set -euo pipefail
 SCRIPT_NAME=$0
 
 export CURRENT_PATH=$( pwd )
-export SCRIPTS_DIR="$( dirname "$0" )/install"
+export SCRIPTS_DIR="$( dirname "$0" )"
 
 doas echo "Compilación de WolfbearOS en initramfs ha empezado"
 
-# Obtén la ruta real del script "install"
 BASEDIR=$(cd "$(dirname "$0")" && pwd)
 
 source "$BASEDIR/globals-definitions"
 
-echo $WOLFBEAR_OS_DIR " en run"
-# Los scripts numerados están en el mismo directorio que este script
-SCRIPTS_DIR="$BASEDIR"
+echo "$WOLFBEAR_OS_DIR en run"
 
 if [ -z "${1-}" ]; then
   echo "Has solicitado ejecutar todos los scripts del directorio."
@@ -29,26 +26,52 @@ fi
 i=0
 while :; do
   prefix=$(printf "%03d" "$i")
-
-  # Expande el patrón (efectúa globbing)
   set -- "$SCRIPTS_DIR/${prefix}-"*
-  # Si no existe ningún fichero coincidente, $1 será literal y -e fallará
+
   if [ ! -e "$1" ]; then
     echo
     echo "Se ha terminado la ejecución de los scripts (ya no existe el script ${prefix}-*)"
     break
   fi
 
-  # Ejecuta cada script existente y ejecutable usando sh
   for script in "$SCRIPTS_DIR/${prefix}-"*; do
     [ -f "$script" ] || continue
     if [ ! -x "$script" ]; then
       echo "Saltando script $script (no es ejecutable)"
       continue
     fi
+
     echo
     echo "Corriendo script $script"
-    source "$script"
+    script_name="$(basename "$script")"
+
+    if echo "$script_name" | grep -qE '^[0-9]{3}-doas-'; then
+      echo "→ Este script requiere permisos de superusuario (doas)"
+
+      doas env \
+        SYS_ARCH="$SYS_ARCH" \
+        VERSION_LINUX_KERNEL="$VERSION_LINUX_KERNEL" \
+        BUSY_BOX_VERSION="$BUSY_BOX_VERSION" \
+        WOLFBEAR_OS_DIR="$WOLFBEAR_OS_DIR" \
+        SCRIPTS_DIR="$SCRIPTS_DIR" \
+        TARGET_DIR="$TARGET_DIR" \
+        PATCHES_DIR="$PATCHES_DIR" \
+        CONFIG_FILES_DIR="$CONFIG_FILES_DIR" \
+        INITRAMFS_DIR="$INITRAMFS_DIR" \
+        DEPENDENCIES_DIR="$DEPENDENCIES_DIR" \
+        DEPENDENCY_LINUX_DIR="$DEPENDENCY_LINUX_DIR" \
+        DEPENDENCIES_LINUX_MODULES_DIR="$DEPENDENCIES_LINUX_MODULES_DIR" \
+        DEPENDENCY_BUSYBOX_DIR="$DEPENDENCY_BUSYBOX_DIR" \
+        DEPENDENCY_BUSYBOX_COMPILED_DIR="$DEPENDENCY_BUSYBOX_COMPILED_DIR" \
+        DEPENDENCY_WOLFBEAR_APPS_DIR="$DEPENDENCY_WOLFBEAR_APPS_DIR" \
+        OVERLAY_DIR="$OVERLAY_DIR" \
+        OVERLAY_INITRAMFS_DIR="$OVERLAY_INITRAMFS_DIR" \
+        OVERLAY_ROOTFS_DIR="$OVERLAY_ROOTFS_DIR" \
+        OVERLAY_SYSAPPS_DIR="$OVERLAY_SYSAPPS_DIR" \
+        sh "$script"
+    else
+      source "$script"
+    fi
   done
 
   i=$((i + 1))

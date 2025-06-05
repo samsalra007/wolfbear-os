@@ -22,8 +22,8 @@ debug_message $SCRIPT_NAME "Creando imagen de $SIZE_MB MiB"
 dd if=/dev/zero of="$IMG" bs=1M count=$SIZE_MB
 
 debug_message $SCRIPT_NAME "Asociando imagen a loop device"
-LOOPDEV=$( doas losetup -f)
-doas losetup "$LOOPDEV" "$IMG"
+LOOPDEV=$( losetup -f)
+losetup "$LOOPDEV" "$IMG"
 
 debug_message $SCRIPT_NAME "Creando tabla GPT y particiones"
 parted --script "$LOOPDEV" \
@@ -37,12 +37,12 @@ debug_message $SCRIPT_NAME "Recargando particiones en $LOOPDEV"
 partprobe "$LOOPDEV"
 
 debug_message $SCRIPT_NAME "Reasociando loop device para detectar particiones"
-doas losetup -d "$LOOPDEV"
-LOOPDEV=$( doas losetup --find --show "$IMG" )
+losetup -d "$LOOPDEV"
+LOOPDEV=$( losetup --find --show "$IMG" )
 sleep 1
 
 debug_message $SCRIPT_NAME "Detectando particiones..."
-doas partx -a "$LOOPDEV"
+partx -a "$LOOPDEV"
 EFI_PART="${LOOPDEV}p1"
 ROOT_PART="${LOOPDEV}p2"
 RESOURCES_PART="${LOOPDEV}p3"
