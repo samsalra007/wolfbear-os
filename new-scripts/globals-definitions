@@ -1,8 +1,8 @@
 #!/bin/sh
 set -euo pipefail
 
-WOLFBEAR_OS_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-
 echo "Definiendo variables de directorios"
+
+export WOLFBEAR_OS_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
 echo "WOLFBEAR_OS_DIR: $WOLFBEAR_OS_DIR"

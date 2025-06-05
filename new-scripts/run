@@ -13,6 +13,7 @@ BASEDIR=$(cd "$(dirname "$0")" && pwd)
 
 sh "$BASEDIR/globals-definitions"
 
+echo $WOLFBEAR_OS_DIR " en run"
 # Los scripts numerados están en el mismo directorio que este script
 SCRIPTS_DIR="$BASEDIR"
 
