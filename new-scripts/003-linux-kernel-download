@@ -9,6 +9,7 @@ log_message $SCRIPT_NAME "Iniciando descarga del kernel de linux '$DEPENDENCY_LI
 if [ ! -d "$DEPENDENCY_LINUX_DIR" ] || [ -z "$(ls -A "$DEPENDENCY_LINUX_DIR")" ]; then
 	log_message $SCRIPT_NAME "La dependencia de Linux Kernel no se encontró en el sistema"
 	log_message $SCRIPT_NAME "Linux Kernel será descargado desde su repositorio oficial"
+	new_line
 
 	git clone -b v$VERSION_LINUX_KERNEL --single-branch https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git $DEPENDENCY_LINUX_DIR
 
