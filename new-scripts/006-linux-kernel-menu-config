@@ -12,8 +12,8 @@ cd $DEPENDENCY_LINUX_DIR
 debug_message $SCRIPT_NAME "Solicitando 'make menuconfig'"
 make menuconfig
 
-$PROJECT_CONFIG="$WOLFBEAR_OS_DIR/config/linux-config-$SYS_ARCH"
-$DEPENDENCY_CONFIG="$DEPENDENCY_LINUX_DIR/.config"
+PROJECT_CONFIG="$WOLFBEAR_OS_DIR/config/linux-config-$SYS_ARCH"
+DEPENDENCY_CONFIG="$DEPENDENCY_LINUX_DIR/.config"
 
 debug_message $SCRIPT_NAME "Sincronizando cambios hechos desde '$DEPENDENCY_CONFIG' hasta '$PROJECT_CONFIG'"
 
