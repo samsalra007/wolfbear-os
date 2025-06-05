@@ -4,6 +4,8 @@ set -euo pipefail
 echo "Definiendo variables de directorios"
 
 export WOLFBEAR_OS_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+
 export SCRIPTS_DIR="$WOLFBEAR_OS_DIR/new-scripts"
+export INITRAMFS_DIR="$WOLFBEAR_OS_DIR/initramfs"
 
 echo "WOLFBEAR_OS_DIR: $WOLFBEAR_OS_DIR"
