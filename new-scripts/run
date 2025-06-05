@@ -48,7 +48,7 @@ while :; do
     fi
     echo
     echo "Corriendo script $script"
-    . "$script"
+    source "$script"
   done
 
   i=$((i + 1))
