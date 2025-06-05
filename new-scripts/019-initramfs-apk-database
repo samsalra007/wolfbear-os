@@ -10,6 +10,8 @@ debug_message $SCRIPT_NAME "Creando directorio de base de datos"
 mkdir -p $INITRAMFS_DIR/var/lib/apk/db
 
 debug_message $SCRIPT_NAME "Creando archivo installed en directorio de base de datos"
+new_line
+
 doas touch    $INITRAMFS_DIR/var/lib/apk/db/installed
 doas chmod 644 $INITRAMFS_DIR/var/lib/apk/db/installed
 
