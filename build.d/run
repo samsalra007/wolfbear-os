@@ -25,7 +25,7 @@ if [ -n "${1-}" ]; then
 fi
 
 echo "Has solicitado ejecutar todos los scripts del directorio."
-
+echo "scripts dir $SCRIPTS_DIR"
 i=0
 while :; do
   prefix=$(printf "%03d" "$i")
