@@ -11,7 +11,7 @@ echo "Compilación de WolfbearOS en initramfs ha empezado"
 # Obtén la ruta real del script "install"
 BASEDIR=$(cd "$(dirname "$0")" && pwd)
 
-sh "$BASEDIR/globals-definitions"
+source "$BASEDIR/globals-definitions"
 
 echo $WOLFBEAR_OS_DIR " en run"
 # Los scripts numerados están en el mismo directorio que este script
