@@ -4,7 +4,7 @@ source $SCRIPTS_DIR/util-log
 
 SCRIPT_NAME=$0
 
-debug_message $SCRIPT_NAME "Aplicando parches correspondientes a Linux Kernel"
+log_message $SCRIPT_NAME "Aplicando parches correspondientes a Linux Kernel"
 cd $DEPENDENCY_LINUX_DIR
 
 if patch --dry-run --forward -p1 < $PATCHES_DIR/000-linux-uts-name.patch > /dev/null; then
@@ -23,4 +23,4 @@ else
 	debug_message $SCRIPT_NAME "El parche 001-linux-blk-iocost-c-unsigned-int-format.patch ya estaba previamente aplicado"
 fi
 
-debug_message $SCRIPT_NAME "Se ha terminado el proceso de parcheo a Linux Kernel"
+log_message $SCRIPT_NAME "Se ha terminado el proceso de parcheo a Linux Kernel"
