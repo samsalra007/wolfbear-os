@@ -5,6 +5,7 @@ source $SCRIPTS_DIR/util-log
 SCRIPT_NAME=$0
 
 debug_message $SCRIPT_NAME "Aplicando parches correspondientes a Linux Kernel"
+cd $DEPENDENCY_LINUX_DIR
 
 if patch --dry-run --forward -p1 < $PATCHES_DIR/000-linux-uts-name.patch > /dev/null; then
  	debug_message $SCRIPT_NAME "Se encontró que el parche 000-linux-uts-name.patch no ha sido aplicado"
