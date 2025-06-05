@@ -1,7 +1,8 @@
 #!/bin/sh
 set -euo pipefail
 
-source ./util-log
+source util-log
+
 SCRIPT_NAME=$0
 
 export CURRENT_PATH=$( pwd )
