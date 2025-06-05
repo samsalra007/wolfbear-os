@@ -6,7 +6,11 @@ echo "Definiendo variables de directorios"
 export WOLFBEAR_OS_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
 export SCRIPTS_DIR="$WOLFBEAR_OS_DIR/new-scripts"
+
 export INITRAMFS_DIR="$WOLFBEAR_OS_DIR/initramfs"
 export TARGET_DIR="$WOLFBEAR_OS_DIR/target"
+
+export DEPENDENCIES_DIR="$WOLFBEAR_OS_DIR/dependencies"
+export LINUX_MODPROBE_MODULES_DIR="$DEPENDENCIES_DIR/linux-modprobe"
 
 echo "WOLFBEAR_OS_DIR: $WOLFBEAR_OS_DIR"
