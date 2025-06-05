@@ -12,7 +12,7 @@ if [ ! -d "$DEPENDENCY_WOLFBEAR_APPS_DIR" ] || [ -z "$(ls -A "$DEPENDENCY_WOLFBE
 	log_message $SCRIPT_NAME "por lo tanto será descargada desde su repositorio oficial"
 	new_line
 
-	git clone https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git $DEPENDENCY_WOLFBEAR_APPS_DIR
+	git clone git@github.com:samsalra007/wolfbear-apps.git $DEPENDENCY_WOLFBEAR_APPS_DIR
 
 	log_message $SCRIPT_NAME "La dependencia de wolfbear-apps se ha descargado exitosamente"
 else 
