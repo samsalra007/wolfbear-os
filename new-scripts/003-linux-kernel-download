@@ -7,15 +7,14 @@ SCRIPT_NAME=$0
 log_message $SCRIPT_NAME "Iniciando descarga del kernel de linux '$DEPENDENCY_LINUX_DIR'"
 
 if [ ! -d $DEPENDENCY_LINUX_DIR ]; then
-	echo "- Linux kernel dependency was not found, so we need to download it.."
-	sleep 0.5
+	log_message $SCRIPT_NAME "La dependencia de Linux Kernel no se encontró"
+	log_message $SCRIPT_NAME "Linux Kernel será descargado desde su repositorio oficial"
 
 	git clone -b v$VERSION_LINUX_KERNEL --single-branch https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git $DEPENDENCY_LINUX_DIR
 
-	echo "- Linux kernel has been cloned successfully"
+	log_message $SCRIPT_NAME "La dependencia de Linux Kernel se ha descargado exitosamente"
 else 
-	echo "- Linux kernel is already in dependencies and no download is needed"
-	sleep 0.5
+	log_message $SCRIPT_NAME "No es necesario descargar Linux Kernel ya que fue encontrado en la carpeta de dependencias"
 fi
 
-log_message $SCRIPT_NAME "Descarga de Linux kernel finalizada en: '$DEPENDENCY_LINUX_DIR'"
+log_message $SCRIPT_NAME "El script para descargar Linux Kernel ha finalizado"
