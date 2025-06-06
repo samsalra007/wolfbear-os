@@ -8,7 +8,7 @@ SCRIPT_NAME=$0
 log_message $SCRIPT_NAME "Iniciando limpieza de '$DEPENDENCY_LINUX_DIR'"
 
 debug_message $SCRIPT_NAME "Eliminando directorio '$DEPENDENCY_LINUX_DIR'"
-sudo rm -rf "$DEPENDENCY_LINUX_DIR"
+doas rm -rf "$DEPENDENCY_LINUX_DIR"
 
 debug_message $SCRIPT_NAME "Creando directorio vacío '$DEPENDENCY_LINUX_DIR'"
 mkdir -p "$DEPENDENCY_LINUX_DIR"

@@ -12,7 +12,7 @@ for fs in proc sys dev; do
 done
 
 debug_message $SCRIPT_NAME "Eliminando directorio '$INITRAMFS_DIR'"
-sudo rm -rf "$INITRAMFS_DIR"
+doas rm -rf "$INITRAMFS_DIR"
 
 debug_message $SCRIPT_NAME "Creando directorio vacío '$INITRAMFS_DIR'"
 mkdir -p "$INITRAMFS_DIR"
