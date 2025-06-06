@@ -12,7 +12,7 @@ cd $DEPENDENCY_LINUX_DIR
 debug_message $SCRIPT_NAME "Solicitando 'make menuconfig'"
 new_line
 
-make olddefconfig
+make menuconfig
 
 PROJECT_CONFIG="$WOLFBEAR_OS_DIR/config/linux-config-$SYS_ARCH"
 DEPENDENCY_CONFIG="$DEPENDENCY_LINUX_DIR/.config"
