@@ -56,7 +56,6 @@ apk add --root $TARGET_DISK_DIR \
   git \
   libc-utils \
   file \
-  qt6-qtbase qt6-qtdeclarative qt6-qtshadertools qt6-qtimageformats qt6-qt5compat qt6-qtbase-dev \
   libxkbcommon mesa-egl
 
 # Instala compatibilidad con vulkan 
