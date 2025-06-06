@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# Saltamos este paso ya que estamos testeando
-exit 0
-
 set -euo pipefail
 source $SCRIPTS_DIR/util-log
 
