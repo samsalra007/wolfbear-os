@@ -13,7 +13,7 @@ BASEDIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "$WOLFBEAR_OS_DIR en run"
 
-# Ejecutar un único script si se proporciona directamente
+# Ejecutar un único script si no es una opción tipo skip=
 if [ -n "${1-}" ] && [ "${1%%=*}" != "skip" ]; then
   SCRIPT_NAME_TO_EXECUTE="$1"
   echo "Has solicitado ejecutar el script '$SCRIPT_NAME_TO_EXECUTE'."
@@ -21,20 +21,21 @@ if [ -n "${1-}" ] && [ "${1%%=*}" != "skip" ]; then
   exit 0
 fi
 
-# Parsear scripts a omitir (formato: skip=015,040)
+# Parsear scripts a omitir (formato: skip=000-initramfs-dir-cleanup,040-otro)
 SKIP_LIST=""
 if [ "${1-}" ] && echo "$1" | grep -q '^skip='; then
   SKIP_LIST=$(echo "$1" | cut -d'=' -f2)
 fi
 
-should_skip_prefix() {
-  local prefix="$1"
+should_skip_script() {
+  local script_path="$1"
+  local script_name="$(basename "$script_path")"
   for skip in $(echo "$SKIP_LIST" | tr ',' ' '); do
-    if [ "$prefix" = "$skip" ]; then
-      return 0  # sí, omitir
+    if [ "$script_name" = "$skip" ]; then
+      return 0
     fi
   done
-  return 1  # no omitir
+  return 1
 }
 
 echo "Has solicitado ejecutar todos los scripts del directorio."
@@ -49,7 +50,7 @@ while :; do
     [ -f "$script" ] || continue
     found_any=true
 
-    if should_skip_prefix "$prefix"; then
+    if should_skip_script "$script"; then
       echo "Saltando script $script (omitido por parámetro)"
       continue
     fi
