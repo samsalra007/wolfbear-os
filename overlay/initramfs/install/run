@@ -1,55 +1,83 @@
 #!/bin/sh
 set -euo pipefail
-source /install/util-log
-RUN_SCRIPT_NAME=$0
 
-export TARGET_DISK_DIR="/mnt/target"
-export CURRENT_PATH=$( pwd )
-export SCRIPTS_DIR="$( dirname "$0" )/install"
+SCRIPT_NAME=$0
 
-log_message $RUN_SCRIPT_NAME "Bienvenido a instalación de WolfbearOS Developer"
+export CURRENT_PATH="$(pwd)"
+export SCRIPTS_DIR="$(dirname "$0")"
 
-# Obtén la ruta real del script "install"
-BASEDIR=$(cd "$(dirname "$0")" && pwd)
+echo "La instalación de WolfbearOS ha iniciado"
 
-# Los scripts numerados están en el mismo directorio que este script
-SCRIPTS_DIR="$BASEDIR"
+BASEDIR="$(cd "$(dirname "$0")" && pwd)"
+. "$BASEDIR/globals-definitions"
 
-if [ -z "${1-}" ]; then
-  log_message $RUN_SCRIPT_NAME "Se ejecutarán todos los scripts en el directorio ./install/" 2
-else
-  SCRIPT_NAME_TO_EXECUTE=$1
-  log_message $RUN_SCRIPT_NAME "Has solicitado ejecutar el script '$SCRIPT_NAME_TO_EXECUTE'."
+# Ejecutar un único script si no es una opción tipo skip=
+if [ -n "${1-}" ] && [ "${1%%=*}" != "skip" ]; then
+  SCRIPT_NAME_TO_EXECUTE="$1"
+  echo "Has solicitado ejecutar el script '$SCRIPT_NAME_TO_EXECUTE'."
   sh "$SCRIPT_NAME_TO_EXECUTE"
   exit 0
 fi
 
+# Parsear scripts a omitir (formato: skip=000-initramfs-dir-cleanup,040-otro)
+SKIP_LIST=""
+if [ "${1-}" ] && echo "$1" | grep -q '^skip='; then
+  SKIP_LIST=$(echo "$1" | cut -d'=' -f2)
+fi
+
+should_skip_script() {
+  local script_path="$1"
+  local script_name="$(basename "$script_path")"
+  for skip in $(echo "$SKIP_LIST" | tr ',' ' '); do
+    if [ "$script_name" = "$skip" ]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+echo "Has solicitado ejecutar todos los scripts del directorio."
+echo "scripts dir $SCRIPTS_DIR"
 i=0
 while :; do
+  cd "$SCRIPTS_DIR"
   prefix=$(printf "%03d" "$i")
+  found_any=false
 
-  # Expande el patrón (efectúa globbing)
-  set -- "$SCRIPTS_DIR/${prefix}-"*
-
-  # Si no existe ningún fichero coincidente, $1 será literal y -e fallará
-  if [ ! -e "$1" ]; then
-    log_message $RUN_SCRIPT_NAME "Todos el flujo de trabajo se ha ejecutado"
-    break
-  fi
-
-  # Ejecuta cada script existente y ejecutable usando sh
   for script in "$SCRIPTS_DIR/${prefix}-"*; do
     [ -f "$script" ] || continue
-    if [ ! -x "$script" ]; then
-      warn_message $RUN_SCRIPT_NAME "Saltando script $script (no es ejecutable)"
+    found_any=true
+
+    if should_skip_script "$script"; then
+      echo "Saltando script $script (omitido por parámetro)"
       continue
     fi
-    log_message $RUN_SCRIPT_NAME "Corriendo script $script"
-    sh "$script"
+
+    if [ ! -x "$script" ]; then
+      echo "Saltando script $script (no es ejecutable)"
+      continue
+    fi
+
+    echo
+    echo "Corriendo script $script"
+    script_name="$(basename "$script")"
+
+    if echo "$script_name" | grep -qE '^[0-9]{3}-doas-'; then
+      echo "→ Este script requiere permisos de superusuario (doas)"
+      doas sh -c ". \"$SCRIPTS_DIR/globals-definitions\" && sh \"$script\""
+    else
+      . "$script"
+    fi
   done
+
+  if [ "$found_any" = false ]; then
+    echo
+    echo "Se ha terminado la ejecución de los scripts (ya no existe el script ${prefix}-*)"
+    break
+  fi
 
   i=$((i + 1))
 done
 
-log_message $RUN_SCRIPT_NAME "El script de instalación de WolfbearOS ha finalizado exitosamente"
-new_line
+echo "Compilación de WolfbearOS ha terminado"
+exit 0
