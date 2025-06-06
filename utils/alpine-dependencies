@@ -2,7 +2,7 @@
 set -euo pipefail
 
 echo "Agregando dependencias de Linux"
-apk add util-linux zip unzip nano flex bison
+apk add util-linux zip unzip nano flex bison elfutils-dev
 
 echo "Agregando dependencias para compilar QT6"
 apk add qt6-qtbase-dev qt6-qtdeclarative-dev qt6-qtshadertools-dev cmake ninja build-base
