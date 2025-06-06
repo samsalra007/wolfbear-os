@@ -9,13 +9,13 @@ log_message $SCRIPT_NAME "Empaquetando initramfs '$INITRAMFS_DIR'"
 debug_message $SCRIPT_NAME "Desmontando posibles particiones del sistema que pudiesen estar en el directorio"
 
 for fs in proc sys dev; do
-  mountpoint -q "$INITRAMFS_DIR/$fs" && sudo umount -l "$INITRAMFS_DIR/$fs"
+  mountpoint -q "$INITRAMFS_DIR/$fs" && doas umount -l "$INITRAMFS_DIR/$fs"
 done
 
 debug_message $SCRIPT_NAME "Accediendo al directorio '$INITRAMFS_DIR'"
 cd $INITRAMFS_DIR
 
 debug_message $SCRIPT_NAME "Empaquetando el directorio '$INITRAMFS_DIR'"
-sudo find . | cpio -o -H newc | xz -T0 -z -C crc32 -6 > $TARGET_DIR/initramfs.cpio.xz
+doas find . | cpio -o -H newc | xz -T0 -z -C crc32 -6 > $TARGET_DIR/initramfs.cpio.xz
 
 log_message $SCRIPT_NAME "Empaquetado realizado exitosamente"

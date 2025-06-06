@@ -8,7 +8,7 @@ log_message $SCRIPT_NAME "Iniciando limpieza de '$INITRAMFS_DIR'"
 debug_message $SCRIPT_NAME "Desmontando particiones montadas en '$INITRAMFS_DIR'"
 
 for fs in proc sys dev; do
-  mountpoint -q "$INITRAMFS_DIR/$fs" && sudo umount -l "$INITRAMFS_DIR/$fs"
+  mountpoint -q "$INITRAMFS_DIR/$fs" && doas umount -l "$INITRAMFS_DIR/$fs"
 done
 
 debug_message $SCRIPT_NAME "Eliminando directorio '$INITRAMFS_DIR'"

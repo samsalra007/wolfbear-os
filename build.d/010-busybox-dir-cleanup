@@ -7,7 +7,7 @@ SCRIPT_NAME=$0
 log_message $SCRIPT_NAME "Iniciando limpieza de '$DEPENDENCY_BUSYBOX_DIR'"
 
 debug_message $SCRIPT_NAME "Eliminando directorio '$DEPENDENCY_BUSYBOX_DIR'"
-sudo rm -rf "$DEPENDENCY_BUSYBOX_DIR"
+doas rm -rf "$DEPENDENCY_BUSYBOX_DIR"
 
 debug_message $SCRIPT_NAME "Creando directorio vacío '$DEPENDENCY_BUSYBOX_DIR'"
 mkdir -p "$DEPENDENCY_BUSYBOX_DIR"

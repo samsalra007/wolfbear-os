@@ -11,6 +11,6 @@ echo 'root:x:0:0:root:/root:/bin/sh' >> $INITRAMFS_DIR/etc/passwd
 echo 'root::14600:0:99999:7:::' >> $INITRAMFS_DIR/etc/shadow
 
 debug_message $SCRIPT_NAME "Cambiando permisos a comando ping"
-sudo chmod u+s $INITRAMFS_DIR/bin/ping
+doas chmod u+s $INITRAMFS_DIR/bin/ping
 
 log_message $SCRIPT_NAME "Ajuste realizado exitosamente"
