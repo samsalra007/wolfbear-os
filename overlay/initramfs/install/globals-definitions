@@ -10,6 +10,8 @@ else
 	SYS_ARCH='amd64'
 fi
 
+export TARGET_DISK_DIR="/mnt/target"
+
 export VERSION_LINUX_KERNEL=6.12
 export BUSY_BOX_VERSION=1.37.0
 
