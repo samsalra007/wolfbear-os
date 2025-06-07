@@ -18,6 +18,7 @@ if [ ! -d "$DEPENDENCY_QT_PLUGIN_KMS" ]; then
 		exit 1
 	fi
 
+	debug_message $SCRIPT_NAME "Descomprimiendo archivo $QT_SRC_TAR"
 	tar xf "$QT_SRC_TAR"
 else
 	log_message $SCRIPT_NAME "Qt $QT_VERSION ya está descomprimido en $DEPENDENCY_QT_PLUGIN_KMS"
