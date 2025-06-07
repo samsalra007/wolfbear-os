@@ -11,7 +11,7 @@ rsync -av --progress --links "/mnt/install/sys-apps/" "$TARGET_DISK_DIR/" || {
     exit 1
 }
 
-BIN_PATH="/apps/wolfbear-apps/LauncherApp.d/LauncherApp"
+BIN_PATH="$TARGET_DISK_DIR/apps/wolfbear-apps/LauncherApp.d/LauncherApp"
 
 if [ ! -s "$BIN_PATH" ]; then
     echo "[ERROR] '$BIN_PATH' está vacío o no existe tras rsync" >&2
