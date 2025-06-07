@@ -7,31 +7,22 @@ log_message $SCRIPT_NAME "Script de compilación de librería KMSDRM para Qt"
 
 if [ ! -d "$DEPENDENCY_QT_PLUGIN_KMS" ] || [ -z "$(ls -A "$DEPENDENCY_QT_PLUGIN_KMS")" ]; then
 	log_message $SCRIPT_NAME "La dependencia del plugin Qt KMS libqkmsdrm.so no se encontró en el sistema"
-	log_message $SCRIPT_NAME "Será descargada desde el archivo .tar.xz oficial"
+	log_message $SCRIPT_NAME "Será descargada desde el repositorio Git oficial por SSH"
 	new_line
 
 	mkdir -p "$DEPENDENCY_QT_PLUGIN_KMS"
 
-	# Descargar y extraer el tarball oficial
+	# Clonar el repositorio por SSH (requiere clave configurada en GitHub)
 	QT_KMS_VERSION_FULL="6.8.2"
-	QT_KMS_TAR_URL="https://download.qt.io/official_releases/qt/6.8/${QT_KMS_VERSION_FULL}/submodules/qtplatformintegration-everywhere-src-${QT_KMS_VERSION_FULL}.tar.xz"
-	QT_KMS_TAR_FILE="/tmp/qtplatformintegration-everywhere-src-${QT_KMS_VERSION_FULL}.tar.xz"
+	QT_KMS_GIT_URL="git@github.com:qt/qtplatformintegration.git"
 
-	debug_message $SCRIPT_NAME "Descargando desde $QT_KMS_TAR_URL"
-	if ! wget -q -O "$QT_KMS_TAR_FILE" "$QT_KMS_TAR_URL"; then
-		log_message $SCRIPT_NAME "[ERROR] Falló la descarga desde $QT_KMS_TAR_URL"
+	debug_message $SCRIPT_NAME "Clonando desde $QT_KMS_GIT_URL (branch $QT_KMS_VERSION_FULL)"
+	if ! git clone --depth=1 --branch="$QT_KMS_VERSION_FULL" "$QT_KMS_GIT_URL" "$DEPENDENCY_QT_PLUGIN_KMS"; then
+		log_message $SCRIPT_NAME "[ERROR] Falló el clonado SSH desde $QT_KMS_GIT_URL"
 		exit 1
 	fi
 
-	if [ ! -f "$QT_KMS_TAR_FILE" ]; then
-		log_message $SCRIPT_NAME "[ERROR] El archivo descargado no se encuentra en $QT_KMS_TAR_FILE"
-		exit 1
-	fi
-
-	debug_message $SCRIPT_NAME "Extrayendo archivo tar"
-	tar -xf "$QT_KMS_TAR_FILE" -C "$DEPENDENCY_QT_PLUGIN_KMS" --strip-components=1
-
-	debug_message $SCRIPT_NAME "Plugin Qt descargado y extraído exitosamente"
+	debug_message $SCRIPT_NAME "Plugin Qt clonado exitosamente"
 else 
 	debug_message $SCRIPT_NAME "Qt Plugin KMSDRM ya está presente en la carpeta de dependencias"
 fi
