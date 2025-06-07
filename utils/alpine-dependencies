@@ -1,6 +1,8 @@
 #!/bin/sh
 set -euo pipefail
 
+QT_VERSION=6.8.3
+
 echo "[+] Instalando utilidades básicas del sistema..."
 apk add \
     util-linux \
