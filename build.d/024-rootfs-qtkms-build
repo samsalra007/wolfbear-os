@@ -49,7 +49,7 @@ cmake ../../qt-everywhere-src-$QT_VERSION/qtbase -GNinja \
   -DQT_BUILD_EXAMPLES=OFF \
   -DQT_BUILD_TESTS=OFF
 
-ninja
+ninja -j"$(nproc)"
 DESTDIR="$OVERLAY_QT_CUSTOM" ninja install
 
 log_message $SCRIPT_NAME "Instalación de headers privados desde build/include/"
@@ -81,7 +81,7 @@ for module in $QT_MODULES; do
       -DQT_BUILD_EXAMPLES=OFF \
       -DQT_BUILD_TESTS=OFF
 
-    ninja
+    ninja -j"$(nproc)"
     DESTDIR="$OVERLAY_QT_CUSTOM" ninja install
   else
     log_message $SCRIPT_NAME "[WARN] Módulo $module no encontrado en el tarball, se omite"
