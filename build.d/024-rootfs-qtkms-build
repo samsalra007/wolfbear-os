@@ -36,7 +36,7 @@ cd "$DEPENDENCY_QT_PLUGIN_KMS_BUILD/build-qtbase"
 
 log_message $SCRIPT_NAME "Iniciando compilación de Qt base"
 
-cmake ../../qtbase -GNinja \
+cmake ../../qt-everywhere-src-$QT_VERSION/qtbase -GNinja \
   -DCMAKE_INSTALL_PREFIX=/usr \
   -DCMAKE_PREFIX_PATH=/usr/lib/qt6/cmake \
   -DQT_BUILD_EXAMPLES=OFF \
@@ -50,12 +50,12 @@ log_message $SCRIPT_NAME "Iniciando compilación de módulos Qt adicionales"
 for module in $QT_MODULES; do
   MODULE_BUILD_DIR="$DEPENDENCY_QT_PLUGIN_KMS_BUILD/build-$module"
 
-  if [ -d "$DEPENDENCY_QT_PLUGIN_KMS/$module" ]; then
+  if [ -d "$DEPENDENCY_QT_PLUGIN_KMS/qt-everywhere-src-$QT_VERSION/$module" ]; then
     log_message $SCRIPT_NAME "Compilando módulo $module"
     mkdir -p "$MODULE_BUILD_DIR"
     cd "$MODULE_BUILD_DIR"
 
-    cmake ../$module -GNinja \
+    cmake ../../qt-everywhere-src-$QT_VERSION/$module -GNinja \
       -DCMAKE_INSTALL_PREFIX=/usr \
       -DCMAKE_PREFIX_PATH=/usr/lib/qt6/cmake \
       -DQT_BUILD_EXAMPLES=OFF \
