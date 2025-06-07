@@ -29,12 +29,16 @@ rm -rf build
 mkdir build && cd build
 
 debug_message $SCRIPT_NAME "Configurando plugin kmsdrm con CMake"
+new_line
+
 cmake .. -GNinja \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX=/usr \
   -DCMAKE_PREFIX_PATH=/usr/lib/cmake
 
 debug_message $SCRIPT_NAME "Compilando libqkmsdrm.so con ninja"
+new_line
+
 ninja
 
 # Buscar el .so compilado
