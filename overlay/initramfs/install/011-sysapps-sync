@@ -5,6 +5,19 @@ SCRIPT_NAME=$0
 
 log_message $SCRIPT_NAME "Sincronizando aplicaciones del sistema '$TARGET_DISK_DIR'"
 
-rsync -a --links "/mnt/install/sys-apps/" "$TARGET_DISK_DIR/"
+rsync -av --progress --links "/mnt/install/sys-apps/" "$TARGET_DISK_DIR/" || {
+    error_message "[ERROR] Fallo en rsync de sys-apps" >&2
+    df -h "$TARGET_DISK_DIR"
+    exit 1
+}
+
+BIN_PATH="/apps/wolfbear-apps/LauncherApp.d/LauncherApp"
+
+if [ ! -s "$BIN_PATH" ]; then
+    echo "[ERROR] '$BIN_PATH' está vacío o no existe tras rsync" >&2
+    exit 1
+else
+    ls -lh "$BIN_PATH"
+fi
 
 log_message $SCRIPT_NAME "Sincronización de aplicaciones del sistema terminada '$TARGET_DISK_DIR"
