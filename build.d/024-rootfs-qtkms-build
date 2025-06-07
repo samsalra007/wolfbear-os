@@ -3,63 +3,39 @@ set -euo pipefail
 source "$SCRIPTS_DIR/util-log"
 
 SCRIPT_NAME=$0
-log_message $SCRIPT_NAME "Script de compilación de librería KMSDRM para Qt"
+log_message $SCRIPT_NAME "Compilación del plugin EGLFS_KMS (libqeglfs-kms-integration.so) para Qt"
 
-if [ ! -d "$DEPENDENCY_QT_PLUGIN_KMS" ] || [ -z "$(ls -A "$DEPENDENCY_QT_PLUGIN_KMS")" ]; then
-	log_message $SCRIPT_NAME "La dependencia del plugin Qt KMS libqkmsdrm.so no se encontró en el sistema"
-	log_message $SCRIPT_NAME "Será descargada desde el repositorio Git oficial por SSH"
-	new_line
+QT_VERSION_FULL="6.8.3"
+QT_SRC_TAR="qt-everywhere-src-$QT_VERSION_FULL.tar.xz"
+QT_SRC_URL="https://download.qt.io/archive/qt/6.8/$QT_VERSION_FULL/single/$QT_SRC_TAR"
+QT_SRC_DIR="$DEPENDENCY_QT_PLUGIN_KMS/qt-everywhere-src-$QT_VERSION_FULL"
+QT_BUILD_DIR="$QT_SRC_DIR/build"
+PLUGIN_TARGET_DIR="$OVERLAY_SYSAPPS_DIR/usr/lib/qt6/plugins/eglfs_kms"
 
+if [ ! -d "$QT_SRC_DIR" ]; then
+	log_message $SCRIPT_NAME "Descargando Qt $QT_VERSION_FULL desde $QT_SRC_URL"
 	mkdir -p "$DEPENDENCY_QT_PLUGIN_KMS"
+	cd "$DEPENDENCY_QT_PLUGIN_KMS"
 
-	# Clonar el repositorio por SSH (requiere clave configurada en GitHub)
-	QT_KMS_VERSION_FULL="6.8.2"
-	QT_KMS_GIT_URL="git@github.com:qt/qtplatformintegration.git"
-
-	debug_message $SCRIPT_NAME "Clonando desde $QT_KMS_GIT_URL (branch $QT_KMS_VERSION_FULL)"
-	if ! git clone --depth=1 --branch="$QT_KMS_VERSION_FULL" "$QT_KMS_GIT_URL" "$DEPENDENCY_QT_PLUGIN_KMS"; then
-		log_message $SCRIPT_NAME "[ERROR] Falló el clonado SSH desde $QT_KMS_GIT_URL"
+	if ! wget "$QT_SRC_URL"; then
+		log_message $SCRIPT_NAME "[ERROR] Falló la descarga de $QT_SRC_TAR"
 		exit 1
 	fi
 
-	debug_message $SCRIPT_NAME "Plugin Qt clonado exitosamente"
-else 
-	debug_message $SCRIPT_NAME "Qt Plugin KMSDRM ya está presente en la carpeta de dependencias"
+	tar xf "$QT_SRC_TAR"
+else
+	log_message $SCRIPT_NAME "Qt $QT_VERSION_FULL ya está descomprimido en $QT_SRC_DIR"
 fi
 
-# Ir directamente al subdirectorio del plugin
-PLUGIN_SRC_DIR="$DEPENDENCY_QT_PLUGIN_KMS/src/plugins/platforms/kmsdrm"
+log_message $SCRIPT_NAME "Iniciando compilación solo del plugin eglfs_kms"
+rm -rf "$QT_BUILD_DIR"
+mkdir -p "$QT_BUILD_DIR"
+cd "$QT_BUILD_DIR"
 
-debug_message $SCRIPT_NAME "Accediendo al directorio $PLUGIN_SRC_DIR"
-cd "$PLUGIN_SRC_DIR"
-
-debug_message $SCRIPT_NAME "Generando carpeta build"
-rm -rf build
-mkdir build && cd build
-
-debug_message $SCRIPT_NAME "Configurando plugin kmsdrm con CMake"
-new_line
-
-cmake .. -GNinja \
-  -DCMAKE_BUILD_TYPE=Release \
+cmake ../qtbase -GNinja \
   -DCMAKE_INSTALL_PREFIX=/usr \
-  -DCMAKE_PREFIX_PATH=/usr/lib/cmake
+  -DCMAKE_PREFIX_PATH=/usr/lib/qt6/cmake \
+  -DQT_BUILD_EXAMPLES=OFF \
+  -DQT_BUILD_TESTS=OFF
 
-debug_message $SCRIPT_NAME "Compilando libqkmsdrm.so con ninja"
-new_line
-
-ninja
-
-# Buscar el .so compilado
-PLUGIN_SO_PATH=$(find . -name libqkmsdrm.so | head -n 1)
-
-if [ -z "$PLUGIN_SO_PATH" ]; then
-	log_message $SCRIPT_NAME "[ERROR] No se encontró libqkmsdrm.so después de compilar"
-	exit 1
-fi
-
-debug_message $SCRIPT_NAME "Copiando librería compilada desde $PLUGIN_SO_PATH"
-mkdir -p "$OVERLAY_SYSAPPS_DIR/usr/lib/qt6/plugins/platforms/"
-cp "$PLUGIN_SO_PATH" "$OVERLAY_SYSAPPS_DIR/usr/lib/qt6/plugins/platforms/"
-
-log_message $SCRIPT_NAME "Plugin libqkmsdrm.so copiado exitosamente"
+ninja plugin_qeglfs_kms_integra_

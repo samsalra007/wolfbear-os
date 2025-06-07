@@ -4,9 +4,9 @@ set -euo pipefail
 QT_VERSION=6.8.3
 export SYS_ARCH=$(uname -m)
 if [ "$SYS_ARCH" = 'aarch64' ] || [ "$SYS_ARCH" = 'arm64' ]; then
-	SYS_ARCH='arm64'
+    SYS_ARCH='arm64'
 else 
-	SYS_ARCH='amd64'
+    SYS_ARCH='amd64'
 fi
 
 echo "[+] Instalando utilidades básicas del sistema..."
@@ -20,9 +20,11 @@ apk add \
     xfsprogs \
     diffutils \
     grub-efi \
-    linux-headers
+    linux-headers \
+    xmlstarlet \
+    git
 
-echo "[+] Instalando herramientas para desarrollo en C/C++ y build system..."
+echo "[+] Instalando herramientas para desarrollo en C/C++ y sistema de build..."
 apk add \
     build-base \
     cmake \
@@ -33,47 +35,37 @@ apk add \
     elfutils-dev \
     ncurses-dev
 
-echo "[+] Instalando dependencias para Qt6..."
+echo "[+] Instalando dependencias Qt6 necesarias para framebuffer + KMS/DRM..."
 apk add \
     qt6-qtbase-dev \
     qt6-qtdeclarative-dev \
     qt6-qtshadertools-dev \
     qt6-qtquicktimeline-dev \
-    qt6-qtbase-src
-
-echo "[+] Instalando dependencias adicionales para Qt en framebuffer o Wayland..."
-apk add \
+    qt6-qtbase-x11 \
     mesa-dev \
     libxkbcommon-dev \
-    wayland-dev \
     libinput-dev \
+    eudev-dev \
     freetype-dev \
     harfbuzz-dev \
-    fontconfig-dev
-
-echo "[+] Instalando herramientas de soporte para compilación de Qt y herramientas generales..."
-apk add \
-    git \
-    perl \
-    python3 \
-    gperf \
-    drm-dev \
-    gbm-dev \
-    libudev-zero-dev
+    fontconfig-dev \
+    libjpeg-turbo-dev \
+    libpng-dev \
+    zlib-dev \
+    glib-dev \
+    double-conversion-dev
 
 echo "[+] Corrigiendo symlinks faltantes de ncurses (BusyBox fix para menuconfig)..."
 mkdir -p /usr/include/ncursesw
-
 for header in curses.h ncurses.h termcap.h unctrl.h; do
     ln -sf /usr/include/$header /usr/include/ncursesw/$header
 done
 
-echo "[+] Generando enlaces simbólicos par QT $QT_VERSION en el sistema"
-
+echo "[+] Generando enlaces simbólicos para Qt $QT_VERSION..."
 mkdir -p /usr/include/qt6/QtQml/$QT_VERSION
 ln -sf /usr/include/qt6/QtQml /usr/include/qt6/QtQml/$QT_VERSION/QtQml
 
 mkdir -p /usr/include/qt6/QtCore/$QT_VERSION
 ln -sf /usr/include/qt6/QtCore /usr/include/qt6/QtCore/$QT_VERSION/QtCore
 
-echo "[✔] Todas las dependencias han sido instaladas y configuradas correctamente."
+echo "[✔] Todas las dependencias han sido instaladas y configuradas correctamente para soporte EGLFS con KMS/DRM (eglfs_kms) en Qt $QT_VERSION."
