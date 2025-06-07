@@ -53,7 +53,7 @@ for script_basename in $(echo "$RUN_LIST" | tr ',' ' '); do
 
   if echo "$script_basename" | grep -qE '^[0-9]{3}-doas-'; then
     echo "Este script requiere permisos de superusuario (doas)"
-    doas sh -c ". \"$SCRIPTS_DIR/globals-definitions\" && sh \"$script\""
+    doas env SCRIPTS_DIR="$SCRIPTS_DIR" sh -c ". \"$SCRIPTS_DIR/globals-definitions\" && . \"$SCRIPTS_DIR/util-log\" && sh \"$script\""
   else
     . "$script"
   fi
