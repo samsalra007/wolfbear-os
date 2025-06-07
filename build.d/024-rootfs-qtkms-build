@@ -27,15 +27,23 @@ else
 	log_message $SCRIPT_NAME "Qt $QT_VERSION_FULL ya está descomprimido en $QT_SRC_DIR"
 fi
 
-log_message $SCRIPT_NAME "Iniciando compilación solo del plugin eglfs_kms"
+log_message $SCRIPT_NAME "Limpiando carpeta build y accediendo en ella"
+new_line
+
 rm -rf "$QT_BUILD_DIR"
 mkdir -p "$QT_BUILD_DIR"
 cd "$QT_BUILD_DIR"
 
+log_message $SCRIPT_NAME "Compilando qtbase"
 cmake ../qtbase -GNinja \
   -DCMAKE_INSTALL_PREFIX=/usr \
   -DCMAKE_PREFIX_PATH=/usr/lib/qt6/cmake \
   -DQT_BUILD_EXAMPLES=OFF \
   -DQT_BUILD_TESTS=OFF
 
-ninja plugin_qeglfs_kms_integra_
+ninja
+
+PLUGIN_SO=$(find . -name libqeglfs-kms-integration.so | head -n 1)
+
+echo "PLUGIN SO: "
+echo $PLUGIN_SO
