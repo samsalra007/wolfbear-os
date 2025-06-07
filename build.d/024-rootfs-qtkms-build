@@ -13,7 +13,7 @@ if [ ! -d "$DEPENDENCY_QT_PLUGIN_KMS" ] || [ -z "$(ls -A "$DEPENDENCY_QT_PLUGIN_
 	mkdir -p "$DEPENDENCY_QT_PLUGIN_KMS"
 
 	# Descargar y extraer el tarball oficial
-	QT_KMS_VERSION_FULL=$QT_VERSION
+	QT_KMS_VERSION_FULL=$QT_KMS_VERSION
 	QT_KMS_TAR_URL="https://download.qt.io/official_releases/qt/6.8/${QT_KMS_VERSION_FULL}/submodules/qtplatformintegration-everywhere-src-${QT_KMS_VERSION_FULL}.tar.xz"
 	QT_KMS_TAR_FILE="/tmp/qtplatformintegration-everywhere-src-${QT_KMS_VERSION_FULL}.tar.xz"
 
