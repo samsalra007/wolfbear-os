@@ -44,16 +44,15 @@ cmake ../../qt-everywhere-src-$QT_VERSION/qtbase -GNinja \
   -DCMAKE_INSTALL_PREFIX=/usr \
   -DCMAKE_PREFIX_PATH="$OVERLAY_QT_CUSTOM/usr/lib/qt6/cmake" \
   -DCMAKE_FIND_ROOT_PATH="$OVERLAY_QT_CUSTOM" \
-  -DQT_BUILD_EXAMPLES=OFF \
-  -DQT_BUILD_TESTS=OFF \
   -DFEATURE_developer_build=ON \
-  -DFEATURE_private_tests=ON
+  -DFEATURE_private_tests=ON \
+  -DQT_BUILD_EXAMPLES=OFF \
+  -DQT_BUILD_TESTS=OFF
 
 ninja -j"$(nproc)"
 DESTDIR="$OVERLAY_QT_CUSTOM" ninja install
 
-# --- Corrección de estructura tipo Alpine ---
-# Mover plugins a /usr/lib/qt6/plugins
+# --- Reubicar plugins si es necesario ---
 if [ -d "$OVERLAY_QT_CUSTOM/usr/plugins" ]; then
   log_message $SCRIPT_NAME "Corrigiendo ubicación de plugins al estilo Alpine"
   mkdir -p "$OVERLAY_QT_CUSTOM/usr/lib/qt6/plugins"
@@ -61,15 +60,22 @@ if [ -d "$OVERLAY_QT_CUSTOM/usr/plugins" ]; then
   rmdir "$OVERLAY_QT_CUSTOM/usr/plugins" || true
 fi
 
-# Asegurar que includes estén en include/qt6
+# --- Reubicar headers si es necesario ---
 if [ -d "$OVERLAY_QT_CUSTOM/usr/include" ] && [ ! -d "$OVERLAY_QT_CUSTOM/usr/include/qt6" ]; then
   log_message $SCRIPT_NAME "Corrigiendo ubicación de headers al estilo Alpine"
   mkdir -p "$OVERLAY_QT_CUSTOM/usr/include/qt6"
   mv "$OVERLAY_QT_CUSTOM/usr/include/"* "$OVERLAY_QT_CUSTOM/usr/include/qt6/"
 fi
 
-# Asegurar que libs estén en lib/qt6 si aplica
-mkdir -p "$OVERLAY_QT_CUSTOM/usr/lib/qt6"
-# A veces Qt no instala aquí directamente, pero si lo hace, mantenemos la estructura limpia
+# --- Crear enlaces simbólicos requeridos para módulos privados ---
+log_message $SCRIPT_NAME "Creando enlaces simbólicos para directorios de headers privados"
 
-log_message $SCRIPT_NAME "Compilación Qt base completada con formato estilo Alpine"
+# QtCore
+mkdir -p "$OVERLAY_QT_CUSTOM/usr/include/qt6/QtCore/$QT_VERSION"
+ln -sf ../.. "$OVERLAY_QT_CUSTOM/usr/include/qt6/QtCore/$QT_VERSION/QtCore"
+
+# QtQml
+mkdir -p "$OVERLAY_QT_CUSTOM/usr/include/qt6/QtQml/$QT_VERSION"
+ln -sf ../.. "$OVERLAY_QT_CUSTOM/usr/include/qt6/QtQml/$QT_VERSION/QtQml"
+
+log_message $SCRIPT_NAME "Compilación finalizada. Qt base con EGLFS_KMS lista en $OVERLAY_QT_CUSTOM"
