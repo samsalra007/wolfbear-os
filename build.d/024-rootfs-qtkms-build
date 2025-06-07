@@ -42,48 +42,34 @@ log_message $SCRIPT_NAME "Iniciando compilación de Qt base"
 
 cmake ../../qt-everywhere-src-$QT_VERSION/qtbase -GNinja \
   -DCMAKE_INSTALL_PREFIX=/usr \
-  -DCMAKE_PREFIX_PATH="$OVERLAY_QT_CUSTOM/usr/lib/cmake" \
+  -DCMAKE_PREFIX_PATH="$OVERLAY_QT_CUSTOM/usr/lib/qt6/cmake" \
   -DCMAKE_FIND_ROOT_PATH="$OVERLAY_QT_CUSTOM" \
-  -DFEATURE_developer_build=ON \
-  -DFEATURE_private_tests=ON \
   -DQT_BUILD_EXAMPLES=OFF \
-  -DQT_BUILD_TESTS=OFF
+  -DQT_BUILD_TESTS=OFF \
+  -DFEATURE_developer_build=ON \
+  -DFEATURE_private_tests=ON
 
 ninja -j"$(nproc)"
 DESTDIR="$OVERLAY_QT_CUSTOM" ninja install
 
-log_message $SCRIPT_NAME "Instalación de headers privados desde build/include/"
-PRIVATE_HEADERS_SRC_DIR="$DEPENDENCY_QT_PLUGIN_KMS_BUILD/build-qtbase/include"
-PRIVATE_HEADERS_DST_DIR="$OVERLAY_QT_CUSTOM/usr/include/qt6"
-
-if [ -d "$PRIVATE_HEADERS_SRC_DIR" ]; then
-  rsync -a "$PRIVATE_HEADERS_SRC_DIR/" "$PRIVATE_HEADERS_DST_DIR/"
-else
-  log_message $SCRIPT_NAME "[WARN] No se encontraron headers privados en $PRIVATE_HEADERS_SRC_DIR"
+# --- Corrección de estructura tipo Alpine ---
+# Mover plugins a /usr/lib/qt6/plugins
+if [ -d "$OVERLAY_QT_CUSTOM/usr/plugins" ]; then
+  log_message $SCRIPT_NAME "Corrigiendo ubicación de plugins al estilo Alpine"
+  mkdir -p "$OVERLAY_QT_CUSTOM/usr/lib/qt6/plugins"
+  mv "$OVERLAY_QT_CUSTOM/usr/plugins/"* "$OVERLAY_QT_CUSTOM/usr/lib/qt6/plugins/"
+  rmdir "$OVERLAY_QT_CUSTOM/usr/plugins" || true
 fi
 
-# --- Compilar módulos adicionales ---
-log_message $SCRIPT_NAME "Iniciando compilación de módulos Qt adicionales"
+# Asegurar que includes estén en include/qt6
+if [ -d "$OVERLAY_QT_CUSTOM/usr/include" ] && [ ! -d "$OVERLAY_QT_CUSTOM/usr/include/qt6" ]; then
+  log_message $SCRIPT_NAME "Corrigiendo ubicación de headers al estilo Alpine"
+  mkdir -p "$OVERLAY_QT_CUSTOM/usr/include/qt6"
+  mv "$OVERLAY_QT_CUSTOM/usr/include/"* "$OVERLAY_QT_CUSTOM/usr/include/qt6/"
+fi
 
-for module in $QT_MODULES; do
-  MODULE_SRC_DIR="$DEPENDENCY_QT_PLUGIN_KMS/qt-everywhere-src-$QT_VERSION/$module"
-  MODULE_BUILD_DIR="$DEPENDENCY_QT_PLUGIN_KMS_BUILD/build-$module"
+# Asegurar que libs estén en lib/qt6 si aplica
+mkdir -p "$OVERLAY_QT_CUSTOM/usr/lib/qt6"
+# A veces Qt no instala aquí directamente, pero si lo hace, mantenemos la estructura limpia
 
-  if [ -d "$MODULE_SRC_DIR" ]; then
-    log_message $SCRIPT_NAME "Compilando módulo $module"
-    mkdir -p "$MODULE_BUILD_DIR"
-    cd "$MODULE_BUILD_DIR"
-
-    cmake "$MODULE_SRC_DIR" -GNinja \
-      -DCMAKE_INSTALL_PREFIX=/usr \
-      -DCMAKE_PREFIX_PATH="$OVERLAY_QT_CUSTOM/usr/lib/cmake" \
-      -DCMAKE_FIND_ROOT_PATH="$OVERLAY_QT_CUSTOM" \
-      -DQT_BUILD_EXAMPLES=OFF \
-      -DQT_BUILD_TESTS=OFF
-
-    ninja -j"$(nproc)"
-    DESTDIR="$OVERLAY_QT_CUSTOM" ninja install
-  else
-    log_message $SCRIPT_NAME "[WARN] Módulo $module no encontrado en el tarball, se omite"
-  fi
-done
+log_message $SCRIPT_NAME "Compilación Qt base completada con formato estilo Alpine"
