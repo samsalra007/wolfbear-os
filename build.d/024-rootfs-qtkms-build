@@ -34,5 +34,5 @@ cmake .. \
   -DQT_FEATURE_kmsdrm=ON
 
 debug_message $SCRIPT_NAME "Copiando librería"
-mkdir $OVERLAY_SYSAPPS_DIR/usr/lib/qt6/plugins/platforms/
+mkdir -p $OVERLAY_SYSAPPS_DIR/usr/lib/qt6/plugins/platforms/
 cp build/plugins/platforms/libqkmsdrm.so $OVERLAY_SYSAPPS_DIR
