@@ -14,6 +14,8 @@ if [ ! -d "$DEPENDENCY_BUSYBOX_DIR" ] || [ -z "$(ls -A "$DEPENDENCY_BUSYBOX_DIR"
 	log_message $SCRIPT_NAME "Busybox será descargado desde su repositorio oficial"
 	new_line
 
+	rm -f $DEPENDENCIES_DIR//busybox-$BUSY_BOX_VERSION.tar.bz2
+
 	wget https://busybox.net/downloads/busybox-$BUSY_BOX_VERSION.tar.bz2
 
 	log_message $SCRIPT_NAME "Descomprimiendo Busybox"
