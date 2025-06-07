@@ -5,7 +5,7 @@ echo "Agregando dependencias de Linux"
 apk add util-linux zip unzip nano flex bison elfutils-dev ncurses-dev pkgconf diffutils rsync
 
 echo "Agregando dependencias para compilar QT6"
-apk add qt6-qtbase-dev qt6-qtdeclarative-dev qt6-qtshadertools-dev cmake ninja build-base
+apk add qt6-qtbase-dev qt6-qtdeclarative-dev qt6-qtshadertools-dev cmake ninja build-base qt6-qtquicktimeline-dev
 
 apk add git ninja perl python3 gperf \
     mesa-dev libxkbcommon-dev wayland-dev libinput-dev \
