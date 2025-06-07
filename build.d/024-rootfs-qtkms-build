@@ -31,17 +31,19 @@ rm -rf "$DEPENDENCY_QT_PLUGIN_KMS_BUILD"
 mkdir -p "$DEPENDENCY_QT_PLUGIN_KMS_BUILD"
 cd "$DEPENDENCY_QT_PLUGIN_KMS_BUILD"
 
-mkdir -p "$DEPENDENCY_QT_PLUGIN_KMS_BUILD/build-qtbase"
-cd "$DEPENDENCY_QT_PLUGIN_KMS_BUILD/build-qtbase"
+rm -rf "$OVERLAY_QT_CUSTOM"
+mkdir -p "$OVERLAY_QT_CUSTOM"
 
-rm -rf $OVERLAY_QT_CUSTOM
-mkdir -p $OVERLAY_QT_CUSTOM
+# --- Compilar Qt Base ---
+mkdir -p build-qtbase
+cd build-qtbase
 
 log_message $SCRIPT_NAME "Iniciando compilación de Qt base"
 
 cmake ../../qt-everywhere-src-$QT_VERSION/qtbase -GNinja \
   -DCMAKE_INSTALL_PREFIX=/usr \
-  -DCMAKE_PREFIX_PATH=/usr/lib/qt6/cmake \
+  -DCMAKE_PREFIX_PATH="$OVERLAY_QT_CUSTOM/usr/lib/cmake" \
+  -DCMAKE_FIND_ROOT_PATH="$OVERLAY_QT_CUSTOM" \
   -DFEATURE_developer_build=ON \
   -DFEATURE_private_tests=ON \
   -DQT_BUILD_EXAMPLES=OFF \
@@ -50,29 +52,32 @@ cmake ../../qt-everywhere-src-$QT_VERSION/qtbase -GNinja \
 ninja
 DESTDIR="$OVERLAY_QT_CUSTOM" ninja install
 
-# Copiar headers privados manualmente
+log_message $SCRIPT_NAME "Instalación de headers privados desde build/include/"
 PRIVATE_HEADERS_SRC_DIR="$DEPENDENCY_QT_PLUGIN_KMS_BUILD/build-qtbase/include"
+PRIVATE_HEADERS_DST_DIR="$OVERLAY_QT_CUSTOM/usr/include/qt6"
 
 if [ -d "$PRIVATE_HEADERS_SRC_DIR" ]; then
-  log_message $SCRIPT_NAME "Copiando headers privados manualmente desde $PRIVATE_HEADERS_SRC_DIR"
-  rsync -av "$PRIVATE_HEADERS_SRC_DIR/" "$OVERLAY_QT_CUSTOM/usr/include/qt6/"
+  rsync -a "$PRIVATE_HEADERS_SRC_DIR/" "$PRIVATE_HEADERS_DST_DIR/"
 else
   log_message $SCRIPT_NAME "[WARN] No se encontraron headers privados en $PRIVATE_HEADERS_SRC_DIR"
 fi
 
+# --- Compilar módulos adicionales ---
 log_message $SCRIPT_NAME "Iniciando compilación de módulos Qt adicionales"
 
 for module in $QT_MODULES; do
+  MODULE_SRC_DIR="$DEPENDENCY_QT_PLUGIN_KMS/qt-everywhere-src-$QT_VERSION/$module"
   MODULE_BUILD_DIR="$DEPENDENCY_QT_PLUGIN_KMS_BUILD/build-$module"
 
-  if [ -d "$DEPENDENCY_QT_PLUGIN_KMS/qt-everywhere-src-$QT_VERSION/$module" ]; then
+  if [ -d "$MODULE_SRC_DIR" ]; then
     log_message $SCRIPT_NAME "Compilando módulo $module"
     mkdir -p "$MODULE_BUILD_DIR"
     cd "$MODULE_BUILD_DIR"
 
-    cmake ../../qt-everywhere-src-$QT_VERSION/$module -GNinja \
+    cmake "$MODULE_SRC_DIR" -GNinja \
       -DCMAKE_INSTALL_PREFIX=/usr \
-      -DCMAKE_PREFIX_PATH=/usr/lib/qt6/cmake \
+      -DCMAKE_PREFIX_PATH="$OVERLAY_QT_CUSTOM/usr/lib/cmake" \
+      -DCMAKE_FIND_ROOT_PATH="$OVERLAY_QT_CUSTOM" \
       -DQT_BUILD_EXAMPLES=OFF \
       -DQT_BUILD_TESTS=OFF
 
@@ -82,4 +87,3 @@ for module in $QT_MODULES; do
     log_message $SCRIPT_NAME "[WARN] Módulo $module no encontrado en el tarball, se omite"
   fi
 done
-
