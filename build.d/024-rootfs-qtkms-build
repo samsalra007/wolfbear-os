@@ -67,15 +67,6 @@ if [ -d "$OVERLAY_QT_CUSTOM/usr/include" ] && [ ! -d "$OVERLAY_QT_CUSTOM/usr/inc
   mv "$OVERLAY_QT_CUSTOM/usr/include/"* "$OVERLAY_QT_CUSTOM/usr/include/qt6/"
 fi
 
-# --- Crear enlaces simbólicos requeridos para módulos privados ---
-log_message $SCRIPT_NAME "Creando enlaces simbólicos para directorios de headers privados"
-
-# QtCore
-mkdir -p "$OVERLAY_QT_CUSTOM/usr/include/qt6/QtCore/$QT_VERSION"
-ln -sf ../.. "$OVERLAY_QT_CUSTOM/usr/include/qt6/QtCore/$QT_VERSION/QtCore"
-
-# QtQml
-mkdir -p "$OVERLAY_QT_CUSTOM/usr/include/qt6/QtQml/$QT_VERSION"
-ln -sf ../.. "$OVERLAY_QT_CUSTOM/usr/include/qt6/QtQml/$QT_VERSION/QtQml"
+# (Eliminados los enlaces simbólicos aquí, como pediste)
 
 log_message $SCRIPT_NAME "Compilación finalizada. Qt base con EGLFS_KMS lista en $OVERLAY_QT_CUSTOM"
