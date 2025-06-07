@@ -1,20 +1,65 @@
-#! /bin/sh
+#!/bin/sh
 set -euo pipefail
 
-echo "Agregando dependencias de Linux"
-apk add util-linux zip unzip nano flex bison elfutils-dev ncurses-dev pkgconf diffutils parted e2fsprogs dosfstools xfsprogs
+echo "[+] Instalando utilidades básicas del sistema..."
+apk add \
+    util-linux \
+    zip unzip \
+    nano \
+    parted \
+    e2fsprogs \
+    dosfstools \
+    xfsprogs \
+    diffutils
 
-echo "Agregando dependencias para compilar QT6"
-apk add qt6-qtbase-dev qt6-qtdeclarative-dev qt6-qtshadertools-dev cmake ninja build-base qt6-qtquicktimeline-dev
+echo "[+] Instalando herramientas para desarrollo en C/C++ y build system..."
+apk add \
+    build-base \
+    cmake \
+    ninja \
+    pkgconf \
+    flex \
+    bison \
+    elfutils-dev \
+    ncurses-dev
 
-apk add git ninja perl python3 gperf \
-    mesa-dev libxkbcommon-dev wayland-dev libinput-dev \
-    freetype-dev harfbuzz-dev fontconfig-dev
+echo "[+] Instalando dependencias para Qt6..."
+apk add \
+    qt6-qtbase-dev \
+    qt6-qtdeclarative-dev \
+    qt6-qtshadertools-dev \
+    qt6-qtquicktimeline-dev
 
-echo "Solucionando ncurses symlinks"
+echo "[+] Instalando dependencias adicionales para Qt en framebuffer o Wayland..."
+apk add \
+    mesa-dev \
+    libxkbcommon-dev \
+    wayland-dev \
+    libinput-dev \
+    freetype-dev \
+    harfbuzz-dev \
+    fontconfig-dev
 
+echo "[+] Instalando herramientas de soporte para compilación de Qt y herramientas generales..."
+apk add \
+    git \
+    perl \
+    python3 \
+    gperf
+
+echo "[+] Corrigiendo symlinks faltantes de ncurses (BusyBox fix para menuconfig)..."
 mkdir -p /usr/include/ncursesw
 
 for header in curses.h ncurses.h termcap.h unctrl.h; do
     ln -sf /usr/include/$header /usr/include/ncursesw/$header
 done
+
+echo "[+] Generando enlaces simbólicos par QT $QT_VERSION en el sistema"
+
+doas mkdir -p /usr/include/qt6/QtQml/$QT_VERSION
+doas ln -sf /usr/include/qt6/QtQml /usr/include/qt6/QtQml/$QT_VERSION/QtQml
+
+doas mkdir -p /usr/include/qt6/QtCore/$QT_VERSION
+doas ln -sf /usr/include/qt6/QtCore /usr/include/qt6/QtCore/$QT_VERSION/QtCore
+
+echo "[✔] Todas las dependencias han sido instaladas y configuradas correctamente."
