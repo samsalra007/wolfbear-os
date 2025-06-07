@@ -18,7 +18,15 @@ if [ ! -d "$DEPENDENCY_QT_PLUGIN_KMS" ] || [ -z "$(ls -A "$DEPENDENCY_QT_PLUGIN_
 	QT_KMS_TAR_FILE="/tmp/qtplatformintegration-everywhere-src-${QT_KMS_VERSION_FULL}.tar.xz"
 
 	debug_message $SCRIPT_NAME "Descargando desde $QT_KMS_TAR_URL"
-	wget -q -O "$QT_KMS_TAR_FILE" "$QT_KMS_TAR_URL"
+	if ! wget -q -O "$QT_KMS_TAR_FILE" "$QT_KMS_TAR_URL"; then
+		log_message $SCRIPT_NAME "[ERROR] Falló la descarga desde $QT_KMS_TAR_URL"
+		exit 1
+	fi
+
+	if [ ! -f "$QT_KMS_TAR_FILE" ]; then
+		log_message $SCRIPT_NAME "[ERROR] El archivo descargado no se encuentra en $QT_KMS_TAR_FILE"
+		exit 1
+	fi
 
 	debug_message $SCRIPT_NAME "Extrayendo archivo tar"
 	tar -xf "$QT_KMS_TAR_FILE" -C "$DEPENDENCY_QT_PLUGIN_KMS" --strip-components=1
