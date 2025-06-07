@@ -42,6 +42,7 @@ log_message $SCRIPT_NAME "Iniciando compilación de Qt base"
 cmake ../../qt-everywhere-src-$QT_VERSION/qtbase -GNinja \
   -DCMAKE_INSTALL_PREFIX=/usr \
   -DCMAKE_PREFIX_PATH=/usr/lib/qt6/cmake \
+  -DFEATURE_developer_build=ON \
   -DFEATURE_private_tests=ON \
   -DQT_BUILD_EXAMPLES=OFF \
   -DQT_BUILD_TESTS=OFF
