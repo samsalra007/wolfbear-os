@@ -7,15 +7,25 @@ log_message $SCRIPT_NAME "Script de compilación de librería KMSDRM para Qt"
 
 if [ ! -d "$DEPENDENCY_QT_PLUGIN_KMS" ] || [ -z "$(ls -A "$DEPENDENCY_QT_PLUGIN_KMS")" ]; then
 	log_message $SCRIPT_NAME "La dependencia del plugin Qt KMS libqkmsdrm.so no se encontró en el sistema"
-	log_message $SCRIPT_NAME "Será descargada desde su repositorio oficial"
+	log_message $SCRIPT_NAME "Será descargada desde el archivo .tar.xz oficial"
 	new_line
 
 	mkdir -p "$DEPENDENCY_QT_PLUGIN_KMS"
-	git clone --branch v$QT_KMS_VERSION git@github.com:qt/qtplatformintegration.git "$DEPENDENCY_QT_PLUGIN_KMS"
 
-	debug_message $SCRIPT_NAME "Qt Base descargado exitosamente"
+	# Descargar y extraer el tarball oficial
+	QT_KMS_VERSION_FULL=$QT_VERSION
+	QT_KMS_TAR_URL="https://download.qt.io/official_releases/qt/6.8/${QT_KMS_VERSION_FULL}/submodules/qtplatformintegration-everywhere-src-${QT_KMS_VERSION_FULL}.tar.xz"
+	QT_KMS_TAR_FILE="/tmp/qtplatformintegration-everywhere-src-${QT_KMS_VERSION_FULL}.tar.xz"
+
+	debug_message $SCRIPT_NAME "Descargando desde $QT_KMS_TAR_URL"
+	wget -q -O "$QT_KMS_TAR_FILE" "$QT_KMS_TAR_URL"
+
+	debug_message $SCRIPT_NAME "Extrayendo archivo tar"
+	tar -xf "$QT_KMS_TAR_FILE" -C "$DEPENDENCY_QT_PLUGIN_KMS" --strip-components=1
+
+	debug_message $SCRIPT_NAME "Plugin Qt descargado y extraído exitosamente"
 else 
-	debug_message $SCRIPT_NAME "Qt Base ya está presente en la carpeta de dependencias"
+	debug_message $SCRIPT_NAME "Qt Plugin KMSDRM ya está presente en la carpeta de dependencias"
 fi
 
 # Ir directamente al subdirectorio del plugin
