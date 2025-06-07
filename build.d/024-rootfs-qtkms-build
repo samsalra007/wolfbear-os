@@ -50,6 +50,16 @@ cmake ../../qt-everywhere-src-$QT_VERSION/qtbase -GNinja \
 ninja
 DESTDIR="$OVERLAY_QT_CUSTOM" ninja install
 
+# Copiar headers privados manualmente
+PRIVATE_HEADERS_SRC_DIR="$DEPENDENCY_QT_PLUGIN_KMS_BUILD/build-qtbase/include"
+
+if [ -d "$PRIVATE_HEADERS_SRC_DIR" ]; then
+  log_message $SCRIPT_NAME "Copiando headers privados manualmente desde $PRIVATE_HEADERS_SRC_DIR"
+  rsync -av "$PRIVATE_HEADERS_SRC_DIR/" "$OVERLAY_QT_CUSTOM/usr/include/qt6/"
+else
+  log_message $SCRIPT_NAME "[WARN] No se encontraron headers privados en $PRIVATE_HEADERS_SRC_DIR"
+fi
+
 log_message $SCRIPT_NAME "Iniciando compilación de módulos Qt adicionales"
 
 for module in $QT_MODULES; do
