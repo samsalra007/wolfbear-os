@@ -82,10 +82,12 @@ if [ "$SYS_ARCH" = "arm64" ]; then
     GRUB_TARGET="arm64-efi"
     GRUB_EFI_NAME="BOOTAA64.EFI"
     CONSOLE_DEVICE="ttyAMA0"
+    IMAGE_NAME="Image"
 elif [ "$SYS_ARCH" = "amd64" ]; then
     GRUB_TARGET="x86_64-efi"
     GRUB_EFI_NAME="BOOTX64.EFI"
     CONSOLE_DEVICE="ttyS0"
+    IMAGE_NAME="bzImage"
 else
     echo "Arquitectura no soportada: $SYS_ARCH"
     exit 1
@@ -105,7 +107,7 @@ set timeout=0
 set default=0
 
 menuentry "WolfbearOS ($SYS_ARCH)" {
-    linux (hd0,gpt2)/boot/Image console=$CONSOLE_DEVICE root=/dev/ram0 rw
+    linux (hd0,gpt2)/boot/$IMAGE_NAME console=$CONSOLE_DEVICE root=/dev/ram0 rw
     initrd (hd0,gpt2)/boot/initramfs.cpio.xz
 }
 EOF
@@ -117,7 +119,7 @@ EOF
 
 debug_message $SCRIPT_NAME "Generando contenido para ROOT Filesystem Partition"
 mkdir -p "$ROOTFS_BOOTDIR"
-cp $TARGET_DIR/Image $ROOTFS_BOOTDIR
+cp $TARGET_DIR/$IMAGE_NAME $ROOTFS_BOOTDIR
 cp $TARGET_DIR/initramfs.cpio.xz $ROOTFS_BOOTDIR
 
 debug_message $SCRIPT_NAME "Generando directorios en '$RESOURCES_PART_DIR'"
@@ -143,7 +145,7 @@ rsync -a --links "$DEPENDENCY_BUSYBOX_COMPILED_DIR/" "$RESOURCES_PART_DIR/busybo
 rsync -a --links "$OVERLAY_SYSAPPS_DIR/" "$RESOURCES_PART_DIR/sys-apps/"
 
 debug_message $SCRIPT_NAME "Copiando 'Image' e 'initramfs.cpio.xz' en el directorio linux-kernel desde '$TARGET_DIR' hasta '$RESOURCES_PART_DIR'"
-cp $TARGET_DIR/Image "$RESOURCES_PART_DIR/linux-kernel"
+cp $TARGET_DIR/$IMAGE_NAME "$RESOURCES_PART_DIR/linux-kernel"
 cp $TARGET_DIR/initramfs.cpio.xz "$RESOURCES_PART_DIR/linux-kernel"
 
 debug_message $SCRIPT_NAME "Desmontando particiones"
