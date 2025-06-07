@@ -52,6 +52,7 @@ cmake ../../qt-everywhere-src-$QT_VERSION/qtbase -GNinja \
 ninja -j"$(nproc)"
 DESTDIR="$OVERLAY_QT_CUSTOM" ninja install
 
+log_message $SCRIPT_NAME "Reubicando plugins"
 # --- Reubicar plugins si es necesario ---
 if [ -d "$OVERLAY_QT_CUSTOM/usr/plugins" ]; then
   log_message $SCRIPT_NAME "Corrigiendo ubicación de plugins al estilo Alpine"
@@ -60,13 +61,15 @@ if [ -d "$OVERLAY_QT_CUSTOM/usr/plugins" ]; then
   rmdir "$OVERLAY_QT_CUSTOM/usr/plugins" || true
 fi
 
+log_message $SCRIPT_NAME "Reubicando cabeceras"
 # --- Reubicar headers si es necesario ---
-if [ -d "$OVERLAY_QT_CUSTOM/usr/include" ] && [ ! -d "$OVERLAY_QT_CUSTOM/usr/include/qt6" ]; then
+if [ -d "$OVERLAY_QT_CUSTOM/usr/include" ]; then
   log_message $SCRIPT_NAME "Corrigiendo ubicación de headers al estilo Alpine"
   mkdir -p "$OVERLAY_QT_CUSTOM/usr/include/qt6"
-  mv "$OVERLAY_QT_CUSTOM/usr/include/"* "$OVERLAY_QT_CUSTOM/usr/include/qt6/"
+  for item in "$OVERLAY_QT_CUSTOM/usr/include/"*; do
+    [ "$(basename "$item")" = "qt6" ] && continue
+    mv "$item" "$OVERLAY_QT_CUSTOM/usr/include/qt6/"
+  done
 fi
-
-# (Eliminados los enlaces simbólicos aquí, como pediste)
 
 log_message $SCRIPT_NAME "Compilación finalizada. Qt base con EGLFS_KMS lista en $OVERLAY_QT_CUSTOM"
