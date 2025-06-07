@@ -2,6 +2,12 @@
 set -euo pipefail
 
 QT_VERSION=6.8.3
+export SYS_ARCH=$(uname -m)
+if [ "$SYS_ARCH" = 'aarch64' ] || [ "$SYS_ARCH" = 'arm64' ]; then
+	SYS_ARCH='arm64'
+else 
+	SYS_ARCH='amd64'
+fi
 
 echo "[+] Instalando utilidades básicas del sistema..."
 apk add \
@@ -12,7 +18,8 @@ apk add \
     e2fsprogs \
     dosfstools \
     xfsprogs \
-    diffutils
+    diffutils \
+    grub-efi
 
 echo "[+] Instalando herramientas para desarrollo en C/C++ y build system..."
 apk add \
@@ -58,10 +65,10 @@ done
 
 echo "[+] Generando enlaces simbólicos par QT $QT_VERSION en el sistema"
 
-doas mkdir -p /usr/include/qt6/QtQml/$QT_VERSION
-doas ln -sf /usr/include/qt6/QtQml /usr/include/qt6/QtQml/$QT_VERSION/QtQml
+mkdir -p /usr/include/qt6/QtQml/$QT_VERSION
+ln -sf /usr/include/qt6/QtQml /usr/include/qt6/QtQml/$QT_VERSION/QtQml
 
-doas mkdir -p /usr/include/qt6/QtCore/$QT_VERSION
-doas ln -sf /usr/include/qt6/QtCore /usr/include/qt6/QtCore/$QT_VERSION/QtCore
+mkdir -p /usr/include/qt6/QtCore/$QT_VERSION
+ln -sf /usr/include/qt6/QtCore /usr/include/qt6/QtCore/$QT_VERSION/QtCore
 
 echo "[✔] Todas las dependencias han sido instaladas y configuradas correctamente."
