@@ -36,6 +36,11 @@ cmake .. \
 debug_message $SCRIPT_NAME "Compilando libqkmsdrm.so con ninja"
 ninja src/plugins/platforms/kmsdrm
 
+debug_message $SCRIPT_NAME "GREP"
+
+grep kmsdrm CMakeCache.txt
+
+
 debug_message $SCRIPT_NAME "Copiando librería compilada"
 mkdir -p "$OVERLAY_SYSAPPS_DIR/usr/lib/qt6/plugins/platforms/"
 cp ./plugins/platforms/libqkmsdrm.so "$OVERLAY_SYSAPPS_DIR/usr/lib/qt6/plugins/platforms/"
