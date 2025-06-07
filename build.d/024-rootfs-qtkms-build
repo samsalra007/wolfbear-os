@@ -31,10 +31,13 @@ cmake .. \
   -DCMAKE_BUILD_TYPE=Release \
   -DQT_BUILD_EXAMPLES=OFF \
   -DQT_BUILD_TESTS=OFF \
-  -DQT_FEATURE_kmsdrm=ON
+  -DQT_BUILD_PLUGIN_KMSDRM=ON \
+  -DFEATURE_kmsdrm=ON \
+  -DCMAKE_INSTALL_PREFIX=/usr \
+  -DBUILD_SHARED_LIBS=ON
 
 debug_message $SCRIPT_NAME "Compilando libqkmsdrm.so con ninja"
-ninja src/plugins/platforms/kmsdrm
+ninja plugin_qkmsdrm
 
 debug_message $SCRIPT_NAME "GREP"
 
