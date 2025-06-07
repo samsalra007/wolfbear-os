@@ -1,6 +1,6 @@
 #!/bin/sh
 set -euo pipefail
-source $SCRIPTS_DIR/util-log
+source "$SCRIPTS_DIR/util-log"
 
 SCRIPT_NAME=$0
 log_message $SCRIPT_NAME "Script de compilación de librería KMSDRM para Qt"
@@ -18,34 +18,35 @@ else
 	debug_message $SCRIPT_NAME "Qt Base ya está presente en la carpeta de dependencias"
 fi
 
-debug_message $SCRIPT_NAME "Accediendo al directorio $DEPENDENCY_QT_PLUGIN_KMS"
-cd "$DEPENDENCY_QT_PLUGIN_KMS"
+# Ir directamente al subdirectorio del plugin
+PLUGIN_SRC_DIR="$DEPENDENCY_QT_PLUGIN_KMS/src/plugins/platforms/kmsdrm"
+
+debug_message $SCRIPT_NAME "Accediendo al directorio $PLUGIN_SRC_DIR"
+cd "$PLUGIN_SRC_DIR"
 
 debug_message $SCRIPT_NAME "Generando carpeta build"
 rm -rf build
 mkdir build && cd build
 
-debug_message $SCRIPT_NAME "Configurando con CMake"
-cmake .. \
-  -GNinja \
+debug_message $SCRIPT_NAME "Configurando plugin kmsdrm con CMake"
+cmake .. -GNinja \
   -DCMAKE_BUILD_TYPE=Release \
-  -DQT_BUILD_EXAMPLES=OFF \
-  -DQT_BUILD_TESTS=OFF \
-  -DQT_BUILD_PLUGIN_KMSDRM=ON \
-  -DFEATURE_kmsdrm=ON \
   -DCMAKE_INSTALL_PREFIX=/usr \
-  -DBUILD_SHARED_LIBS=ON
+  -DCMAKE_PREFIX_PATH=/usr/lib/cmake
 
 debug_message $SCRIPT_NAME "Compilando libqkmsdrm.so con ninja"
-ninja plugin_qkmsdrm
+ninja
 
-debug_message $SCRIPT_NAME "GREP"
+# Buscar el .so compilado
+PLUGIN_SO_PATH=$(find . -name libqkmsdrm.so | head -n 1)
 
-grep kmsdrm CMakeCache.txt
+if [ -z "$PLUGIN_SO_PATH" ]; then
+	log_message $SCRIPT_NAME "[ERROR] No se encontró libqkmsdrm.so después de compilar"
+	exit 1
+fi
 
-
-debug_message $SCRIPT_NAME "Copiando librería compilada"
+debug_message $SCRIPT_NAME "Copiando librería compilada desde $PLUGIN_SO_PATH"
 mkdir -p "$OVERLAY_SYSAPPS_DIR/usr/lib/qt6/plugins/platforms/"
-cp ./plugins/platforms/libqkmsdrm.so "$OVERLAY_SYSAPPS_DIR/usr/lib/qt6/plugins/platforms/"
+cp "$PLUGIN_SO_PATH" "$OVERLAY_SYSAPPS_DIR/usr/lib/qt6/plugins/platforms/"
 
 log_message $SCRIPT_NAME "Plugin libqkmsdrm.so copiado exitosamente"
