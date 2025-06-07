@@ -33,11 +33,11 @@ mkdir -p $DEPENDENCY_WOLFBEAR_APPS_DIR/build
 debug_message $SCRIPT_NAME "Abriendo directorio de compilación build"
 cd $DEPENDENCY_WOLFBEAR_APPS_DIR/build
 
-# Habilitar si no encuentra el compilado por la version QtQml
-# doas mkdir -p /usr/include/qt6/QtQml/6.8.2
-# doas ln -s /usr/include/qt6/QtQml /usr/include/qt6/QtQml/6.8.2/QtQml
-# doas mkdir -p /usr/include/qt6/QtCore/6.8.2
-# doas ln -s /usr/include/qt6/QtCore /usr/include/qt6/QtCore/6.8.2/QtCore
+debug_message $SCRIPT_NAME "Generando enlaces simbólicos par QT $QT_VERSION en el sistema"
+doas mkdir -p /usr/include/qt6/QtQml/$QT_VERSION
+doas ln -sf /usr/include/qt6/QtQml /usr/include/qt6/QtQml/$QT_VERSION/QtQml
+doas mkdir -p /usr/include/qt6/QtCore/$QT_VERSION
+doas ln -sf /usr/include/qt6/QtCore /usr/include/qt6/QtCore/$QT_VERSION/QtCore
 
 debug_message $SCRIPT_NAME "Compilando Launcher en $DEPENDENCY_WOLFBEAR_APPS_DIR/Launcher"
 

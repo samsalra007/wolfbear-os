@@ -12,6 +12,7 @@ fi
 
 export VERSION_LINUX_KERNEL=6.12
 export BUSY_BOX_VERSION=1.37.0
+export QT_VERSION=6.8.3
 
 export WOLFBEAR_OS_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
