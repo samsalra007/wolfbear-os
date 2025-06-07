@@ -9,3 +9,4 @@ modprobe-compiled/*
 *.img
 .DS_STORE
 overlay/sys-apps/apps/wolfbear-apps
+overlay/qt-custom/*

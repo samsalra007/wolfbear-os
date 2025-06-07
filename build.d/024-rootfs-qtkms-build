@@ -5,15 +5,11 @@ source "$SCRIPTS_DIR/util-log"
 SCRIPT_NAME=$0
 log_message $SCRIPT_NAME "Compilación del plugin EGLFS_KMS (libqeglfs-kms-integration.so) para Qt"
 
-QT_VERSION_FULL="6.8.3"
-QT_SRC_TAR="qt-everywhere-src-$QT_VERSION_FULL.tar.xz"
-QT_SRC_URL="https://download.qt.io/archive/qt/6.8/$QT_VERSION_FULL/single/$QT_SRC_TAR"
-QT_SRC_DIR="$DEPENDENCY_QT_PLUGIN_KMS/qt-everywhere-src-$QT_VERSION_FULL"
-QT_BUILD_DIR="$QT_SRC_DIR/build"
-PLUGIN_TARGET_DIR="$OVERLAY_SYSAPPS_DIR/usr/lib/qt6/plugins/eglfs_kms"
+QT_SRC_TAR="qt-everywhere-src-$QT_VERSION.tar.xz"
+QT_SRC_URL="https://download.qt.io/archive/qt/6.8/$QT_VERSION/single/$QT_SRC_TAR"
 
-if [ ! -d "$QT_SRC_DIR" ]; then
-	log_message $SCRIPT_NAME "Descargando Qt $QT_VERSION_FULL desde $QT_SRC_URL"
+if [ ! -d "$DEPENDENCY_QT_PLUGIN_KMS" ]; then
+	log_message $SCRIPT_NAME "Descargando Qt $QT_VERSION desde $QT_SRC_URL"
 	mkdir -p "$DEPENDENCY_QT_PLUGIN_KMS"
 	cd "$DEPENDENCY_QT_PLUGIN_KMS"
 
@@ -24,26 +20,36 @@ if [ ! -d "$QT_SRC_DIR" ]; then
 
 	tar xf "$QT_SRC_TAR"
 else
-	log_message $SCRIPT_NAME "Qt $QT_VERSION_FULL ya está descomprimido en $QT_SRC_DIR"
+	log_message $SCRIPT_NAME "Qt $QT_VERSION ya está descomprimido en $DEPENDENCY_QT_PLUGIN_KMS"
 fi
 
 log_message $SCRIPT_NAME "Limpiando carpeta build y accediendo en ella"
 new_line
 
-rm -rf "$QT_BUILD_DIR"
-mkdir -p "$QT_BUILD_DIR"
-cd "$QT_BUILD_DIR"
+rm -rf "$DEPENDENCY_QT_PLUGIN_KMS_BUILD"
+mkdir -p "$DEPENDENCY_QT_PLUGIN_KMS_BUILD"
+cd "$DEPENDENCY_QT_PLUGIN_KMS_BUILD"
 
-log_message $SCRIPT_NAME "Compilando qtbase"
-cmake ../qtbase -GNinja \
-  -DCMAKE_INSTALL_PREFIX=/usr \
-  -DCMAKE_PREFIX_PATH=/usr/lib/qt6/cmake \
-  -DQT_BUILD_EXAMPLES=OFF \
-  -DQT_BUILD_TESTS=OFF
+log_message $SCRIPT_NAME "Iniciando compilación de módulos Qt adicionales"
 
-ninja
+for module in $QT_MODULES; do
+  MODULE_BUILD_DIR="$DEPENDENCY_QT_PLUGIN_KMS_BUILD/build-$module"
 
-PLUGIN_SO=$(find . -name libqeglfs-kms-integration.so | head -n 1)
+  if [ -d "$DEPENDENCY_QT_PLUGIN_KMS/$module" ]; then
+    log_message $SCRIPT_NAME "Compilando módulo $module"
+    mkdir -p "$MODULE_BUILD_DIR"
+    cd "$MODULE_BUILD_DIR"
 
-echo "PLUGIN SO: "
-echo $PLUGIN_SO
+    cmake ../$module -GNinja \
+      -DCMAKE_INSTALL_PREFIX=/usr \
+      -DCMAKE_PREFIX_PATH=/usr/lib/qt6/cmake \
+      -DQT_BUILD_EXAMPLES=OFF \
+      -DQT_BUILD_TESTS=OFF
+
+    ninja
+    DESTDIR="$OVERLAY_QT_CUSTOM" ninja install
+  else
+    log_message $SCRIPT_NAME "[WARN] Módulo $module no encontrado en el tarball, se omite"
+  fi
+done
+

@@ -13,7 +13,6 @@ fi
 export VERSION_LINUX_KERNEL=6.12
 export BUSY_BOX_VERSION=1.37.0
 export QT_VERSION=6.8.3
-export QT_KMS_VERSION=6.8.2
 
 export WOLFBEAR_OS_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
@@ -31,8 +30,12 @@ export DEPENDENCY_BUSYBOX_DIR="$DEPENDENCIES_DIR/busybox-$BUSY_BOX_VERSION"
 export DEPENDENCY_BUSYBOX_COMPILED_DIR="$DEPENDENCIES_DIR/busybox-compiled"
 export DEPENDENCY_WOLFBEAR_APPS_DIR="$DEPENDENCIES_DIR/wolfbear-apps"
 export DEPENDENCY_QT_PLUGIN_KMS="$DEPENDENCIES_DIR/qt-kms"
+export DEPENDENCY_QT_PLUGIN_KMS_BUILD="$DEPENDENCY_QT_PLUGIN_KMS/build"
 
 export OVERLAY_DIR="$WOLFBEAR_OS_DIR/overlay"
 export OVERLAY_INITRAMFS_DIR="$OVERLAY_DIR/initramfs"
 export OVERLAY_ROOTFS_DIR="$OVERLAY_DIR/rootfs"
 export OVERLAY_SYSAPPS_DIR="$OVERLAY_DIR/sys-apps"
+export OVERLAY_QT_CUSTOM="$OVERLAY_DIR/qt-custom"
+
+export QT_MODULES="qtdeclarative qtshadertools qtimageformats qt5compat"
