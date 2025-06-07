@@ -19,7 +19,8 @@ apk add \
     dosfstools \
     xfsprogs \
     diffutils \
-    grub-efi
+    grub-efi \
+    linux-headers
 
 echo "[+] Instalando herramientas para desarrollo en C/C++ y build system..."
 apk add \
@@ -37,7 +38,8 @@ apk add \
     qt6-qtbase-dev \
     qt6-qtdeclarative-dev \
     qt6-qtshadertools-dev \
-    qt6-qtquicktimeline-dev
+    qt6-qtquicktimeline-dev \
+    qt6-qtbase-src
 
 echo "[+] Instalando dependencias adicionales para Qt en framebuffer o Wayland..."
 apk add \
@@ -54,7 +56,10 @@ apk add \
     git \
     perl \
     python3 \
-    gperf
+    gperf \
+    drm-dev \
+    gbm-dev \
+    libudev-zero-dev
 
 echo "[+] Corrigiendo symlinks faltantes de ncurses (BusyBox fix para menuconfig)..."
 mkdir -p /usr/include/ncursesw

@@ -1,0 +1,38 @@
+#!/bin/sh
+set -euo pipefail
+source $SCRIPTS_DIR/util-log
+
+log_message $SCRIPT_NAME "Script de compilacion de libreria KMSDRM para QT"
+
+if [ ! -d "$DEPENDENCY_QT_PLUGIN_KMS" ] || [ -z "$(ls -A "$DEPENDENCY_QT_PLUGIN_KMS")" ]; then
+	log_message $SCRIPT_NAME "La dependencia del plugin QT KMS libqkmsdrm.so no se encontró en el sistema"
+	log_message $SCRIPT_NAME "Por lo cual será descargada desde su repositorio oficial"
+	new_line
+
+	mkdir -p $DEPENDENCY_QT_PLUGIN_KMS
+	git clone --branch v$QT_VERSION--depth=1 https://code.qt.io/qt/qtbase.git $DEPENDENCY_QT_PLUGIN_KMS
+
+
+	debug_message $SCRIPT_NAME "La dependencia de Linux Kernel se ha descargado exitosamente"
+else 
+	debug_message $SCRIPT_NAME "No es necesario descargar QT Base ya que fue encontrado en la carpeta de dependencias"
+fi
+
+debug_message $SCRIPT_NAME "Accediendo al directorio $DEPENDENCY_QT_PLUGIN_KMS"
+cd $DEPENDENCY_QT_PLUGIN_KMS
+
+debug_message $SCRIPT_NAME "Generando carpeta build"
+rm -rf build
+mkdir build && cd build
+
+debug_message $SCRIPT_NAME "Compilando con cmake kmsdrm"
+cmake .. \
+  -GNinja \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DQT_BUILD_EXAMPLES=OFF \
+  -DQT_BUILD_TESTS=OFF \
+  -DQT_FEATURE_kmsdrm=ON
+
+debug_message $SCRIPT_NAME "Copiando librería"
+mkdir $OVERLAY_SYSAPPS_DIR/usr/lib/qt6/plugins/platforms/
+cp build/plugins/platforms/libqkmsdrm.so $OVERLAY_SYSAPPS_DIR
