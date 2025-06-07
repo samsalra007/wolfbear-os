@@ -5,7 +5,6 @@ SCRIPT_NAME=$0
 log_message $SCRIPT_NAME "Procediendo con la instalación de dependencias QT"
 
 apk add --root $TARGET_DISK_DIR \
-    qt6-qtbase qt6-qtbase-dev \
     qt6-qtdeclarative \
     qt6-qtshadertools \
     qt6-qtimageformats \
