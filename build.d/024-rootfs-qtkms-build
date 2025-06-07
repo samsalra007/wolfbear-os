@@ -11,7 +11,7 @@ if [ ! -d "$DEPENDENCY_QT_PLUGIN_KMS" ] || [ -z "$(ls -A "$DEPENDENCY_QT_PLUGIN_
 	new_line
 
 	mkdir -p "$DEPENDENCY_QT_PLUGIN_KMS"
-	git clone --branch v$QT_KMS_VERSION --depth=1 https://code.qt.io/qt/qtbase.git "$DEPENDENCY_QT_PLUGIN_KMS"
+	git clone --branch v$QT_KMS_VERSION https://code.qt.io/qt/qtbase.git "$DEPENDENCY_QT_PLUGIN_KMS"
 
 	debug_message $SCRIPT_NAME "Qt Base descargado exitosamente"
 else 
