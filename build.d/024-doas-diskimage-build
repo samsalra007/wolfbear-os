@@ -78,26 +78,41 @@ mount "$RESOURCES_PART" "$RESOURCES_PART_DIR"
 
 debug_message $SCRIPT_NAME "Generando contenido para GRUB EFI System Partition"
 
+if [ "$SYS_ARCH" = "arm64" ]; then
+    GRUB_TARGET="arm64-efi"
+    GRUB_EFI_NAME="BOOTAA64.EFI"
+    CONSOLE_DEVICE="ttyAMA0"
+elif [ "$SYS_ARCH" = "amd64" ]; then
+    GRUB_TARGET="x86_64-efi"
+    GRUB_EFI_NAME="BOOTX64.EFI"
+    CONSOLE_DEVICE="ttyS0"
+else
+    echo "Arquitectura no soportada: $SYS_ARCH"
+    exit 1
+fi
+
+debug_message $SCRIPT_NAME "Generando imagen EFI GRUB para $GRUB_TARGET"
+
 grub-mkimage \
-  -O arm64-efi \
+  -O "$GRUB_TARGET" \
   -p "/EFI/BOOT" \
-  -o $EFI_BOOTDIR/BOOTAA64.EFI \
-    part_gpt fat ext2 normal configfile linux cpio gfxterm all_video
+  -o "$EFI_BOOTDIR/$GRUB_EFI_NAME" \
+  part_gpt fat ext2 normal configfile linux cpio gfxterm all_video
 
 debug_message $SCRIPT_NAME "Generando archivo grub.cfg en '$EFI_BOOTDIR'"
-cat > $EFI_BOOTDIR/grub.cfg <<EOF
+cat > "$EFI_BOOTDIR/grub.cfg" <<EOF
 set timeout=0
 set default=0
 
-menuentry "WolfbearOS for ARM64 (initramfs)" {
-    linux (hd0,gpt2)/boot/Image console=ttyAMA0 root=/dev/ram0 rw
+menuentry "WolfbearOS ($SYS_ARCH)" {
+    linux (hd0,gpt2)/boot/Image console=$CONSOLE_DEVICE root=/dev/ram0 rw
     initrd (hd0,gpt2)/boot/initramfs.cpio.xz
 }
 EOF
 
 debug_message $SCRIPT_NAME "Generando archivo startup.nsh en '$EFI_BOOTDIR'"
-cat > $EFI_BOOTDIR/startup.nsh <<EOF
-fs0:\EFI\BOOT\BOOTAA64.EFI
+cat > "$EFI_BOOTDIR/startup.nsh" <<EOF
+fs0:\\EFI\\BOOT\\$GRUB_EFI_NAME
 EOF
 
 debug_message $SCRIPT_NAME "Generando contenido para ROOT Filesystem Partition"
