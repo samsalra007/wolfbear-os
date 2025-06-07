@@ -10,3 +10,11 @@ apk add qt6-qtbase-dev qt6-qtdeclarative-dev qt6-qtshadertools-dev cmake ninja b
 apk add git ninja perl python3 gperf \
     mesa-dev libxkbcommon-dev wayland-dev libinput-dev \
     freetype-dev harfbuzz-dev fontconfig-dev
+
+echo "Solucionando ncurses symlinks"
+
+mkdir -p /usr/include/ncursesw
+
+for header in curses.h ncurses.h termcap.h unctrl.h; do
+    ln -sf /usr/include/$header /usr/include/ncursesw/$header
+done
