@@ -35,6 +35,4 @@ fi
 
 mount "$DISK" /mnt/install
 
-debug_message $SCRIPT_NAME "Particiones montadas exitosamente"
-
-log_message $SCRIPT_NAME "Iniciando script para montar particiones del sistema"
+log_message $SCRIPT_NAME "Particiones montadas exitosamente"
