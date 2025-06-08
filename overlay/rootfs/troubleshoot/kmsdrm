@@ -1,0 +1,19 @@
+#! /bin/bash
+
+echo "Revisando que el directorio para kms eglfs exista"
+ls -l /usr/lib/qt6/plugins/egldeviceintegrations/libqeglfs-kms-integration.so
+
+echo "Exportando variables QT"
+export QT_QPA_PLATFORM=eglfs
+export QT_QPA_EGLFS_INTEGRATION=kms
+export QT_PLUGIN_PATH=/usr/lib/qt6/plugins
+export QT_QPA_EGLFS_KMS_DEVICE=/dev/dri/card0
+
+echo "Mostrando tarjetas graficas disponibles"
+ls /dev/dri/
+
+echo "Revisando que pertenezca la libreria a algo que esté presente"
+ldd /usr/lib/qt6/plugins/egldeviceintegrations/libqeglfs-kms-integration.so
+
+cd /apps/wolfbear-apps/LauncherApp.d/
+QT_LOGGING_RULES="qt.qpa.*=true" ./LauncherApp
