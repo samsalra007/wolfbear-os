@@ -7,7 +7,7 @@ SCRIPT_NAME=$0
 log_message $SCRIPT_NAME "Generando imagen de disco '$INITRAMFS_DIR'"
 
 IMG=generated.img
-SIZE_MB=1024
+SIZE_MB=1500
 LOOPDEV=""
 MNT_DIR=/mnt/disk
 
@@ -128,6 +128,7 @@ mkdir -p "$RESOURCES_PART_DIR/modules-modprobe"
 mkdir -p "$RESOURCES_PART_DIR/busybox-compiled"
 mkdir -p "$RESOURCES_PART_DIR/linux-kernel"
 mkdir -p "$RESOURCES_PART_DIR/sys-apps"
+mkdir -p "$RESOURCES_PART_DIR/qt-custom"
 
 new_line
 
@@ -135,6 +136,7 @@ echo "rootfs-overlay    $OVERLAY_ROOTFS_DIR"
 echo "busybox-compiled  $DEPENDENCY_BUSYBOX_COMPILED_DIR"
 echo "modules-modprobe  $DEPENDENCIES_LINUX_MODULES_DIR"
 echo "sys-apps          $OVERLAY_SYSAPPS_DIR"
+echo "qt-custom         $OVERLAY_QT_CUSTOM"
 
 new_line
 
@@ -143,6 +145,7 @@ rsync -a --links "$OVERLAY_ROOTFS_DIR/" "$RESOURCES_PART_DIR/rootfs-overlay/"
 rsync -a --links "$DEPENDENCIES_LINUX_MODULES_DIR/" "$RESOURCES_PART_DIR/modules-modprobe/"
 rsync -a --links "$DEPENDENCY_BUSYBOX_COMPILED_DIR/" "$RESOURCES_PART_DIR/busybox-compiled/"
 rsync -a --links "$OVERLAY_SYSAPPS_DIR/" "$RESOURCES_PART_DIR/sys-apps/"
+rsync -a --links "$OVERLAY_QT_CUSTOM/" "$RESOURCES_PART_DIR/qt-custom/"
 
 debug_message $SCRIPT_NAME "Copiando 'Image' e 'initramfs.cpio.xz' en el directorio linux-kernel desde '$TARGET_DIR' hasta '$RESOURCES_PART_DIR'"
 cp $TARGET_DIR/$IMAGE_NAME "$RESOURCES_PART_DIR/linux-kernel"
