@@ -39,8 +39,12 @@ if [ -n "${motivo-}" ]; then
 fi
 
 # Bucle para mantener consola activa
-while true; do
-    echo "[initramfs] WolfbearOS recovery terminal."
-    /sbin/getty -L ttyAMA0 115200 vt100
-    sleep 2
+for port in tty1 ttyAMA0; do
+  if [ -e "/dev/$port" ]; then
+    echo "[initramfs] WolfbearOS getty en $port"
+    /sbin/getty -L "$port" 115200 vt100 &
+  fi
 done
+
+# Esperar indefinidamente (para evitar que PID 1 muera)
+wait
