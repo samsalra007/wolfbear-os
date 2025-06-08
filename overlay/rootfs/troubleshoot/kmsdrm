@@ -11,6 +11,7 @@ export QT_QPA_EGLFS_KMS_DEVICE=/dev/dri/card0
 
 echo "Mostrando tarjetas graficas disponibles"
 ls /dev/dri/
+ls -l /dev/dri/card0
 
 echo "Revisando que pertenezca la libreria a algo que esté presente"
 ldd /usr/lib/qt6/plugins/egldeviceintegrations/libqeglfs-kms-integration.so
