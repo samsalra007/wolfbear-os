@@ -16,5 +16,11 @@ ls -l /dev/dri/card0
 echo "Revisando que pertenezca la libreria a algo que esté presente"
 ldd /usr/lib/qt6/plugins/egldeviceintegrations/libqeglfs-kms-integration.so
 
+echo "Revisando que la integración libgbm esté presente"
+ls -l /usr/lib/libgbm.so*
+
+echo "Asignando permisos"
+chmod a+rw /dev/dri/card0 /dev/dri/renderD128
+
 cd /apps/wolfbear-apps/LauncherApp.d/
 QT_LOGGING_RULES="qt.qpa.*=true" ./LauncherApp
