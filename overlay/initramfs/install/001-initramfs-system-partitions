@@ -14,7 +14,7 @@ mkdir -p /mnt/install/
 debug_message $SCRIPT_NAME "Montando recursos de instalación:"
 new_line
 
-mount -t ext4 /dev/vda3 /mnt/install/
+mount -t ext4 /dev/sda3 /mnt/install/
 
 debug_message $SCRIPT_NAME "Particiones montadas exitosamente"
 

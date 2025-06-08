@@ -11,11 +11,11 @@ mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 
 # Definir punto de montaje
-defined_mnt="/mnt/vda-root"
+defined_mnt="/mnt/sda-root"
 mkdir -p "$defined_mnt"
 
 # Intento de montaje
-if mount /dev/vda2 "$defined_mnt"; then
+if mount /dev/sda2 "$defined_mnt"; then
     # Si está instalado, lanzamos el sistema
     if [ -f "$defined_mnt/.wolfbearOSInstalled" ]; then
         echo "[initramfs] WolfbearOS detectado. Iniciando sistema.."

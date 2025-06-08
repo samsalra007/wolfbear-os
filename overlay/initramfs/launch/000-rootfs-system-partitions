@@ -5,24 +5,24 @@ echo "[rootfs-system-partitions] Montar particiones en rootfs"
 echo "- Creando directorios del sistema para montar particiones"
 sleep 0.5
 
-mkdir -p /mnt/vda-root
-mount /dev/vda2 /mnt/vda-root
+mkdir -p /mnt/sda-root
+mount /dev/sda2 /mnt/sda-root
 
-mkdir -p /mnt/vda-root/boot/efi
-umount /dev/vda1 2>/dev/null
-sck.vfat -a /dev/vda1
-mount /dev/vda1 /mnt/vda-root/boot/efi
+mkdir -p /mnt/sda-root/boot/efi
+umount /dev/sda1 2>/dev/null
+sck.vfat -a /dev/sda1
+mount /dev/sda1 /mnt/sda-root/boot/efi
 
-mkdir -p /mnt/vda-root/proc
-mkdir -p /mnt/vda-root/sys
-mkdir -p /mnt/vda-root/dev
+mkdir -p /mnt/sda-root/proc
+mkdir -p /mnt/sda-root/sys
+mkdir -p /mnt/sda-root/dev
 
 echo "- Montando en el nuevo root (rootfs)"
 sleep 0.5
 
 # Montar /dev, /proc, /sys dentro del nuevo root
-mount --rbind /proc /mnt/vda-root/proc
-mount --rbind /dev /mnt/vda-root/dev
-mount --rbind /sys /mnt/vda-root/sys
+mount --rbind /proc /mnt/sda-root/proc
+mount --rbind /dev /mnt/sda-root/dev
+mount --rbind /sys /mnt/sda-root/sys
 
 echo "[rootfs-system-partitions] Particiones montadas exitosamente"

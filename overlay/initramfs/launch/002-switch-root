@@ -1,2 +1,2 @@
 #!/bin/sh
-exec switch_root /mnt/vda-root /init
+exec switch_root /mnt/sda-root /init
