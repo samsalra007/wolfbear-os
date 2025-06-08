@@ -3,7 +3,7 @@ set -euo pipefail
 source /install/util-log
 SCRIPT_NAME=$0
 
-log_message $SCRIPT_NAME "Iniciando configuración de internet"
+log_message $SCRIPT_NAME "Iniciando configuración de internet DHCP" 5
 
 debug_message $SCRIPT_NAME "Creando archivo de configuración DHCP"
 mkdir -p /run/dhcpcd
