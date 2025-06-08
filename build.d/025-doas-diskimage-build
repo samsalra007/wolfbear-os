@@ -7,7 +7,7 @@ SCRIPT_NAME=$0
 log_message $SCRIPT_NAME "Generando imagen de disco '$INITRAMFS_DIR'"
 
 IMG=generated.img
-SIZE_MB=1500
+SIZE_MB=2048
 LOOPDEV=""
 MNT_DIR=/mnt/disk
 
