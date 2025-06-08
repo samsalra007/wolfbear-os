@@ -14,7 +14,26 @@ mkdir -p /mnt/install/
 debug_message $SCRIPT_NAME "Montando recursos de instalación:"
 new_line
 
-mount -t ext4 /dev/sda3 /mnt/install/
+DISK="/dev/sda3"
+TIMEOUT=10
+
+echo "Esperando que $DISK esté disponible..."
+
+for i in $(seq 1 $TIMEOUT); do
+  if [ -b "$DISK" ]; then
+    echo "$DISK está listo."
+    break
+  fi
+  echo "Intento $i: $DISK aún no está disponible. Esperando..."
+  sleep 1
+done
+
+if [ ! -b "$DISK" ]; then
+  echo "[ERROR] $DISK no apareció tras $TIMEOUT segundos. Abortando."
+  exit 1
+fi
+
+mount "$DISK" /mnt/install
 
 debug_message $SCRIPT_NAME "Particiones montadas exitosamente"
 
