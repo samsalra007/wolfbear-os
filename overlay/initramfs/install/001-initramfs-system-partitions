@@ -34,5 +34,6 @@ if [ ! -b "$DISK" ]; then
 fi
 
 mount "$DISK" /mnt/install
+sleep 1
 
 log_message $SCRIPT_NAME "Particiones montadas exitosamente"
