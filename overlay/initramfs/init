@@ -18,14 +18,13 @@ export WOLFBEAR_PRODUCT_NAME=$(cat /sys/class/dmi/id/product_name 2>/dev/null | 
 export WOLFBEAR_SYS_VENDOR=$( cat /sys/class/dmi/id/sys_vendor )
 export WOLFBEAR_PARTITION_TIMEOUT=10
 export WOLFBEAR_SDA_ROOT_DIR="/mnt/sda-root"
+export WOLFBEAR_DISK="/dev/sda"
 
 case "$WOLFBEAR_PRODUCT_NAME" in
     *QEMU*|*KVM*|*VirtualBox*|*VMware*|*Bochs*|*Xen*|*Hyper-V*|*Parallels*|*Apple\ Virtual*)
-        export WOLFBEAR_DISK="/dev/vda"
         export WOLFBEAR_IS_VIRTUALIZED="true"
         ;;
     *)
-        export WOLFBEAR_DISK="/dev/sda"
         export WOLFBEAR_IS_VIRTUALIZED="false"
         ;;
 esac
