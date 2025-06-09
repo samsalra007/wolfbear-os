@@ -23,5 +23,11 @@ log_message "$SCRIPT_NAME" "Arquitectura detectada: $SYS_ARCH"
 if ip link show up | grep -q "state UP"; then
   log_message "$SCRIPT_NAME" "Interfaz de red detectada y activa"
 else
-  log_message "$SCRIPT_NAME" "No se detectó una interfaz de red activa"
+  log_message "$SCRIPT_NAME" "No se detectó una interfaz de red activa, procediendo a la configuración de red"
+  mkdir -p /run/dhcpcd
+
+  log_message $SCRIPT_NAME "Solicitando conexión a través de eth0"
+  dhcpcd eth0
+
+  log_message $SCRIPT_NAME "Conexión a internet realizada con éxito"
 fi
