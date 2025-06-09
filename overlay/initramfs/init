@@ -21,44 +21,46 @@ export WOLFBEAR_SDA_ROOT_DIR="/mnt/sda-root"
 
 case "$WOLFBEAR_PRODUCT_NAME" in
     *QEMU*|*KVM*|*VirtualBox*|*VMware*|*Bochs*|*Xen*|*Hyper-V*|*Parallels*|*Apple\ Virtual*)
-        export WOLFBEAR_ROOTFS_DISK="/dev/vda2"
+        export WOLFBEAR_DISK="/dev/vda"
         export WOLFBEAR_IS_VIRTUALIZED="true"
         ;;
     *)
-        export WOLFBEAR_ROOTFS_DISK="/dev/sda2"
+        export WOLFBEAR_DISK="/dev/sda"
         export WOLFBEAR_IS_VIRTUALIZED="false"
         ;;
 esac
+
+WOLFBEAR_DISK_PARTITION=$WOLFBEAR_DISK"2"
 
 echo "WolfbearOS System Properties"
 echo "product name:     $WOLFBEAR_PRODUCT_NAME"
 echo "system vendor:    $WOLFBEAR_SYS_VENDOR"
 echo "is virtualized:   $WOLFBEAR_IS_VIRTUALIZED"
-echo "sda-root disk:    $WOLFBEAR_ROOTFS_DISK"
+echo "sda-root disk:    $WOLFBEAR_DISK"
 echo "sda-root dir:     $WOLFBEAR_SDA_ROOT_DIR"
 
 echo "Listando bloques"
 lsblk
 
-echo "Esperando que $WOLFBEAR_ROOTFS_DISK esté disponible..."
+echo "Esperando que $WOLFBEAR_DISK esté disponible..."
 
 for i in $(seq 1 $WOLFBEAR_PARTITION_TIMEOUT); do
-  if [ -b "$WOLFBEAR_ROOTFS_DISK" ]; then
-    echo "$WOLFBEAR_ROOTFS_DISK está listo."
+  if [ -b "$WOLFBEAR_DISK" ]; then
+    echo "$WOLFBEAR_DISK está listo."
     break
   fi
-  echo "Intento $i: $WOLFBEAR_ROOTFS_DISK aún no está disponible. Esperando..."
+  echo "Intento $i: $WOLFBEAR_DISK aún no está disponible. Esperando..."
   sleep 1
 done
 
-if [ ! -b "$WOLFBEAR_ROOTFS_DISK" ]; then
-  echo "[ERROR] $WOLFBEAR_ROOTFS_DISK no apareció tras $WOLFBEAR_PARTITION_TIMEOUT segundos. Abortando."
+if [ ! -b "$WOLFBEAR_DISK" ]; then
+  echo "[ERROR] $WOLFBEAR_DISK no apareció tras $WOLFBEAR_PARTITION_TIMEOUT segundos. Abortando."
   exit 1
 fi
 
 mkdir -p $WOLFBEAR_SDA_ROOT_DIR
 # Intento de montaje
-if mount "$WOLFBEAR_ROOTFS_DISK" "$WOLFBEAR_SDA_ROOT_DIR"; then
+if mount "$WOLFBEAR_DISK_PARTITION" "$WOLFBEAR_SDA_ROOT_DIR"; then
     sleep 0.5
     # Si está instalado, lanzamos el sistema
     if [ -f "$defined_mnt/.wolfbearOSInstalled" ]; then
