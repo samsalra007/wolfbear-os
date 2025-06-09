@@ -5,9 +5,6 @@ echo "[rootfs-system-partitions] Montar particiones en rootfs"
 echo "- Creando directorios del sistema para montar particiones"
 sleep 0.5
 
-mkdir -p /mnt/sda-root
-mount /dev/sda2 /mnt/sda-root
-
 mkdir -p /mnt/sda-root/boot/efi
 umount /dev/sda1 2>/dev/null
 sck.vfat -a /dev/sda1

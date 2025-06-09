@@ -14,31 +14,48 @@ mount -t sysfs sysfs /sys
 defined_mnt="/mnt/sda-root"
 mkdir -p "$defined_mnt"
 
-DISK="/dev/sda2"
-TIMEOUT=10
+export WOLFBEAR_PRODUCT_NAME=$( cat /sys/class/dmi/id/product_name )
+export WOLFBEAR_SYS_VENDOR=$( cat /sys/class/dmi/id/sys_vendor )
+export WOLFBEAR_PARTITION_TIMEOUT=10
+export WOLFBEAR_SDA_ROOT_DIR="/mnt/sda-root"
 
-lsblk
+case "$WOLFBEAR_PRODUCT_NAME" in
+    *QEMU*|*KVM*|*VirtualBox*|*VMware*|*Bochs*|*Xen*|*Hyper-V*|*Parallels*|*Apple Virtual*)
+        export WOLFBEAR_ROOTFS_DISK="/dev/vda2"
+        export WOLFBEAR_IS_VIRTUALIZED="false"
+        ;;
+    *)
+        export WOLFBEAR_ROOTFS_DISK="/dev/sda2"
+        export WOLFBEAR_IS_VIRTUALIZED="false"
+        ;;
+esac
 
-echo "Esperando que $DISK esté disponible..."
+echo "WolfbearOS System Properties"
+echo "product name:     $WOLFBEAR_PRODUCT_NAME"
+echo "system vendor:    $WOLFBEAR_SYS_VENDOR"
+echo "is virtualized:   $WOLFBEAR_IS_VIRTUALIZED"
+echo "sda-root disk:    $WOLFBEAR_ROOTFS_DISK"
+echo "sda-root dir:     $WOLFBEAR_SDA_ROOT_DIR"
 
-for i in $(seq 1 $TIMEOUT); do
-  if [ -b "$DISK" ]; then
-    echo "$DISK está listo."
+echo "Esperando que $WOLFBEAR_ROOTFS_DISK esté disponible..."
+
+for i in $(seq 1 $WOLFBEAR_PARTITION_TIMEOUT); do
+  if [ -b "$WOLFBEAR_ROOTFS_DISK" ]; then
+    echo "$WOLFBEAR_ROOTFS_DISK está listo."
     break
   fi
-  echo "Intento $i: $DISK aún no está disponible. Esperando..."
+  echo "Intento $i: $WOLFBEAR_ROOTFS_DISK aún no está disponible. Esperando..."
   sleep 1
 done
 
-if [ ! -b "$DISK" ]; then
-  echo "[ERROR] $DISK no apareció tras $TIMEOUT segundos. Abortando."
+if [ ! -b "$WOLFBEAR_ROOTFS_DISK" ]; then
+  echo "[ERROR] $WOLFBEAR_ROOTFS_DISK no apareció tras $WOLFBEAR_PARTITION_TIMEOUT segundos. Abortando."
   exit 1
 fi
 
-sleep 1
-
+mkdir -p $WOLFBEAR_SDA_ROOT_DIR
 # Intento de montaje
-if mount "$DISK" /dev/sda2; then
+if mount "$WOLFBEAR_ROOTFS_DISK" "$WOLFBEAR_SDA_ROOT_DIR"; then
     sleep 0.5
     # Si está instalado, lanzamos el sistema
     if [ -f "$defined_mnt/.wolfbearOSInstalled" ]; then
