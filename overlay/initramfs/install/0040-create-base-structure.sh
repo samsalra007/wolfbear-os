@@ -6,9 +6,22 @@ SCRIPT_NAME=$(basename "$0")
 . "$(dirname "$0")/globals-definitions"
 . "$(dirname "$0")/util-log"
 
-log_message "$SCRIPT_NAME" "Iniciando script $SCRIPT_NAME"
+log_message $SCRIPT_NAME "Iniciando configuración de estructura de directorios"
 
-log_message "$SCRIPT_NAME" "Creando estructura base en $TARGET_DISK_DIR"
+debug_message $SCRIPT_NAME  "Creando directorios base de dependencias"
+mkdir -p "$TARGET_DISK_DIR/tmp"
+mkdir -p "$TARGET_DISK_DIR/sbin"
+mkdir -p "$TARGET_DISK_DIR/lib/apk/db"
+mkdir -p "$TARGET_DISK_DIR/etc/apk"
+mkdir -p "$TARGET_DISK_DIR/etc/ssl/certs"
+mkdir -p "$TARGET_DISK_DIR/usr/lib"
 
-ensure_dir "$TARGET_DISK_DIR"/{bin,etc,lib,proc,sys,usr,var,dev,run,tmp,mnt,home,root}
-chmod 1777 "$TARGET_DISK_DIR/tmp"
+debug_message $SCRIPT_NAME "Creando directorios base de WolfbearOS"
+mkdir -p "$TARGET_DISK_DIR/players"
+mkdir -p "$TARGET_DISK_DIR/players/cheese"
+mkdir -p "$TARGET_DISK_DIR/saves"
+mkdir -p "$TARGET_DISK_DIR/apps"
+mkdir -p "$TARGET_DISK_DIR/games"
+mkdir -p "$TARGET_DISK_DIR/config"
+
+log_message $SCRIPT_NAME "Configuración estructura de directorios terminada"
