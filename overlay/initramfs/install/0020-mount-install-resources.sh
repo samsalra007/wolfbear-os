@@ -15,5 +15,5 @@ log_message "$SCRIPT_NAME" "Montando recursos del disco de instalación"
 if mountpoint -q $INSTALL_RESOURCES_DIR; then
   log_message "$SCRIPT_NAME" "Ya estaba montado $INSTALL_RESOURCES_DIR"
 else
-  mount LABEL=RESOURCES_PART_DIR $INSTALL_RESOURCES_DIR || log_message "$SCRIPT_NAME" "No se pudo montar partición RESOURCES_PART_DIR"
+  mount $INSTALL_RESOURCES_PARTITION $INSTALL_RESOURCES_DIR || log_message "$SCRIPT_NAME" "No se pudo montar partición RESOURCES_PART_DIR"
 fi
