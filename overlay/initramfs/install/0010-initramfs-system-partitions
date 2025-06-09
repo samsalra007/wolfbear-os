@@ -12,7 +12,6 @@ mkdir -p $INSTALL_RESOURCES_DIR/
 # por lo que no es necesario volverlas a montar aqui, solo los recursos de instalación
 
 debug_message $SCRIPT_NAME "Montando recursos de instalación:"
-new_line
 
 TIMEOUT=10
 
