@@ -4,14 +4,14 @@ set -euo pipefail
 log_message() {
   local script="$1"
   local message="$2"
-  echo "[ $script ] [ LOG ]  $message"
+  echo "[ $script ] \033[0;32m[ LOG ]\033[0;32m \033[0m $message"
 }
 
 debug_message() {
   local script="$1"
   local message="$2"
   if [ "${DEBUG:-0}" -eq 1 ]; then
-    echo "[ $script ] [ DEBUG ] $message"
+    echo "[ $script ] \033[0;32m[ DEBUG ]\033[0;32m \033[0m $message"
   fi
 }
 
