@@ -1,4 +1,5 @@
 #!/bin/sh
+
 set -euo pipefail
 source /install/util-log
 SCRIPT_NAME=$0
