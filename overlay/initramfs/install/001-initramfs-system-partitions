@@ -6,7 +6,7 @@ SCRIPT_NAME=$0
 log_message $SCRIPT_NAME "Iniciando script para montar particiones del sistema"
 
 debug_message $SCRIPT_NAME "Creando directorio de la unidad de instalación"
-mkdir -p /mnt/install/
+mkdir -p $INSTALL_RESOURCES_DIR/
 
 # Las particiones del sistema dev sys y proc ya las estamos montando en el init de initramfs
 # por lo que no es necesario volverlas a montar aqui, solo los recursos de instalación
@@ -33,7 +33,7 @@ if [ ! -b "$DISK" ]; then
   exit 1
 fi
 
-mount "$DISK" /mnt/install
+mount "$DISK" $INSTALL_RESOURCES_DIR
 sleep 1
 
 log_message $SCRIPT_NAME "Particiones montadas exitosamente"
