@@ -14,15 +14,15 @@ mount -t sysfs sysfs /sys
 defined_mnt="/mnt/sda-root"
 mkdir -p "$defined_mnt"
 
-export WOLFBEAR_PRODUCT_NAME=$( cat /sys/class/dmi/id/product_name )
+export WOLFBEAR_PRODUCT_NAME=$(cat /sys/class/dmi/id/product_name 2>/dev/null | tr -d '\r')
 export WOLFBEAR_SYS_VENDOR=$( cat /sys/class/dmi/id/sys_vendor )
 export WOLFBEAR_PARTITION_TIMEOUT=10
 export WOLFBEAR_SDA_ROOT_DIR="/mnt/sda-root"
 
 case "$WOLFBEAR_PRODUCT_NAME" in
-    *QEMU*|*KVM*|*VirtualBox*|*VMware*|*Bochs*|*Xen*|*Hyper-V*|*Parallels*|*Apple Virtual*)
+    *QEMU*|*KVM*|*VirtualBox*|*VMware*|*Bochs*|*Xen*|*Hyper-V*|*Parallels*|*Apple\ Virtual*)
         export WOLFBEAR_ROOTFS_DISK="/dev/vda2"
-        export WOLFBEAR_IS_VIRTUALIZED="false"
+        export WOLFBEAR_IS_VIRTUALIZED="true"
         ;;
     *)
         export WOLFBEAR_ROOTFS_DISK="/dev/sda2"
