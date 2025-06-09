@@ -9,7 +9,6 @@ SCRIPTS_DIR="$(dirname "$0")"
 
 log_message "$SCRIPT_NAME" "Iniciando ejecución de scripts de instalación"
 
-# Ejecutar un único script directo
 if [ -n "${1-}" ] && [ "${1%%=*}" != "skip" ]; then
   script="$1"
   log_message "$SCRIPT_NAME" "Ejecutando script único: $script"
@@ -17,30 +16,28 @@ if [ -n "${1-}" ] && [ "${1%%=*}" != "skip" ]; then
   exit 0
 fi
 
-i=0
+major=0
 while :; do
-  prefix=$(printf "%04d" "$i")
-  found_any=false
+  major_prefix=$(printf "%04d" "$major")
+  found_in_major=false
 
-  for script in "$SCRIPTS_DIR/${prefix}"-*; do
-    [ -f "$script" ] || continue
-    found_any=true
+  for minor in $(seq 0 9); do
+    full_prefix=$(printf "%04d" $((major * 10 + minor)))
+    for script in "$SCRIPTS_DIR/${full_prefix}"-*; do
+      [ -f "$script" ] || continue
+      found_in_major=true
 
-    if [ ! -x "$script" ]; then
-      log_message "$SCRIPT_NAME" "Ejecutando $script con sh"
-      sh "$script"
-    else
       log_message "$SCRIPT_NAME" "Ejecutando $script"
-      "$script"
-    fi
+      sh "$script"
+    done
   done
 
-  if [ "$found_any" = false ]; then
-    log_message "$SCRIPT_NAME" "No se encontraron más scripts para el prefijo $prefix. Finalizando."
+  if [ "$found_in_major" = false ]; then
+    log_message "$SCRIPT_NAME" "No se encontraron más scripts para el bloque $major_prefix. Finalizando."
     break
   fi
 
-  i=$((i + 1))
+  major=$((major + 1))
 done
 
 log_message "$SCRIPT_NAME" "Todos los scripts se ejecutaron correctamente"
