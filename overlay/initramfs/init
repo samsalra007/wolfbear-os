@@ -14,8 +14,30 @@ mount -t sysfs sysfs /sys
 defined_mnt="/mnt/sda-root"
 mkdir -p "$defined_mnt"
 
+DISK="/dev/sda2"
+TIMEOUT=10
+
+echo "Esperando que $DISK esté disponible..."
+
+for i in $(seq 1 $TIMEOUT); do
+  if [ -b "$DISK" ]; then
+    echo "$DISK está listo."
+    break
+  fi
+  echo "Intento $i: $DISK aún no está disponible. Esperando..."
+  sleep 0.5
+done
+
+if [ ! -b "$DISK" ]; then
+  echo "[ERROR] $DISK no apareció tras $TIMEOUT segundos. Abortando."
+  exit 0.5
+fi
+
+sleep 0.5
+
 # Intento de montaje
-if mount /dev/sda2 "$defined_mnt"; then
+if mount "$DISK" /dev/sda2; then
+    sleep 0.5
     # Si está instalado, lanzamos el sistema
     if [ -f "$defined_mnt/.wolfbearOSInstalled" ]; then
         echo "[initramfs] WolfbearOS detectado. Iniciando sistema.."
