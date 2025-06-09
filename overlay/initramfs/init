@@ -17,6 +17,8 @@ mkdir -p "$defined_mnt"
 DISK="/dev/sda2"
 TIMEOUT=10
 
+lsblk
+
 echo "Esperando que $DISK esté disponible..."
 
 for i in $(seq 1 $TIMEOUT); do
@@ -25,15 +27,15 @@ for i in $(seq 1 $TIMEOUT); do
     break
   fi
   echo "Intento $i: $DISK aún no está disponible. Esperando..."
-  sleep 0.5
+  sleep 1
 done
 
 if [ ! -b "$DISK" ]; then
   echo "[ERROR] $DISK no apareció tras $TIMEOUT segundos. Abortando."
-  exit 0.5
+  exit 1
 fi
 
-sleep 0.5
+sleep 1
 
 # Intento de montaje
 if mount "$DISK" /dev/sda2; then
