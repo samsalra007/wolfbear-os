@@ -1,4 +1,7 @@
 #!/bin/sh
+set -euo pipefail
+source /install/util-log
+SCRIPT_NAME=$0
 
 SYS_ARCH=$(uname -m)
 if [ "$SYS_ARCH" = 'aarch64' ] || [ "$SYS_ARCH" = 'arm64']; then
