@@ -37,6 +37,9 @@ echo "is virtualized:   $WOLFBEAR_IS_VIRTUALIZED"
 echo "sda-root disk:    $WOLFBEAR_ROOTFS_DISK"
 echo "sda-root dir:     $WOLFBEAR_SDA_ROOT_DIR"
 
+echo "Listando bloques"
+lsblk
+
 echo "Esperando que $WOLFBEAR_ROOTFS_DISK esté disponible..."
 
 for i in $(seq 1 $WOLFBEAR_PARTITION_TIMEOUT); do
