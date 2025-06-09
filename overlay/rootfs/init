@@ -4,11 +4,12 @@ echo "=== Iniciando WolfbearOS ==="
 
 # Las particiones del sistema se montaron en el launch de initramfs
 
-# Pero aquí si es necesario exportar las variables para drivers de video
-export LIBGL_DRIVERS_PATH=/usr/lib/dri
-export SDL_VIDEODRIVER=KMSDRM
-export SDL_KMSDRM_DEVICE=/dev/dri/card0
-export SDL_KMSDRM_RENDER_NODE=/dev/dri/renderD128
+# Esto corre el Launcher
+QT_QPA_PLATFORM=eglfs \
+QT_QPA_EGLFS_INTEGRATION=eglfs_kms \
+QT_QPA_GENERIC_PLUGINS=evdevmouse,evdevkeyboard \
+QT_QPA_EVDEV_MOUSE_PARAMETERS=/dev/input/event2:scale=0.3 \
+./LauncherApp &
 
 ./launch/run
 
