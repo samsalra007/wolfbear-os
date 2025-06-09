@@ -8,12 +8,12 @@ SCRIPT_NAME=$(basename "$0")
 
 log_message $SCRIPT_NAME "Iniciando limpieza final"
 
-debug_message $SCRIPT_NAME "Desmontando particiones"
+debug_message $SCRIPT_NAME "Solucionando problemas de ejecución del comando ping"
+chmod u+s $TARGET_DISK_DIR/bin/ping
 
-umount -l "$TARGET_DISK_DIR/dev"
-umount -l "$TARGET_DISK_DIR/sys"
-umount -l "$TARGET_DISK_DIR/proc"
-
-
+debug_message $SCRIPT_NAME "Configurando módulos para la aceleración de gráficos DRM y VIRTIO"
+chroot $TARGET_DISK_DIR /bin/sh -c "modprobe drm"
+chroot $TARGET_DISK_DIR /bin/sh -c "modprobe virtio_gpu"
+chroot $TARGET_DISK_DIR /bin/sh -c "modprobe drm_kms_helper"
 
 log_message $SCRIPT_NAME "Limpieza final terminada"

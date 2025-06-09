@@ -10,8 +10,8 @@ log_message $SCRIPT_NAME "Iniciando limpieza final"
 
 debug_message $SCRIPT_NAME "Desmontando particiones"
 
-umount -l "$TARGET_DISK_DIR/dev"
-umount -l "$TARGET_DISK_DIR/sys"
-umount -l "$TARGET_DISK_DIR/proc"
+# umount -l "$TARGET_DISK_DIR/dev"
+# umount -l "$TARGET_DISK_DIR/sys"
+# umount -l "$TARGET_DISK_DIR/proc"
 
 log_message $SCRIPT_NAME "Limpieza final terminada"
