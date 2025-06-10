@@ -19,6 +19,7 @@ doas /sbin/apk --root $INITRAMFS_DIR \
     grub-efi \
     parted \
     e2fsprogs \
+    e2fsprogs-extra \
     dosfstools \
     rsync \
     nano

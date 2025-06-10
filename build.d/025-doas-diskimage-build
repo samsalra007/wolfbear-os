@@ -57,7 +57,7 @@ e2label "$ROOT_PART" WBI_ROOT
 
 debug_message $SCRIPT_NAME "Formateando partición RESOURCES ($RESOURCES_PART) como ext4"
 mkfs.ext4 "$RESOURCES_PART"
-e2label "$ROOT_PART" WBI_RES
+e2label "$RESOURCES_PART" WBI_RES
 
 debug_message $SCRIPT_NAME "Montando particiones en /mnt/disk..."
 EFI_BOOTDIR="$MNT_DIR/EFI_SYSTEM_PARTITION/EFI/BOOT"

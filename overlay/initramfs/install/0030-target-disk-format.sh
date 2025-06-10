@@ -41,7 +41,7 @@ mkfs.vfat -F 32 "$EFI_PARTITION"
 fatlabel "$EFI_PART" WB_EFI_SYS
 
 mkfs.ext4 "$ROOTFS_PARTITION"
-e2label "$ROOT_PART" WB_ROOTFS
+e2label "$ROOTFS_PARTITION" WB_ROOTFS
 
 debug_message $SCRIPT_NAME "Montando particiones"
 
