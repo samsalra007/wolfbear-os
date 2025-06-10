@@ -31,7 +31,7 @@ case "$WOLFBEAR_PRODUCT_NAME" in
 esac
 
 case "$WOLFBEAR_DISK_LABEL" in
-    WB_I*)
+    WBI_*)
         export WOLFBEAR_DISK="/dev/sda"
         ;;
     *)
