@@ -18,7 +18,8 @@ export WOLFBEAR_PRODUCT_NAME=$(cat /sys/class/dmi/id/product_name 2>/dev/null | 
 export WOLFBEAR_SYS_VENDOR=$( cat /sys/class/dmi/id/sys_vendor )
 export WOLFBEAR_PARTITION_TIMEOUT=10
 export WOLFBEAR_SDA_ROOT_DIR="/mnt/sda-root"
-export WOLFBEAR_DISK="/dev/sda"
+
+export WOLFBEAR_DISK_LABEL=$(blkid "$WOLFBEAR_ROOTFS_DISK" | sed -n 's/.*LABEL="\([^"]*\)".*/\1/p')
 
 case "$WOLFBEAR_PRODUCT_NAME" in
     *QEMU*|*KVM*|*VirtualBox*|*VMware*|*Bochs*|*Xen*|*Hyper-V*|*Parallels*|*Apple\ Virtual*)
@@ -26,6 +27,19 @@ case "$WOLFBEAR_PRODUCT_NAME" in
         ;;
     *)
         export WOLFBEAR_IS_VIRTUALIZED="false"
+        ;;
+esac
+
+case "$WOLFBEAR_DISK_LABEL" in
+    WB_I*)
+        export WOLFBEAR_DISK="/dev/sda"
+        ;;
+    *)
+        if [ "$WOLFBEAR_IS_VIRTUALIZED" = "true" ]; then
+            export WOLFBEAR_DISK="/dev/vda"
+        else
+            export WOLFBEAR_DISK="/dev/sda"
+        fi
         ;;
 esac
 
@@ -37,6 +51,7 @@ echo "system vendor:    $WOLFBEAR_SYS_VENDOR"
 echo "is virtualized:   $WOLFBEAR_IS_VIRTUALIZED"
 echo "sda-root disk:    $WOLFBEAR_DISK"
 echo "sda-root dir:     $WOLFBEAR_SDA_ROOT_DIR"
+echo "disk-label:       $WOLFBEAR_DISK_LABEL"
 
 echo "Listando bloques"
 lsblk

@@ -49,12 +49,15 @@ RESOURCES_PART="${LOOPDEV}p3"
 
 debug_message $SCRIPT_NAME "Formateando partición EFI ($EFI_PART) como FAT32"
 mkfs.vfat -F 32 "$EFI_PART"
+fatlabel "$EFI_PART" WB_I_EFI_SYS
 
 debug_message $SCRIPT_NAME "Formateando partición ROOT ($ROOT_PART) como ext4"
 mkfs.ext4 "$ROOT_PART"
+e2label "$ROOT_PART" WB_I_ROOT
 
 debug_message $SCRIPT_NAME "Formateando partición RESOURCES ($RESOURCES_PART) como ext4"
 mkfs.ext4 "$RESOURCES_PART"
+e2label "$ROOT_PART" WB_I_RES
 
 debug_message $SCRIPT_NAME "Montando particiones en /mnt/disk..."
 EFI_BOOTDIR="$MNT_DIR/EFI_SYSTEM_PARTITION/EFI/BOOT"
