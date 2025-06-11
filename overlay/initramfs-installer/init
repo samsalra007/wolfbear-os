@@ -14,6 +14,7 @@ export WOLFBEAR_OS_PRODUCT_NAME=$( cat /sys/class/dmi/id/product_name 2>/dev/nul
 export WOLFBEAR_OS_SYS_VENDOR=$( cat /sys/class/dmi/id/sys_vendor )
 export WOLFBEAR_OS_PARTITION_TIMEOUT=10
 export WOLFBEAR_OS_CONSOLE_PORTS="tty1 ttyAMA0"
+export WOLFBEAR_OS_INSTALL_DISK=$( blkid -t LABEL=WBI_INSTALL -o device )
 
 case "$WOLFBEAR_OS_PRODUCT_NAME" in
     *QEMU*|*KVM*|*VirtualBox*|*VMware*|*Bochs*|*Xen*|*Hyper-V*|*Parallels*|*Apple\ Virtual*)
@@ -28,8 +29,8 @@ echo "WolfbearOS System Properties"
 echo "product name:         $WOLFBEAR_OS_PRODUCT_NAME"
 echo "system vendor:        $WOLFBEAR_OS_SYS_VENDOR"
 echo "is virtualized:       $WOLFBEAR_OS_IS_VIRTUALIZED"
+echo "installation disk:    $WOLFBEAR_OS_INSTALL_DISK"
 echo "partition timeout:    $WOLFBEAR_OS_PARTITION_TIMEOUT"
-blkid -t LABEL=WBI_INSTALL -o device
 
 echo "Listando bloques"
 lsblk
