@@ -24,4 +24,4 @@ echo "Asignando permisos"
 chmod a+rw /dev/dri/card0 /dev/dri/renderD128
 
 cd /apps/wolfbear-apps/LauncherApp.d/
-QT_LOGGING_RULES="qt.qpa.*=true" ./LauncherApp
+QT_LOGGING_RULES="qt.qpa.*=true" ./LauncherApp --wolfbearmode
