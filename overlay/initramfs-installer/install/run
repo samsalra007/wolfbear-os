@@ -32,4 +32,3 @@ while :; do
 done
 
 log_message "$SCRIPT_NAME" "Todos los scripts se ejecutaron correctamente"
-exit 0
