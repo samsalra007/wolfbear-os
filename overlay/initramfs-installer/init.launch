@@ -49,18 +49,18 @@ echo "WOLFBEAR_OS_PARTITION_TIMEOUT:        $WOLFBEAR_OS_PARTITION_TIMEOUT"
 echo "WOLFBEAR_OS_ROOTFS_MOUNT_POINT:       $WOLFBEAR_OS_ROOTFS_MOUNT_POINT"
 
 echo "Desmontando partición de booteo si está montada"
-umount $WOLFBEAR_OS_INSTALL_DISK"1" 2>/dev/null
+/sbin/umount $WOLFBEAR_OS_INSTALL_DISK"1" 2>/dev/null
 
 echo "Revisando errores en la partición de booteo si existen"
-sck.vfat -a $WOLFBEAR_OS_INSTALL_DISK"1"
+/sbin/sck.vfat -a $WOLFBEAR_OS_INSTALL_DISK"1"
 
 echo "Montando partición de raíz $WOLFBEAR_OS_ROOTFS_MOUNT_POINT"
 mkdir -p $WOLFBEAR_OS_ROOTFS_MOUNT_POINT
-mount $WOLFBEAR_OS_INSTALL_DISK"2" $WOLFBEAR_OS_ROOTFS_MOUNT_POINT
+/sbin/mount $WOLFBEAR_OS_INSTALL_DISK"2" $WOLFBEAR_OS_ROOTFS_MOUNT_POINT
 
 echo "Montando partición de booteo $WOLFBEAR_OS_ROOTFS_MOUNT_POINT_BOOT_EFI"
 mkdir -p $WOLFBEAR_OS_ROOTFS_MOUNT_POINT/boot/efi
-mount $WOLFBEAR_OS_INSTALL_DISK"1" $WOLFBEAR_OS_ROOTFS_MOUNT_POINT_BOOT_EFI
+/sbin/mount $WOLFBEAR_OS_INSTALL_DISK"1" $WOLFBEAR_OS_ROOTFS_MOUNT_POINT_BOOT_EFI
 
 echo "Creando directorios del kernel en $WOLFBEAR_OS_ROOTFS_MOUNT_POINT"
 mkdir -p $WOLFBEAR_OS_ROOTFS_MOUNT_POINT/proc
@@ -68,9 +68,9 @@ mkdir -p $WOLFBEAR_OS_ROOTFS_MOUNT_POINT/sys
 mkdir -p $WOLFBEAR_OS_ROOTFS_MOUNT_POINT/dev
 
 echo "Montando particiones del kernel en ROOTFS"
-mount --rbind /proc $WOLFBEAR_OS_ROOTFS_MOUNT_POINT/proc
-mount --rbind /dev $WOLFBEAR_OS_ROOTFS_MOUNT_POINT/dev
-mount --rbind /sys $WOLFBEAR_OS_ROOTFS_MOUNT_POINT/sys
+/sbin/mount --rbind /proc $WOLFBEAR_OS_ROOTFS_MOUNT_POINT/proc
+/sbin/mount --rbind /dev $WOLFBEAR_OS_ROOTFS_MOUNT_POINT/dev
+/sbin/mount --rbind /sys $WOLFBEAR_OS_ROOTFS_MOUNT_POINT/sys
 
 echo "Cambiando de ambiente a $WOLFBEAR_OS_ROOTFS_MOUNT_POINT con switch_root"
 sleep 2
