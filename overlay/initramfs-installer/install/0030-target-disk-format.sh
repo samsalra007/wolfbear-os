@@ -6,6 +6,7 @@ SCRIPT_NAME=$0
 log_message $SCRIPT_NAME "Iniciando formateo e instalación de sistema base en disco"
 
 debug_message $SCRIPT_NAME "Selecciona el dispositivo en el cual deseas instalar WolfbearOS:"
+new_line
 
 lsblk -d -o NAME,SIZE,MODEL | grep -E 'sd|vd|nvme'
 

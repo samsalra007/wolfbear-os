@@ -10,37 +10,37 @@ mount -t devtmpfs dev /dev
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 
-export WOLFBEAR_PRODUCT_NAME=$(cat /sys/class/dmi/id/product_name 2>/dev/null | tr -d '\r')
-export WOLFBEAR_SYS_VENDOR=$( cat /sys/class/dmi/id/sys_vendor )
-export WOLFBEAR_PARTITION_TIMEOUT=10
+export WOLFBEAR_OS_PRODUCT_NAME=$(cat /sys/class/dmi/id/product_name 2>/dev/null | tr -d '\r')
+export WOLFBEAR_OS_SYS_VENDOR=$( cat /sys/class/dmi/id/sys_vendor )
+export WOLFBEAR_OS_PARTITION_TIMEOUT=10
+export WOLFBEAR_OS_CONSOLE_PORTS="tty1 ttyAMA0"
 
-case "$WOLFBEAR_PRODUCT_NAME" in
+case "$WOLFBEAR_OS_PRODUCT_NAME" in
     *QEMU*|*KVM*|*VirtualBox*|*VMware*|*Bochs*|*Xen*|*Hyper-V*|*Parallels*|*Apple\ Virtual*)
-        export WOLFBEAR_IS_VIRTUALIZED="true"
+        export WOLFBEAR_OS_IS_VIRTUALIZED="true"
         ;;
     *)
-        export WOLFBEAR_IS_VIRTUALIZED="false"
+        export WOLFBEAR_OS_IS_VIRTUALIZED="false"
         ;;
 esac
 
 WOLFBEAR_DISK_PARTITION=$WOLFBEAR_DISK"2"
 
 echo "WolfbearOS System Properties"
-echo "product name:     $WOLFBEAR_PRODUCT_NAME"
-echo "system vendor:    $WOLFBEAR_SYS_VENDOR"
-echo "is virtualized:   $WOLFBEAR_IS_VIRTUALIZED"
-echo "sda-root dir:     $WOLFBEAR_SDA_ROOT_DIR"
+echo "product name:         $WOLFBEAR_OS_PRODUCT_NAME"
+echo "system vendor:        $WOLFBEAR_OS_SYS_VENDOR"
+echo "is virtualized:       $WOLFBEAR_OS_IS_VIRTUALIZED"
+echo "partition timeout:    $WOLFBEAR_OS_IS_VIRTUALIZED"
 
 echo "Listando bloques"
 lsblk
 
-# Ya que este es el instalador corremos directo el script de instalación
-. /install/run || echo "[initramfs] La instalación falló"
+. /install/run || echo "[initramfs] La instalación de WolfbearOS falló"
 
 # Bucle para mantener consola activa
-for port in tty1 ttyAMA0; do
+for port in $WOLFBEAR_OS_CONSOLE_PORTS; do
   if [ -e "/dev/$port" ]; then
-    echo "[initramfs] WolfbearOS getty en $port"
+    echo "[initramfs] WolfbearOS corriendo en el puerto $port"
     /sbin/getty -L "$port" 115200 vt100 &
   fi
 done
