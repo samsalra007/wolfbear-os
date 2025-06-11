@@ -13,6 +13,9 @@ mount -t devtmpfs dev /dev
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 
+echo "Exportando bin y sbin"
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
 echo "Determinando variables del sistema"
 export WOLFBEAR_OS_PRODUCT_NAME=$( cat /sys/class/dmi/id/product_name 2>/dev/null | tr -d '\r' )
 export WOLFBEAR_OS_SYS_VENDOR=$( cat /sys/class/dmi/id/sys_vendor )
