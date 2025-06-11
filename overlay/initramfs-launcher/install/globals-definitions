@@ -1,0 +1,22 @@
+#!/bin/sh
+set -euo pipefail
+
+echo "Definiendo variables de directorios"
+
+export SYS_ARCH=$(uname -m)
+if [ "$SYS_ARCH" = 'aarch64' ] || [ "$SYS_ARCH" = 'arm64' ]; then
+	SYS_ARCH='arm64'
+else 
+	SYS_ARCH='amd64'
+fi
+
+export QT_VERSION=6.8.3
+
+export TARGET_DISK_DIR="/mnt/target"
+
+export INSTALL_RESOURCES_PARTITION=$WOLFBEAR_DISK"3"
+export INSTALL_RESOURCES_DIR="/mnt/install"
+
+export BOOT_DIR="$TARGET_DISK_DIR/boot"
+export EFI_TARGET_DISK_DIR="$TARGET_DISK_DIR/boot/efi"
+export EFI_BOOT_TARGET_DISK_DIR="$TARGET_DISK_DIR/boot/efi/EFI/BOOT"

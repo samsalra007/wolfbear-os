@@ -1,0 +1,44 @@
+#!/bin/sh
+set -euo pipefail
+
+SCRIPT_NAME=$0
+SCRIPTS_DIR="$(dirname "$0")"
+
+. "$SCRIPTS_DIR/globals-definitions"
+. "$SCRIPTS_DIR/util-log"
+
+log_message "$SCRIPT_NAME" "Iniciando ejecución de scripts de instalación"
+
+if [ -n "${1-}" ] && [ "${1%%=*}" != "skip" ]; then
+  script="$1"
+  log_message "$SCRIPT_NAME" "Ejecutando script único: $script"
+  sh "$script"
+  exit 0
+fi
+
+major=0
+while :; do
+  major_prefix=$(printf "%04d" "$major")
+  found_in_major=false
+
+  for minor in $(seq 0 9); do
+    full_prefix=$(printf "%04d" $((major * 10 + minor)))
+    for script in "$SCRIPTS_DIR/${full_prefix}"-*; do
+      [ -f "$script" ] || continue
+      found_in_major=true
+
+      log_message "$SCRIPT_NAME" "Ejecutando $script"
+      sh "$script"
+    done
+  done
+
+  if [ "$found_in_major" = false ]; then
+    log_message "$SCRIPT_NAME" "No se encontraron más scripts para el bloque $major_prefix. Finalizando."
+    break
+  fi
+
+  major=$((major + 1))
+done
+
+log_message "$SCRIPT_NAME" "Todos los scripts se ejecutaron correctamente"
+exit 0

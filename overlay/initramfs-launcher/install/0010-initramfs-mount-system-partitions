@@ -1,0 +1,37 @@
+#!/bin/sh
+set -euo pipefail
+source /install/util-log
+SCRIPT_NAME=$0
+
+log_message $SCRIPT_NAME "Iniciando script para montar particiones del sistema"
+
+debug_message $SCRIPT_NAME "Creando directorio de la unidad de instalación"
+mkdir -p $INSTALL_RESOURCES_DIR/
+
+# Las particiones del sistema dev sys y proc ya las estamos montando en el init de initramfs
+# por lo que no es necesario volverlas a montar aqui, solo los recursos de instalación
+
+debug_message $SCRIPT_NAME "Montando recursos de instalación:"
+
+TIMEOUT=10
+
+echo "Esperando que $INSTALL_RESOURCES_PARTITION esté disponible..."
+
+for i in $(seq 1 $TIMEOUT); do
+  if [ -b "$INSTALL_RESOURCES_PARTITION" ]; then
+    echo "$INSTALL_RESOURCES_PARTITION está listo."
+    break
+  fi
+  echo "Intento $i: $INSTALL_RESOURCES_PARTITION aún no está disponible. Esperando..."
+  sleep 1
+done
+
+if [ ! -b "$INSTALL_RESOURCES_PARTITION" ]; then
+  echo "[ERROR] $INSTALL_RESOURCES_PARTITION no apareció tras $TIMEOUT segundos. Abortando."
+  exit 1
+fi
+
+mount "$INSTALL_RESOURCES_PARTITION" $INSTALL_RESOURCES_DIR
+sleep 1
+
+log_message $SCRIPT_NAME "Particiones montadas exitosamente"
