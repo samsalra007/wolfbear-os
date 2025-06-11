@@ -48,11 +48,11 @@ echo "WOLFBEAR_OS_INSTALL_DISK:             $WOLFBEAR_OS_INSTALL_DISK"
 echo "WOLFBEAR_OS_PARTITION_TIMEOUT:        $WOLFBEAR_OS_PARTITION_TIMEOUT"
 echo "WOLFBEAR_OS_ROOTFS_MOUNT_POINT:       $WOLFBEAR_OS_ROOTFS_MOUNT_POINT"
 
-echo "Desmontando partición de booteo si está montada"
-umount $WOLFBEAR_OS_INSTALL_DISK"1" 2>/dev/null
+# echo "Desmontando partición de booteo si está montada"
+# umount $WOLFBEAR_OS_INSTALL_DISK"1" 2>/dev/null
 
-echo "Revisando errores en la partición de booteo si existen"
-fsck.vfat -a $WOLFBEAR_OS_INSTALL_DISK"1"
+# echo "Revisando errores en la partición de booteo si existen"
+# fsck.vfat -a $WOLFBEAR_OS_INSTALL_DISK"1"
 
 echo "Montando partición de raíz $WOLFBEAR_OS_ROOTFS_MOUNT_POINT"
 mkdir -p $WOLFBEAR_OS_ROOTFS_MOUNT_POINT
