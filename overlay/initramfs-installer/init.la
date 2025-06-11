@@ -52,7 +52,7 @@ echo "Desmontando partición de booteo si está montada"
 umount $WOLFBEAR_OS_INSTALL_DISK"1" 2>/dev/null
 
 echo "Revisando errores en la partición de booteo si existen"
-/bin/sck.vfat -a $WOLFBEAR_OS_INSTALL_DISK"1"
+/sbin/fsck.vfat -a $WOLFBEAR_OS_INSTALL_DISK"1"
 
 echo "Montando partición de raíz $WOLFBEAR_OS_ROOTFS_MOUNT_POINT"
 mkdir -p $WOLFBEAR_OS_ROOTFS_MOUNT_POINT
