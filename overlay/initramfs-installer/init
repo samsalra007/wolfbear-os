@@ -18,6 +18,8 @@ export WOLFBEAR_OS_PRODUCT_NAME=$( cat /sys/class/dmi/id/product_name 2>/dev/nul
 export WOLFBEAR_OS_SYS_VENDOR=$( cat /sys/class/dmi/id/sys_vendor )
 export WOLFBEAR_OS_PARTITION_TIMEOUT=10
 export WOLFBEAR_OS_CONSOLE_PORTS="tty1 ttyAMA0"
+echo "BLKID"
+blkid
 export WOLFBEAR_OS_INSTALL_DISK_FIRST_PART=$( blkid | grep 'LABEL="WBI_' | head -n1 | cut -d: -f1 )
 export WOLFBEAR_OS_INSTALL_DISK=$( echo "$WOLFBEAR_OS_INSTALL_DISK_FIRST_PART" | sed -E 's/[0-9]+$//' )
 
