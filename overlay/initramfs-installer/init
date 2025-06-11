@@ -53,13 +53,17 @@ source /install/util-log
 
 if ! . /install/run; then
   echo "[initramfs] La instalación de WolfbearOS falló. Iniciando consola de recuperación..."
-
-  for port in $WOLFBEAR_OS_CONSOLE_PORTS; do
-    if [ -e "/dev/$port" ]; then
-      echo "[initramfs] Consola disponible en $port"
-      /sbin/getty -L "$port" 115200 vt100 &
-    fi
-  done
-
-  wait
+  sleep 1
+else 
+  echo "[initramfs] La instalación de WolfbearOS finalizó exitosamente, ahora puedes expulsar el medio de instalación y reiniciar el sistema"
+  sleep 1
 fi
+
+for port in $WOLFBEAR_OS_CONSOLE_PORTS; do
+  if [ -e "/dev/$port" ]; then
+    echo "[initramfs] Consola disponible en $port"
+    /sbin/getty -L "$port" 115200 vt100 &
+  fi
+done
+
+wait
