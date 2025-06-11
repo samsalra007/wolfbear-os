@@ -4,13 +4,13 @@ source $SCRIPTS_DIR/util-log
 
 SCRIPT_NAME=$0
 
-log_message $SCRIPT_NAME "Ajustando usuario root en '$$INITRAMFS_INSTALLER_DIR'"
+log_message $SCRIPT_NAME "Ajustando usuario root en '$INITRAMFS_INSTALLER_DIR'"
 
 debug_message $SCRIPT_NAME "Configurando passwd y shadow"
-echo 'root:x:0:0:root:/root:/bin/sh' >> $$INITRAMFS_INSTALLER_DIR/etc/passwd
-echo 'root::14600:0:99999:7:::' >> $$INITRAMFS_INSTALLER_DIR/etc/shadow
+echo 'root:x:0:0:root:/root:/bin/sh' >> $INITRAMFS_INSTALLER_DIR/etc/passwd
+echo 'root::14600:0:99999:7:::' >> $INITRAMFS_INSTALLER_DIR/etc/shadow
 
 debug_message $SCRIPT_NAME "Cambiando permisos a comando ping"
-doas chmod u+s $$INITRAMFS_INSTALLER_DIR/bin/ping
+doas chmod u+s $INITRAMFS_INSTALLER_DIR/bin/ping
 
 log_message $SCRIPT_NAME "Ajuste realizado exitosamente"
