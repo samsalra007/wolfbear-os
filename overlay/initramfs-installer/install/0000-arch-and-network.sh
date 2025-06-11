@@ -24,6 +24,8 @@ else
   mkdir -p /run/dhcpcd
 
   log_message $SCRIPT_NAME "Solicitando conexión a través de eth0"
+  new_line
+  
   dhcpcd eth0
 
   log_message $SCRIPT_NAME "Conexión a internet realizada con éxito"
