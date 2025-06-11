@@ -15,6 +15,7 @@ read -rp "¿En qué unidad quieres instalar? (/dev/sdX o /dev/vdX): " INSTALLATI
 DEV_DISK="/dev/$(basename "$INSTALLATION_DISK")"
 
 debug_message $SCRIPT_NAME "IMPORTANTE: Recuerda que se eliminará todo el contenido en en $DEV_DISK"
+new_line
 
 read -rp "¿Deseas continuar? (y/[n]): " CONF
 
@@ -37,6 +38,7 @@ parted --script "$DEV_DISK" \
   mkpart primary ext4 100MiB 100%
 
 debug_message $SCRIPT_NAME "Formateando la unidad y sus particiones"
+new_line
 
 mkfs.vfat -F 32 "$EFI_PARTITION"
 fatlabel "$EFI_PARTITION" WB_EFI_SYS
@@ -45,6 +47,7 @@ mkfs.ext4 "$ROOTFS_PARTITION"
 e2label "$ROOTFS_PARTITION" WB_ROOTFS
 
 debug_message $SCRIPT_NAME "Montando particiones"
+new_line
 
 mkdir -p $TARGET_DISK_DIR
 mount "$ROOTFS_PARTITION" "$TARGET_DISK_DIR"

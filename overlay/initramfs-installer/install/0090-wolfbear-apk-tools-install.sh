@@ -6,6 +6,8 @@ SCRIPT_NAME=$(basename "$0")
 log_message $SCRIPT_NAME "Iniciando instalación de paquetes apk-tools"
 
 debug_message "$SCRIPT_NAME" "Instalando paquetes esenciales del sistema"
+new_line
+
 apk add --root "$TARGET_DISK_DIR" \
   apk-tools \
   shadow \
@@ -20,6 +22,8 @@ apk add --root "$TARGET_DISK_DIR" \
   nano
 
 debug_message "$SCRIPT_NAME" "Instalando herramientas de red"
+new_line
+
 apk add --root "$TARGET_DISK_DIR" \
   dhcpcd \
   openresolv \
@@ -27,11 +31,15 @@ apk add --root "$TARGET_DISK_DIR" \
   openssh-server
 
 debug_message "$SCRIPT_NAME" "Instalando herramientas de desarrollo y debugging"
+new_line
+
 apk add --root "$TARGET_DISK_DIR" \
   strace \
   git
 
 debug_message "$SCRIPT_NAME" "Instalando dependencias gráficas"
+new_line
+
 apk add --root "$TARGET_DISK_DIR" \
   sdl2-dev sdl2 \
   libdrm libdrm-dev \
@@ -41,6 +49,8 @@ apk add --root "$TARGET_DISK_DIR" \
   libxkbcommon
 
 debug_message "$SCRIPT_NAME" "Instalando GRUB UEFI"
+new_line
+
 apk add --root "$TARGET_DISK_DIR" \
   grub-efi
 
