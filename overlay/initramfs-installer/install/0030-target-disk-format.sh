@@ -59,6 +59,6 @@ mkdir -p "$EFI_BOOT_TARGET_DISK_DIR"
 mkdir -p $BOOT_DIR
 
 cp $INSTALL_RESOURCES_DIR/linux-kernel/Image "$BOOT_DIR/"
-cp $INSTALL_RESOURCES_DIR/linux-kernel/initramfs.cpio.xz "$BOOT_DIR/"
+cp $INSTALL_RESOURCES_DIR/linux-kernel/initramfs.la.cpio.xz "$BOOT_DIR/"
 
 log_message $SCRIPT_NAME "Instalación del sistema base en disco finalizada"

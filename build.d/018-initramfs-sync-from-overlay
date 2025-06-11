@@ -8,5 +8,6 @@ log_message $SCRIPT_NAME "Sincronizando directorio desde '$OVERLAY_INITRAMFS_INS
 
 debug_message $SCRIPT_NAME "Solicitando ejecución de rsync manteniendo los enlaces simbólicos y permisos"
 rsync -a --links "$OVERLAY_INITRAMFS_INSTALLER_DIR/" "$INITRAMFS_INSTALLER_DIR/"
+rsync -a --links "$OVERLAY_INITRAMFS_LAUNCHER_DIR/" "$INITRAMFS_LAUNCHER_DIR/"
 
 log_message $SCRIPT_NAME "Sincronización de directorios terminada"

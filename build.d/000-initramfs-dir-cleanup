@@ -4,7 +4,7 @@ source $SCRIPTS_DIR/util-log
 
 SCRIPT_NAME=$0
 
-log_message $SCRIPT_NAME "Iniciando limpieza de '$INITRAMFS_INSTALLER_DIR'"
+log_message $SCRIPT_NAME "Iniciando limpieza de '$INITRAMFS_INSTALLER_DIR' y '$INITRAMFS_LAUNCHER_DIR'"
 debug_message $SCRIPT_NAME "Desmontando particiones montadas en '$INITRAMFS_INSTALLER_DIR'"
 
 for fs in proc sys dev; do
@@ -14,7 +14,10 @@ done
 debug_message $SCRIPT_NAME "Eliminando directorio '$INITRAMFS_INSTALLER_DIR'"
 doas rm -rf "$INITRAMFS_INSTALLER_DIR"
 
-debug_message $SCRIPT_NAME "Creando directorio vacío '$INITRAMFS_INSTALLER_DIR'"
-mkdir -p "$INITRAMFS_INSTALLER_DIR"
+debug_message $SCRIPT_NAME "Eliminando directorio '$INITRAMFS_LAUNCHER_DIR'"
+doas rm -rf "$INITRAMFS_LAUNCHER_DIR"
 
-log_message $SCRIPT_NAME "Limpieza de '$INITRAMFS_INSTALLER_DIR' finalizada"
+debug_message $SCRIPT_NAME "Creando directorio vacío '$INITRAMFS_LAUNCHER_DIR'"
+mkdir -p "$INITRAMFS_LAUNCHER_DIR"
+
+log_message $SCRIPT_NAME "Limpieza de '$INITRAMFS_INSTALLER_DIR' y '$INITRAMFS_LAUNCHER_DIR' finalizada"

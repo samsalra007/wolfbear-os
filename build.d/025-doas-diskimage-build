@@ -111,7 +111,7 @@ set default=0
 
 menuentry "WolfbearOS ($SYS_ARCH)" {
     linux (hd0,gpt2)/boot/$IMAGE_NAME console=tty0 console=ttyAMA0 root=/dev/ram0 rw 
-    initrd (hd0,gpt2)/boot/initramfs.cpio.xz
+    initrd (hd0,gpt2)/boot/initramfs.in.cpio.xz
 }
 EOF
 
@@ -123,7 +123,7 @@ EOF
 debug_message $SCRIPT_NAME "Generando contenido para ROOT Filesystem Partition"
 mkdir -p "$ROOTFS_BOOTDIR"
 cp $TARGET_DIR/$IMAGE_NAME $ROOTFS_BOOTDIR
-cp $TARGET_DIR/initramfs.cpio.xz $ROOTFS_BOOTDIR
+cp $TARGET_DIR/initramfs.in.cpio.xz $ROOTFS_BOOTDIR
 
 debug_message $SCRIPT_NAME "Generando directorios en '$RESOURCES_PART_DIR'"
 mkdir -p "$RESOURCES_PART_DIR/rootfs-overlay"
@@ -150,9 +150,10 @@ rsync -a --links "$DEPENDENCY_BUSYBOX_COMPILED_DIR/" "$RESOURCES_PART_DIR/busybo
 rsync -a --links "$OVERLAY_SYSAPPS_DIR/" "$RESOURCES_PART_DIR/sys-apps/"
 rsync -a --links "$OVERLAY_QT_CUSTOM/" "$RESOURCES_PART_DIR/qt-custom/"
 
-debug_message $SCRIPT_NAME "Copiando 'Image' e 'initramfs.cpio.xz' en el directorio linux-kernel desde '$TARGET_DIR' hasta '$RESOURCES_PART_DIR'"
+debug_message $SCRIPT_NAME "Copiando 'Image' e 'initramfs.in.cpio.xz' en el directorio linux-kernel desde '$TARGET_DIR' hasta '$RESOURCES_PART_DIR'"
 cp $TARGET_DIR/$IMAGE_NAME "$RESOURCES_PART_DIR/linux-kernel"
-cp $TARGET_DIR/initramfs.cpio.xz "$RESOURCES_PART_DIR/linux-kernel"
+cp $TARGET_DIR/initramfs.in.cpio.xz "$RESOURCES_PART_DIR/linux-kernel"
+cp $TARGET_DIR/initramfs.la.cpio.xz "$RESOURCES_PART_DIR/linux-kernel"
 
 debug_message $SCRIPT_NAME "Desmontando particiones"
 umount -l "$MNT_DIR/EFI_SYSTEM_PARTITION" || true
