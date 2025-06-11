@@ -33,6 +33,9 @@ echo "partition timeout:    $WOLFBEAR_OS_PARTITION_TIMEOUT"
 echo "Listando bloques"
 lsblk
 
+source /install/globals-definitions
+source /install/util-log
+
 . /install/run || echo "[initramfs] La instalación de WolfbearOS falló"
 
 # Bucle para mantener consola activa
