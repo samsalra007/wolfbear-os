@@ -40,11 +40,14 @@ echo "WOLFBEAR_OS_INSTALL_DISK:             $WOLFBEAR_OS_INSTALL_DISK"
 echo "WOLFBEAR_OS_PARTITION_TIMEOUT:        $WOLFBEAR_OS_PARTITION_TIMEOUT"
 echo "EXECUTING BLKID: "
 
-ldd /sbin/blkid
-/sbin/blkid
-
-echo "Listando bloques"
-lsblk
+for i in $(seq 1 10); do
+  if blkid | grep -q 'LABEL="WBI_'; then
+    echo "[initramfs] Dispositivo detectado"
+    break
+  fi
+  echo "[initramfs] Esperando dispositivos... intento $i"
+  sleep 1
+done
 
 source /install/globals-definitions
 source /install/util-log
