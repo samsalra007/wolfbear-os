@@ -42,15 +42,15 @@ lsblk
 source /install/globals-definitions
 source /install/util-log
 
-. /install/run || echo "[initramfs] La instalación de WolfbearOS falló"
+if ! . /install/run; then
+  echo "[initramfs] La instalación de WolfbearOS falló. Iniciando consola de recuperación..."
 
-# Bucle para mantener consola activa
-for port in $WOLFBEAR_OS_CONSOLE_PORTS; do
-  if [ -e "/dev/$port" ]; then
-    echo "[initramfs] WolfbearOS corriendo en el puerto $port"
-    /sbin/getty -L "$port" 115200 vt100 &
-  fi
-done
+  for port in $WOLFBEAR_OS_CONSOLE_PORTS; do
+    if [ -e "/dev/$port" ]; then
+      echo "[initramfs] Consola disponible en $port"
+      /sbin/getty -L "$port" 115200 vt100 &
+    fi
+  done
 
-# Esperar indefinidamente (para evitar que PID 1 muera)
-wait
+  wait
+fi
