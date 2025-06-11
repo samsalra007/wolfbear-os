@@ -28,7 +28,7 @@ echo "WolfbearOS System Properties"
 echo "product name:         $WOLFBEAR_OS_PRODUCT_NAME"
 echo "system vendor:        $WOLFBEAR_OS_SYS_VENDOR"
 echo "is virtualized:       $WOLFBEAR_OS_IS_VIRTUALIZED"
-echo "partition timeout:    $WOLFBEAR_OS_IS_VIRTUALIZED"
+echo "partition timeout:    $WOLFBEAR_OS_PARTITION_TIMEOUT"
 
 echo "Listando bloques"
 lsblk
