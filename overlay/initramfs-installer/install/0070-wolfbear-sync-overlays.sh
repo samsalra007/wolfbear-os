@@ -3,9 +3,6 @@ set -euo pipefail
 
 SCRIPT_NAME=$(basename "$0")
 
-. "$(dirname "$0")/globals-definitions"
-. "$(dirname "$0")/util-log"
-
 log_message $SCRIPT_NAME "Sincronizando capas de overlay en '$TARGET_DISK_DIR'"
 
 debug_message $SCRIPT_NAME "Sincronizando capa de rootfs a '$TARGET_DISK_DIR'"

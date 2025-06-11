@@ -3,9 +3,6 @@ set -euo pipefail
 
 SCRIPT_NAME=$(basename "$0")
 
-. "$(dirname "$0")/globals-definitions"
-. "$(dirname "$0")/util-log"
-
 log_message $SCRIPT_NAME "Iniciando configuración de base de datos apk tools"
 
 # Copiar DNS para resolución

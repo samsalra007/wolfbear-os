@@ -5,6 +5,7 @@ SCRIPT_NAME=$0
 SCRIPTS_DIR="/install"
 
 log_message "$SCRIPT_NAME" "Iniciando ejecución de scripts de instalación"
+new_line
 
 major=0
 while :; do

@@ -1,7 +1,7 @@
 #!/bin/sh
 set -euo pipefail
-source /install/util-log
-SCRIPT_NAME=$0
+
+SCRIPT_NAME=$(basename "$0")
 
 log_message $SCRIPT_NAME "Iniciando formateo e instalación de sistema base en disco"
 
