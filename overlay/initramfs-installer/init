@@ -10,7 +10,7 @@ mount -t devtmpfs dev /dev
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 
-export WOLFBEAR_OS_PRODUCT_NAME=$(cat /sys/class/dmi/id/product_name 2>/dev/null | tr -d '\r')
+export WOLFBEAR_OS_PRODUCT_NAME=$( cat /sys/class/dmi/id/product_name 2>/dev/null | tr -d '\r' )
 export WOLFBEAR_OS_SYS_VENDOR=$( cat /sys/class/dmi/id/sys_vendor )
 export WOLFBEAR_OS_PARTITION_TIMEOUT=10
 export WOLFBEAR_OS_CONSOLE_PORTS="tty1 ttyAMA0"
@@ -23,8 +23,6 @@ case "$WOLFBEAR_OS_PRODUCT_NAME" in
         export WOLFBEAR_OS_IS_VIRTUALIZED="false"
         ;;
 esac
-
-WOLFBEAR_DISK_PARTITION=$WOLFBEAR_DISK"2"
 
 echo "WolfbearOS System Properties"
 echo "product name:         $WOLFBEAR_OS_PRODUCT_NAME"
