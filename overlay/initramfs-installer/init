@@ -4,12 +4,16 @@ set -euo pipefail
 # Script init para initramfs de WolfbearOS
 # Monta la partición, comprueba la instalación y lanza instalador si es necesario
 
-echo "[initramfs] Arrancando sistemas virtuales..."
+echo "[initramfs-installer] Bienvenido al script de instalación de WolfbearOS"
+
+echo "Montando particiones del sistema /proc /dev y /sys"
+
 mkdir -p /proc /sys /dev
 mount -t devtmpfs dev /dev
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 
+echo "Determinando variables del sistema"
 export WOLFBEAR_OS_PRODUCT_NAME=$( cat /sys/class/dmi/id/product_name 2>/dev/null | tr -d '\r' )
 export WOLFBEAR_OS_SYS_VENDOR=$( cat /sys/class/dmi/id/sys_vendor )
 export WOLFBEAR_OS_PARTITION_TIMEOUT=10
@@ -25,12 +29,12 @@ case "$WOLFBEAR_OS_PRODUCT_NAME" in
         ;;
 esac
 
-echo "WolfbearOS System Properties"
-echo "product name:         $WOLFBEAR_OS_PRODUCT_NAME"
-echo "system vendor:        $WOLFBEAR_OS_SYS_VENDOR"
-echo "is virtualized:       $WOLFBEAR_OS_IS_VIRTUALIZED"
-echo "installation disk:    $WOLFBEAR_OS_INSTALL_DISK"
-echo "partition timeout:    $WOLFBEAR_OS_PARTITION_TIMEOUT"
+echo "Variables del sistema de WolfbearOS"
+echo "WOLFBEAR_OS_PRODUCT_NAME:       $WOLFBEAR_OS_PRODUCT_NAME"
+echo "WOLFBEAR_OS_SYS_VENDOR:         $WOLFBEAR_OS_SYS_VENDOR"
+echo "WOLFBEAR_OS_IS_VIRTUALIZED:     $WOLFBEAR_OS_IS_VIRTUALIZED"
+echo "WOLFBEAR_OS_INSTALL_DISK:       $WOLFBEAR_OS_INSTALL_DISK"
+echo "WOLFBEAR_OS_PARTITION_TIMEOUT:  $WOLFBEAR_OS_PARTITION_TIMEOUT"
 
 echo "Listando bloques"
 lsblk
