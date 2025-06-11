@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/sh
 
 echo "Revisando que el directorio para kms eglfs exista"
 ls -l /usr/lib/qt6/plugins/egldeviceintegrations/libqeglfs-kms-integration.so
