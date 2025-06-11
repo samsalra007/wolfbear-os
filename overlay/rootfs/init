@@ -1,17 +1,6 @@
 #!/bin/sh
 
-echo "=== Iniciando WolfbearOS ==="
-
-# Las particiones del sistema se montaron en el launch de initramfs
-
-# Esto corre el Launcher
-QT_QPA_PLATFORM=eglfs \
-QT_QPA_EGLFS_INTEGRATION=eglfs_kms \
-QT_QPA_GENERIC_PLUGINS=evdevmouse,evdevkeyboard \
-QT_QPA_EVDEV_MOUSE_PARAMETERS=/dev/input/event2:scale=0.3 \
-./LauncherApp &
-
-./launch/run
+echo "Bienvenido a WolfbearOS ROOTFS (Sistema Instalado)"
 
 # Bucle para mantener consola activa
 for port in tty1 ttyAMA0; do
