@@ -22,6 +22,7 @@ doas /sbin/apk --root $INITRAMFS_INSTALLER_DIR \
     e2fsprogs-extra \
     dosfstools \
     rsync \
-    nano
+    nano \
+    libc-utils
 
 log_message $SCRIPT_NAME "Instalación de paquetes básicos terminada"
