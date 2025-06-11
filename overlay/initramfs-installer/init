@@ -19,9 +19,6 @@ export WOLFBEAR_OS_SYS_VENDOR=$( cat /sys/class/dmi/id/sys_vendor )
 export WOLFBEAR_OS_PARTITION_TIMEOUT=10
 export WOLFBEAR_OS_CONSOLE_PORTS="tty1 ttyAMA0"
 
-export WOLFBEAR_OS_INSTALL_DISK_FIRST_PART=$( /sbin/blkid | grep 'LABEL="WBI_' | head -n1 | cut -d: -f1 )
-export WOLFBEAR_OS_INSTALL_DISK=$( echo "$WOLFBEAR_OS_INSTALL_DISK_FIRST_PART" | sed -E 's/[0-9]+$//' )
-
 case "$WOLFBEAR_OS_PRODUCT_NAME" in
     *QEMU*|*KVM*|*VirtualBox*|*VMware*|*Bochs*|*Xen*|*Hyper-V*|*Parallels*|*Apple\ Virtual*)
         export WOLFBEAR_OS_IS_VIRTUALIZED="true"
@@ -31,6 +28,17 @@ case "$WOLFBEAR_OS_PRODUCT_NAME" in
         ;;
 esac
 
+for i in $(seq 1 10); do
+  if blkid | grep -q 'LABEL="WBI_'; then
+    echo "[initramfs] Dispositivo detectado"
+    export WOLFBEAR_OS_INSTALL_DISK_FIRST_PART=$( /sbin/blkid | grep 'LABEL="WBI_' | head -n1 | cut -d: -f1 )
+    export WOLFBEAR_OS_INSTALL_DISK=$( echo "$WOLFBEAR_OS_INSTALL_DISK_FIRST_PART" | sed -E 's/[0-9]+$//' )
+    break
+  fi
+  echo "[initramfs] Esperando dispositivos... intento $i"
+  sleep 1
+done
+
 echo "Variables del sistema de WolfbearOS"
 echo "WOLFBEAR_OS_PRODUCT_NAME:             $WOLFBEAR_OS_PRODUCT_NAME"
 echo "WOLFBEAR_OS_SYS_VENDOR:               $WOLFBEAR_OS_SYS_VENDOR"
@@ -39,15 +47,6 @@ echo "WOLFBEAR_OS_INSTALL_DISK_FIRST_PART:  $WOLFBEAR_OS_INSTALL_DISK_FIRST_PART
 echo "WOLFBEAR_OS_INSTALL_DISK:             $WOLFBEAR_OS_INSTALL_DISK"
 echo "WOLFBEAR_OS_PARTITION_TIMEOUT:        $WOLFBEAR_OS_PARTITION_TIMEOUT"
 echo "EXECUTING BLKID: "
-
-for i in $(seq 1 10); do
-  if blkid | grep -q 'LABEL="WBI_'; then
-    echo "[initramfs] Dispositivo detectado"
-    break
-  fi
-  echo "[initramfs] Esperando dispositivos... intento $i"
-  sleep 1
-done
 
 source /install/globals-definitions
 source /install/util-log
