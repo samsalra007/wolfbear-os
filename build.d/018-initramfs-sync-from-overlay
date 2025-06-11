@@ -4,9 +4,9 @@ source $SCRIPTS_DIR/util-log
 
 SCRIPT_NAME=$0
 
-log_message $SCRIPT_NAME "Sincronizando directorio desde '$OVERLAY_INITRAMFS_DIR' hasta '$INITRAMFS_DIR'"
+log_message $SCRIPT_NAME "Sincronizando directorio desde '$OVERLAY_INITRAMFS_INSTALLER_DIR' hasta '$$INITRAMFS_INSTALLER_DIR'"
 
 debug_message $SCRIPT_NAME "Solicitando ejecución de rsync manteniendo los enlaces simbólicos y permisos"
-rsync -a --links "$OVERLAY_INITRAMFS_DIR/" "$INITRAMFS_DIR/"
+rsync -a --links "$OVERLAY_INITRAMFS_INSTALLER_DIR/" "$$INITRAMFS_INSTALLER_DIR/"
 
 log_message $SCRIPT_NAME "Sincronización de directorios terminada"
