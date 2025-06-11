@@ -4,100 +4,66 @@ set -euo pipefail
 # Script init para initramfs de WolfbearOS
 # Monta la partición, comprueba la instalación y lanza instalador si es necesario
 
-echo "[initramfs] Arrancando sistemas virtuales..."
+echo "[initramfs-installer] Bienvenido al script de instalación de WolfbearOS"
+
+echo "Montando particiones del sistema /proc /dev y /sys"
+
 mkdir -p /proc /sys /dev
 mount -t devtmpfs dev /dev
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 
-# Definir punto de montaje
-defined_mnt="/mnt/sda-root"
-mkdir -p "$defined_mnt"
+echo "Determinando variables del sistema"
+export WOLFBEAR_OS_PRODUCT_NAME=$( cat /sys/class/dmi/id/product_name 2>/dev/null | tr -d '\r' )
+export WOLFBEAR_OS_SYS_VENDOR=$( cat /sys/class/dmi/id/sys_vendor )
+export WOLFBEAR_OS_PARTITION_TIMEOUT=10
+export WOLFBEAR_OS_CONSOLE_PORTS="tty1 ttyAMA0"
 
-export WOLFBEAR_PRODUCT_NAME=$(cat /sys/class/dmi/id/product_name 2>/dev/null | tr -d '\r')
-export WOLFBEAR_SYS_VENDOR=$( cat /sys/class/dmi/id/sys_vendor )
-export WOLFBEAR_PARTITION_TIMEOUT=10
-export WOLFBEAR_SDA_ROOT_DIR="/mnt/sda-root"
-
-case "$WOLFBEAR_PRODUCT_NAME" in
+case "$WOLFBEAR_OS_PRODUCT_NAME" in
     *QEMU*|*KVM*|*VirtualBox*|*VMware*|*Bochs*|*Xen*|*Hyper-V*|*Parallels*|*Apple\ Virtual*)
-        export WOLFBEAR_IS_VIRTUALIZED="true"
+        export WOLFBEAR_OS_IS_VIRTUALIZED="true"
         ;;
     *)
-        export WOLFBEAR_IS_VIRTUALIZED="false"
+        export WOLFBEAR_OS_IS_VIRTUALIZED="false"
         ;;
 esac
 
-export WOLFBEAR_DISK_LABEL=$(blkid "/dev/sda1" | sed -n 's/.*LABEL="\([^"]*\)".*/\1/p')
-
-case "$WOLFBEAR_DISK_LABEL" in
-    WBI_*)
-        export WOLFBEAR_DISK="/dev/sda"
-        ;;
-esac
-
-WOLFBEAR_DISK_PARTITION=$WOLFBEAR_DISK"2"
-
-echo "WolfbearOS System Properties"
-echo "product name:     $WOLFBEAR_PRODUCT_NAME"
-echo "system vendor:    $WOLFBEAR_SYS_VENDOR"
-echo "is virtualized:   $WOLFBEAR_IS_VIRTUALIZED"
-echo "sda-root dir:     $WOLFBEAR_SDA_ROOT_DIR"
-echo "disk-label:       $WOLFBEAR_DISK_LABEL"
-echo "root disk:        $WOLFBEAR_DISK"
-
-echo "Listando bloques"
-lsblk
-
-echo "Esperando que $WOLFBEAR_DISK esté disponible..."
-
-for i in $(seq 1 $WOLFBEAR_PARTITION_TIMEOUT); do
-  if [ -b "$WOLFBEAR_DISK" ]; then
-    echo "$WOLFBEAR_DISK está listo."
+for i in $(seq 1 10); do
+  if blkid | grep -q 'LABEL="WBI_'; then
+    echo "[initramfs] Dispositivo detectado"
+    export WOLFBEAR_OS_INSTALL_DISK_FIRST_PART=$( /sbin/blkid | grep 'LABEL="WBI_' | head -n1 | cut -d: -f1 )
+    export WOLFBEAR_OS_INSTALL_DISK=$( echo "$WOLFBEAR_OS_INSTALL_DISK_FIRST_PART" | sed -E 's/[0-9]+$//' )
     break
   fi
-  echo "Intento $i: $WOLFBEAR_DISK aún no está disponible. Esperando..."
+  echo "[initramfs] Esperando dispositivos... intento $i"
   sleep 1
 done
 
-if [ ! -b "$WOLFBEAR_DISK" ]; then
-  echo "[ERROR] $WOLFBEAR_DISK no apareció tras $WOLFBEAR_PARTITION_TIMEOUT segundos. Abortando."
-  exit 1
+echo "Variables del sistema de WolfbearOS"
+echo "WOLFBEAR_OS_PRODUCT_NAME:             $WOLFBEAR_OS_PRODUCT_NAME"
+echo "WOLFBEAR_OS_SYS_VENDOR:               $WOLFBEAR_OS_SYS_VENDOR"
+echo "WOLFBEAR_OS_IS_VIRTUALIZED:           $WOLFBEAR_OS_IS_VIRTUALIZED"
+echo "WOLFBEAR_OS_INSTALL_DISK_FIRST_PART:  $WOLFBEAR_OS_INSTALL_DISK_FIRST_PART"
+echo "WOLFBEAR_OS_INSTALL_DISK:             $WOLFBEAR_OS_INSTALL_DISK"
+echo "WOLFBEAR_OS_PARTITION_TIMEOUT:        $WOLFBEAR_OS_PARTITION_TIMEOUT"
+echo "EXECUTING BLKID: "
+
+source /install/globals-definitions
+source /install/util-log
+
+if ! . /install/run; then
+  echo "[initramfs] La instalación de WolfbearOS falló. Iniciando consola de recuperación..."
+  sleep 1
+else 
+  echo "[initramfs] La instalación de WolfbearOS finalizó exitosamente, ahora puedes expulsar el medio de instalación y reiniciar el sistema"
+  sleep 1
 fi
 
-mkdir -p $WOLFBEAR_SDA_ROOT_DIR
-# Intento de montaje
-if mount "$WOLFBEAR_DISK_PARTITION" "$WOLFBEAR_SDA_ROOT_DIR"; then
-    sleep 0.5
-    # Si está instalado, lanzamos el sistema
-    if [ -f "$defined_mnt/.wolfbearOSInstalled" ]; then
-        echo "[initramfs] WolfbearOS detectado. Iniciando sistema.."
-        sh /launch/run || echo "[initramfs] Error al iniciar el sistema."
-    else
-        # Partición OK pero sin instalación
-        motivo="sin_instalar"
-    fi
-else
-    # No se montó la partición
-    motivo="sin_particion"
-fi
-
-# Si hay motivo, ejecutamos instalador
-if [ -n "${motivo-}" ]; then
-    caso="$motivo"
-    [ "$caso" = "sin_particion" ] && msg="no se pudo montar la partición"
-    [ "$caso" = "sin_instalar" ]  && msg="no existe una instalación de WolfbearOS"
-    echo "[initramfs] Lanzando instalador: $msg."
-    sh /install/run || echo "[initramfs] La instalación falló"
-fi
-
-# Bucle para mantener consola activa
-for port in tty1 ttyAMA0; do
+for port in $WOLFBEAR_OS_CONSOLE_PORTS; do
   if [ -e "/dev/$port" ]; then
-    echo "[initramfs] WolfbearOS getty en $port"
+    echo "[initramfs] Consola disponible en $port"
     /sbin/getty -L "$port" 115200 vt100 &
   fi
 done
 
-# Esperar indefinidamente (para evitar que PID 1 muera)
 wait
