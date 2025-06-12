@@ -1,4 +1,7 @@
-https://dl-cdn.alpinelinux.org/alpine/v3.21/main
-https://dl-cdn.alpinelinux.org/alpine/v3.21/community
+http://mirrors.gigenet.com/alpinelinux/v3.22/main
+http://mirrors.gigenet.com/alpinelinux/v3.22/community
+https://mirrors.gigenet.com/alpinelinux/v3.22/main
+http://dl-cdn.alpinelinux.org/alpine/edge/testing
 https://dl-cdn.alpinelinux.org/alpine/edge/main
 https://dl-cdn.alpinelinux.org/alpine/edge/community
+https://dl-cdn.alpinelinux.org/alpine/edge/testing
