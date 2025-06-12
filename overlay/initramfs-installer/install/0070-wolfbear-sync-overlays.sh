@@ -14,9 +14,6 @@ rsync -a --links "$INSTALL_RESOURCES_DIR/modules-modprobe/" "$TARGET_DISK_DIR/"
 debug_message $SCRIPT_NAME "Sincronizando capa de busybox a '$TARGET_DISK_DIR'"
 rsync -a --links "$INSTALL_RESOURCES_DIR/busybox-compiled/" "$TARGET_DISK_DIR/"
 
-debug_message $SCRIPT_NAME "Sincronizando capa de Qt a '$TARGET_DISK_DIR'"
-rsync -a --links "$INSTALL_RESOURCES_DIR/qt-custom/" "$TARGET_DISK_DIR/"
-
 debug_message $SCRIPT_NAME "Sincronizando capa de aplicaciones a '$TARGET_DISK_DIR'"
 rsync -a --links "$INSTALL_RESOURCES_DIR/sys-apps/" "$TARGET_DISK_DIR/"
 
