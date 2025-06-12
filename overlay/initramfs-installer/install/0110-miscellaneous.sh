@@ -1,9 +1,9 @@
 #!/bin/sh
 set -euo pipefail
-source /install/util-log
-SCRIPT_NAME=$0
 
-log_message $SCRIPT_NAME "Ajustando recursos post instalación"
+SCRIPT_NAME=$(basename "$0")
+
+log_message $SCRIPT_NAME "Iniciando limpieza final"
 
 debug_message $SCRIPT_NAME "Solucionando problemas de ejecución del comando ping"
 chmod u+s $TARGET_DISK_DIR/bin/ping
@@ -13,4 +13,4 @@ chroot $TARGET_DISK_DIR /bin/sh -c "modprobe drm"
 chroot $TARGET_DISK_DIR /bin/sh -c "modprobe virtio_gpu"
 chroot $TARGET_DISK_DIR /bin/sh -c "modprobe drm_kms_helper"
 
-log_message $SCRIPT_NAME "Recursos ajustados exitosamente"
+log_message $SCRIPT_NAME "Limpieza final terminada"

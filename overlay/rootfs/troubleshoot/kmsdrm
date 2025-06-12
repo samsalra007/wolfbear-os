@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/sh
 
 echo "Revisando que el directorio para kms eglfs exista"
 ls -l /usr/lib/qt6/plugins/egldeviceintegrations/libqeglfs-kms-integration.so
@@ -8,6 +8,7 @@ export QT_QPA_PLATFORM=eglfs
 export QT_QPA_EGLFS_INTEGRATION=kms
 export QT_PLUGIN_PATH=/usr/lib/qt6/plugins
 export QT_QPA_EGLFS_KMS_DEVICE=/dev/dri/card0
+export QT_QPA_EVDEV_MOUSE_PARAMETERS="/dev/input/event2:scale=0.3"
 
 echo "Mostrando tarjetas graficas disponibles"
 ls /dev/dri/
@@ -23,4 +24,4 @@ echo "Asignando permisos"
 chmod a+rw /dev/dri/card0 /dev/dri/renderD128
 
 cd /apps/wolfbear-apps/LauncherApp.d/
-QT_LOGGING_RULES="qt.qpa.*=true" ./LauncherApp
+QT_LOGGING_RULES="qt.qpa.*=true" ./LauncherApp --wolfbearmode

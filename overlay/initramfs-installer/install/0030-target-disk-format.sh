@@ -1,7 +1,7 @@
 #!/bin/sh
 set -euo pipefail
-source /install/util-log
-SCRIPT_NAME=$0
+
+SCRIPT_NAME=$(basename "$0")
 
 log_message $SCRIPT_NAME "Iniciando formateo e instalación de sistema base en disco"
 
@@ -14,9 +14,9 @@ read -rp "¿En qué unidad quieres instalar? (/dev/sdX o /dev/vdX): " INSTALLATI
 
 DEV_DISK="/dev/$(basename "$INSTALLATION_DISK")"
 
-
 debug_message $SCRIPT_NAME "IMPORTANTE: Recuerda que se eliminará todo el contenido en en $DEV_DISK"
 new_line
+
 read -rp "¿Deseas continuar? (y/[n]): " CONF
 
 if [ "$CONF" != 'y' ]; then 
@@ -38,15 +38,16 @@ parted --script "$DEV_DISK" \
   mkpart primary ext4 100MiB 100%
 
 debug_message $SCRIPT_NAME "Formateando la unidad y sus particiones"
+new_line
 
 mkfs.vfat -F 32 "$EFI_PARTITION"
+fatlabel "$EFI_PARTITION" WB_EFI_SYS
+
 mkfs.ext4 "$ROOTFS_PARTITION"
+e2label "$ROOTFS_PARTITION" WB_ROOTFS
 
 debug_message $SCRIPT_NAME "Montando particiones"
-
-BOOT_DIR="$TARGET_DISK_DIR/boot"
-EFI_TARGET_DISK_DIR="$TARGET_DISK_DIR/boot/efi"
-EFI_BOOT_TARGET_DISK_DIR="$TARGET_DISK_DIR/boot/efi/EFI/BOOT"
+new_line
 
 mkdir -p $TARGET_DISK_DIR
 mount "$ROOTFS_PARTITION" "$TARGET_DISK_DIR"
@@ -55,35 +56,9 @@ mkdir -p $EFI_TARGET_DISK_DIR
 mount "$EFI_PARTITION" "$EFI_TARGET_DISK_DIR"
 mkdir -p "$EFI_BOOT_TARGET_DISK_DIR"
 
-debug_message $SCRIPT_NAME "Generando imagen de GRUB"
+mkdir -p $BOOT_DIR
 
-grub-mkimage \
-  -O arm64-efi \
-  -p "/EFI/BOOT" \
-  -o $EFI_BOOT_TARGET_DISK_DIR/BOOTAA64.EFI \
-    part_gpt fat ext2 normal configfile linux cpio gfxterm all_video
-
-debug_message $SCRIPT_NAME "Generando archivo $EFI_BOOT_TARGET_DISK_DIR/grub.cfg"
-
-cat > $EFI_BOOT_TARGET_DISK_DIR/grub.cfg <<EOF
-set timeout=0
-set default=0
-
-menuentry "WolfbearOS for ARM64 (rootfs)" {
-    linux (hd0,gpt2)/boot/Image console=tty0 console=ttyAMA0 root=/dev/sda2 rw
-    initrd (hd0,gpt2)/boot/initramfs.cpio.xz
-}
-EOF
-
-debug_message $SCRIPT_NAME "Generando archivo $EFI_BOOT_TARGET_DISK_DIR/startup.nsh"
-
-cat > $EFI_BOOT_TARGET_DISK_DIR/startup.nsh <<EOF
-fs0:\EFI\BOOT\BOOTAA64.EFI
-EOF
-
-debug_message $SCRIPT_NAME "Cargando contenido de kernel para rootfs"
-
-cp /mnt/install/linux-kernel/Image "$BOOT_DIR/"
-cp /mnt/install/linux-kernel/initramfs.cpio.xz "$BOOT_DIR/"
+cp $INSTALL_RESOURCES_DIR/linux-kernel/Image "$BOOT_DIR/"
+cp $INSTALL_RESOURCES_DIR/linux-kernel/initramfs.la.cpio.xz "$BOOT_DIR/"
 
 log_message $SCRIPT_NAME "Instalación del sistema base en disco finalizada"

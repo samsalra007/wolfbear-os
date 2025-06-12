@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -euo pipefail
 
 log_message(){
@@ -39,4 +39,12 @@ warn_message(){
 
 new_line(){
     printf "\n"
+}
+
+ensure_dir() {
+  if [ -z "${1-}" ]; then
+    echo "[ERROR] ensure_dir requiere un argumento" >&2
+    exit 1
+  fi
+  mkdir -p "$1"
 }

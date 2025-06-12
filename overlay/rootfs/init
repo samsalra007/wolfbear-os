@@ -1,16 +1,6 @@
 #!/bin/sh
 
-echo "=== Iniciando WolfbearOS ==="
-
-# Las particiones del sistema se montaron en el launch de initramfs
-
-# Pero aquí si es necesario exportar las variables para drivers de video
-export LIBGL_DRIVERS_PATH=/usr/lib/dri
-export SDL_VIDEODRIVER=KMSDRM
-export SDL_KMSDRM_DEVICE=/dev/dri/card0
-export SDL_KMSDRM_RENDER_NODE=/dev/dri/renderD128
-
-./launch/run
+echo "Bienvenido a WolfbearOS ROOTFS (Sistema Instalado)"
 
 # Bucle para mantener consola activa
 for port in tty1 ttyAMA0; do

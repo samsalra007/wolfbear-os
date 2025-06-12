@@ -1,9 +1,14 @@
 #!/bin/sh
 set -euo pipefail
-source /install/util-log
-SCRIPT_NAME=$0
+
+SCRIPT_NAME=$(basename "$0")
 
 log_message $SCRIPT_NAME "Iniciando configuración de estructura de directorios"
+
+debug_message $SCRIPT_NAME  "Creando directorios base de kernel"
+mkdir -p "$TARGET_DISK_DIR/sys"
+mkdir -p "$TARGET_DISK_DIR/dev"
+mkdir -p "$TARGET_DISK_DIR/proc"
 
 debug_message $SCRIPT_NAME  "Creando directorios base de dependencias"
 mkdir -p "$TARGET_DISK_DIR/tmp"

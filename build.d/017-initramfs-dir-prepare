@@ -4,14 +4,14 @@ source $SCRIPTS_DIR/util-log
 
 SCRIPT_NAME=$0
 
-log_message $SCRIPT_NAME "Preparando directorios de ./initramfs en '$INITRAMFS_DIR'"
+log_message $SCRIPT_NAME "Preparando directorios de ./initramfs en '$INITRAMFS_INSTALLER_DIR'"
 
 mkdir -p \
-  "$INITRAMFS_DIR/tmp" \
-  "$INITRAMFS_DIR/sbin" \
-  "$INITRAMFS_DIR/lib/apk/db" \
-  "$INITRAMFS_DIR/etc/apk" \
-  "$INITRAMFS_DIR/etc/ssl/certs" \
-  "$INITRAMFS_DIR/usr/lib"
+  "$INITRAMFS_INSTALLER_DIR/tmp" \
+  "$INITRAMFS_INSTALLER_DIR/sbin" \
+  "$INITRAMFS_INSTALLER_DIR/lib/apk/db" \
+  "$INITRAMFS_INSTALLER_DIR/etc/apk" \
+  "$INITRAMFS_INSTALLER_DIR/etc/ssl/certs" \
+  "$INITRAMFS_INSTALLER_DIR/usr/lib"
 
 log_message $SCRIPT_NAME "Preparación de ./initramfs temrinada"
