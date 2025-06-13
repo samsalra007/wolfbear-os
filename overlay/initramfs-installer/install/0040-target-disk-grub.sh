@@ -25,7 +25,7 @@ set timeout=0
 set default=0
 
 menuentry "WolfbearOS for $SYS_ARCH (ROOTFS)" {
-    linux (hd0,gpt2)/boot/Image console=tty0 console=ttyAMA0 root=/dev/sda2 rw
+    linux (hd0,gpt2)/boot/Image console=tty0 fbcon=map:0 root=/dev/sda2 rw
     initrd (hd0,gpt2)/boot/initramfs.la.cpio.xz
 }
 EOF
