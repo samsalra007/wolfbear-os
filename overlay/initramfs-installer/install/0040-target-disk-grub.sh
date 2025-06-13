@@ -24,10 +24,8 @@ cat > $EFI_BOOT_TARGET_DISK_DIR/grub.cfg <<EOF
 set timeout=0
 set default=0
 
-search --no-floppy --file /boot/Image --set=root
-
 menuentry "WolfbearOS for $SYS_ARCH (ROOTFS)" {
-    linux /boot/Image console=tty0 fbcon=map:0 root=/dev/sda2 rw
-    initrd /boot/initramfs.la.cpio.xz
+    linux (hd1,gpt2)/boot/Image console=tty0 fbcon=map:0 root=/dev/sda2 rw
+    initrd (hd1,gpt2)/boot/initramfs.la.cpio.xz
 }
 EOF
