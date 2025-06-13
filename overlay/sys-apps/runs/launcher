@@ -9,7 +9,8 @@ export QT_QPA_EGLFS_INTEGRATION=kms
 export QT_PLUGIN_PATH=/usr/lib/qt6/plugins
 export QT_QPA_EGLFS_KMS_DEVICE=/dev/dri/card0
 export QT_QPA_GENERIC_PLUGINS=evdevmouse,evdevkeyboard
-export QT_QPA_EVDEV_MOUSE_PARAMETERS="/dev/input/event2:scale=0.5"
+export QT_QPA_EVDEV_MOUSE_PARAMETERS="/dev/input/event1:scale=0.5"
+export QT_QPA_EVDEV_KEYBOARD_PARAMETERS="/dev/input/event3"
 
 echo "Mostrando tarjetas graficas disponibles"
 ls /dev/dri/
