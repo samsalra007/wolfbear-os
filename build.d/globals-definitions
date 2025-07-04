@@ -21,7 +21,7 @@ export SCRIPTS_DIR="$WOLFBEAR_OS_DIR/build.d"
 export TARGET_DIR="$WOLFBEAR_OS_DIR/target"
 export PATCHES_DIR="$WOLFBEAR_OS_DIR/patches"
 export CONFIG_FILES_DIR="$WOLFBEAR_OS_DIR/config"
-export INITRAMFS_INSTALLER_DIR="$WOLFBEAR_OS_DIR/initramfs-installer"
+export INITRAMFS_INSTALLER_DIR="$TARGET_DIR/initramfs-installer"
 export INITRAMFS_LAUNCHER_DIR="$WOLFBEAR_OS_DIR/initramfs-launcher"
 
 export DEPENDENCIES_DIR="$WOLFBEAR_OS_DIR/dependencies"
