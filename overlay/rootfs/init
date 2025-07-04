@@ -2,6 +2,8 @@
 
 echo "Bienvenido a WolfbearOS ROOTFS (Sistema Instalado)"
 
+/runs/launcher
+
 # Bucle para mantener consola activa
 for port in tty1 ttyAMA0; do
   if [ -e "/dev/$port" ]; then
