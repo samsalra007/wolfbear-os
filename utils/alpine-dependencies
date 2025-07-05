@@ -16,6 +16,7 @@ apk add \
     nano \
     parted \
     e2fsprogs \
+    e2fsprogs-extra \
     dosfstools \
     xfsprogs \
     diffutils \
