@@ -23,10 +23,15 @@ apk add \
     grub-efi \
     linux-headers \
     xmlstarlet \
+    rsync \
     git
 
 echo "[+] Instalando herramientas para desarrollo en C/C++ y sistema de build..."
 apk add \
+    perl \
+    gawk \
+    bc \
+    openssl-dev \
     build-base \
     cmake \
     ninja \
