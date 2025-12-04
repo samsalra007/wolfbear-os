@@ -13,12 +13,12 @@ new_line
 doas /sbin/apk update --root $INITRAMFS_INSTALLER_DIR \
   --repositories-file /dev/null \
   --allow-untrusted \
-  --repository "http://os.wolfbear.mx/1.0/apk" \
+  --repository "http://os.wolfbear.mx/1.0/apk/aarch64" \
 
 doas /sbin/apk --root $INITRAMFS_INSTALLER_DIR \
   --repositories-file /dev/null \
   --allow-untrusted \
-  --repository "http://os.wolfbear.mx/1.0/apk" \
+  --repository "http://os.wolfbear.mx/1.0/apk/aarch64" \
   add \
     apk-tools \
     shadow \
