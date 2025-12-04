@@ -11,10 +11,10 @@ mkdir -p $DEPENDENCY_WOLFBEAR_APPS_DIR/busybox
 mkdir -p $DEPENDENCY_WOLFBEAR_APPS_DIR/linux
 
 wget -O $DEPENDENCY_WOLFBEAR_APPS_DIR/linux/wolfbear-kernel_aarch64.zip \
-  "http://os.wolfbear.mx/1.0/aarch64/kernel/wolfbear-kernel_aarch64"
+  "http://os.wolfbear.mx/1.0/kernel/aarch64/wolfbear-kernel_aarch64"
 
 wget -O $DEPENDENCY_WOLFBEAR_APPS_DIR/busybox/busybox_aarch64.zip \
-  "http://os.wolfbear.mx/1.0/aarch64/kernel/busybox_aarch64.zip"
+  "http://os.wolfbear.mx/1.0/kernel/aarch64/busybox_aarch64.zip"
 
 echo "Iniciando descompresión de dependencias"
 
@@ -22,6 +22,5 @@ cd $DEPENDENCY_WOLFBEAR_APPS_DIR/busybox
 unzip busybox_aarch64.zip
 
 cd $DEPENDENCY_WOLFBEAR_APPS_DIR/linux
-unzip wolfbear-kernel_aarch64.zip
 
 echo "Descarga y descompresión de dependencias completada"
