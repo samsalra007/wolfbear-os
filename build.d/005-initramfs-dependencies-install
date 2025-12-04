@@ -12,10 +12,12 @@ new_line
 
 doas /sbin/apk update --root $INITRAMFS_INSTALLER_DIR \
   --repositories-file /dev/null \
-  --repository "http://os.wolfbear.mx/1.0/apk"
+  --allow-untrusted \
+  --repository "http://os.wolfbear.mx/1.0/apk" \
 
 doas /sbin/apk --root $INITRAMFS_INSTALLER_DIR \
   --repositories-file /dev/null \
+  --allow-untrusted \
   --repository "http://os.wolfbear.mx/1.0/apk" \
   add \
     apk-tools \
