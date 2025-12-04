@@ -27,9 +27,4 @@ doas chmod 644 $INITRAMFS_INSTALLER_DIR/etc/apk/world
 # mkdir -p $INITRAMFS_INSTALLER_DIR/etc/apk/keys
 # cp /etc/apk/keys/* $INITRAMFS_INSTALLER_DIR/etc/apk/keys
 
-debug_message $SCRIPT_NAME "Soliciatndo actualización de base de datos apk update"
-new_line
-
-doas /sbin/apk update --root $INITRAMFS_INSTALLER_DIR
-
 log_message $SCRIPT_NAME "Configuración de base de datos terminada"
