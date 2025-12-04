@@ -85,12 +85,12 @@ if [ "$SYS_ARCH" = "arm64" ]; then
     GRUB_TARGET="arm64-efi"
     GRUB_EFI_NAME="BOOTAA64.EFI"
     CONSOLE_DEVICE="ttyAMA0"
-    IMAGE_NAME="Image"
+    IMAGE_NAME="wolfbear-kernel_amd64"
 elif [ "$SYS_ARCH" = "amd64" ]; then
     GRUB_TARGET="x86_64-efi"
     GRUB_EFI_NAME="BOOTX64.EFI"
     CONSOLE_DEVICE="ttyS0"
-    IMAGE_NAME="bzImage"
+    IMAGE_NAME="wolfbear-kernel_aarch64"
 else
     echo "Arquitectura no soportada: $SYS_ARCH"
     exit 1
@@ -127,7 +127,7 @@ cp $TARGET_DIR/initramfs.in.cpio.xz $ROOTFS_BOOTDIR
 
 debug_message $SCRIPT_NAME "Generando directorios en '$RESOURCES_PART_DIR'"
 mkdir -p "$RESOURCES_PART_DIR/rootfs-overlay"
-mkdir -p "$RESOURCES_PART_DIR/modules-modprobe"
+# mkdir -p "$RESOURCES_PART_DIR/modules-modprobe"
 mkdir -p "$RESOURCES_PART_DIR/busybox-compiled"
 mkdir -p "$RESOURCES_PART_DIR/linux-kernel"
 mkdir -p "$RESOURCES_PART_DIR/sys-apps"
