@@ -8,6 +8,8 @@ log_message $SCRIPT_NAME "Instalar paquetes básicos '$INITRAMFS_INSTALLER_DIR'"
 new_line
 
 doas /sbin/apk --root $INITRAMFS_INSTALLER_DIR \
+  --repositories-file /dev/null \
+  --repository "http://os.wolfbear.mx/1.0/aarch64/apk" \
   add \
     apk-tools \
     shadow \
