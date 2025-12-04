@@ -137,7 +137,7 @@ new_line
 
 echo "rootfs-overlay    $OVERLAY_ROOTFS_DIR"
 echo "busybox-compiled  $DEPENDENCY_BUSYBOX_COMPILED_DIR"
-echo "modules-modprobe  $DEPENDENCIES_LINUX_MODULES_DIR"
+# echo "modules-modprobe  $DEPENDENCIES_LINUX_MODULES_DIR"
 echo "sys-apps          $OVERLAY_SYSAPPS_DIR"
 echo "qt-custom         $OVERLAY_QT_CUSTOM"
 
@@ -145,7 +145,7 @@ new_line
 
 debug_message $SCRIPT_NAME "Sincronizando directorios hacia imagen de disco"
 rsync -a --links "$OVERLAY_ROOTFS_DIR/" "$RESOURCES_PART_DIR/rootfs-overlay/"
-rsync -a --links "$DEPENDENCIES_LINUX_MODULES_DIR/" "$RESOURCES_PART_DIR/modules-modprobe/"
+# rsync -a --links "$DEPENDENCIES_LINUX_MODULES_DIR/" "$RESOURCES_PART_DIR/modules-modprobe/"
 rsync -a --links "$DEPENDENCY_BUSYBOX_COMPILED_DIR/" "$RESOURCES_PART_DIR/busybox-compiled/"
 rsync -a --links "$OVERLAY_SYSAPPS_DIR/" "$RESOURCES_PART_DIR/sys-apps/"
 rsync -a --links "$OVERLAY_QT_CUSTOM/" "$RESOURCES_PART_DIR/qt-custom/"

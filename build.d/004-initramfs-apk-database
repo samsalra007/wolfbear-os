@@ -22,10 +22,10 @@ debug_message $SCRIPT_NAME "Creando archivo world en directorio /etc de apk-tool
 doas touch    $INITRAMFS_INSTALLER_DIR/etc/apk/world
 doas chmod 644 $INITRAMFS_INSTALLER_DIR/etc/apk/world
 
-
-debug_message $SCRIPT_NAME "Sincronizando llaves de repositorios desde host Alpine"
-mkdir -p $INITRAMFS_INSTALLER_DIR/etc/apk/keys
-cp /etc/apk/keys/* $INITRAMFS_INSTALLER_DIR/etc/apk/keys
+# Key sync from host disabled for now
+# debug_message $SCRIPT_NAME "Sincronizando llaves de repositorios desde host Alpine"
+# mkdir -p $INITRAMFS_INSTALLER_DIR/etc/apk/keys
+# cp /etc/apk/keys/* $INITRAMFS_INSTALLER_DIR/etc/apk/keys
 
 debug_message $SCRIPT_NAME "Soliciatndo actualización de base de datos apk update"
 new_line
