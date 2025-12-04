@@ -4,23 +4,23 @@ source $SCRIPTS_DIR/util-log
 
 echo "Descargando dependencias de terceros"
 
-rm -Rf $DEPENDENCY_WOLFBEAR_APPS_DIR/busybox
-rm -Rf $DEPENDENCY_WOLFBEAR_APPS_DIR/linux
+rm -Rf $WOLFBEAR_OS_DIR/dependencies/busybox
+rm -Rf $WOLFBEAR_OS_DIR/dependencies/linux
 
-mkdir -p $DEPENDENCY_WOLFBEAR_APPS_DIR/busybox
-mkdir -p $DEPENDENCY_WOLFBEAR_APPS_DIR/linux
+mkdir -p $WOLFBEAR_OS_DIR/dependencies/busybox
+mkdir -p $WOLFBEAR_OS_DIR/dependencies/linux
 
-wget -O $DEPENDENCY_WOLFBEAR_APPS_DIR/linux/wolfbear-kernel_aarch64.zip \
+wget -O $WOLFBEAR_OS_DIR/dependencies/linux/wolfbear-kernel_aarch64.zip \
   "http://os.wolfbear.mx/1.0/kernel/aarch64/wolfbear-kernel_aarch64"
 
-wget -O $DEPENDENCY_WOLFBEAR_APPS_DIR/busybox/busybox_aarch64.zip \
+wget -O $WOLFBEAR_OS_DIR/dependencies/busybox/busybox_aarch64.zip \
   "http://os.wolfbear.mx/1.0/kernel/aarch64/busybox_aarch64.zip"
 
 echo "Iniciando descompresión de dependencias"
 
-cd $DEPENDENCY_WOLFBEAR_APPS_DIR/busybox
+cd $WOLFBEAR_OS_DIR/dependencies/busybox
 unzip busybox_aarch64.zip
 
-cd $DEPENDENCY_WOLFBEAR_APPS_DIR/linux
+cd $WOLFBEAR_OS_DIR/dependencies/linux
 
 echo "Descarga y descompresión de dependencias completada"
