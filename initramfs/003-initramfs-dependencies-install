@@ -3,7 +3,7 @@ set -euo pipefail
 
 source ./globals
 
-ech "Initializeing apk database in initramfs installer directory"
+echo "Initializeing apk database in initramfs installer directory"
 doas /sbin/apk --root "$INITRMAFS_OUTPUT_DIR" \
   --repositories-file /dev/null \
   --allow-untrusted \
