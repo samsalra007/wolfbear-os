@@ -5,6 +5,6 @@ source ./globals
 
 echo "Copying initramfs overlay files to output directory..."
 
-rsync -a --links "$INITRAMFS_INSTALLER_OVERLAY_DIR/" "$INITRMAFS_OUTPUT_DIR/"
+rsync -a --links "$INITRAMFS_INSTALLER_OVERLAY_DIR/" "$INITRAMFS_OUTPUT_DIR/"
 
-echo "Initramfs overlay files copied to: $INITRMAFS_OUTPUT_DIR"
+echo "Initramfs overlay files copied to: $INITRAMFS_OUTPUT_DIR"

@@ -117,7 +117,7 @@ EOF
 echo "Copying kernel and initramfs to boot directory at '$ROOTFS_BOOTDIR'"
 mkdir -p "$ROOTFS_BOOTDIR"
 cp $LINUX_KERNEL_DEPENDENCY_DIR/$IMAGE_NAME $ROOTFS_BOOTDIR
-cp $INITRMAFS_OUTPUT_DIR/initramfs.in.cpio.xz $ROOTFS_BOOTDIR
+cp $INITRAMFS_OUTPUT_DIR/initramfs.in.cpio.xz $ROOTFS_BOOTDIR
 
 echo "Preparing RESOURCES partition with necessary directories and files"
 mkdir -p "$RESOURCES_PART_DIR/rootfs"
@@ -130,8 +130,8 @@ rsync -a --links "$BUSYBOX_DEPENDENCY_DIR/" "$RESOURCES_PART_DIR/busybox/"
 
 echo "Copying kernel and initramfs to RESOURCES partition"
 cp $LINUX_KERNEL_DEPENDENCY_DIR/$IMAGE_NAME "$RESOURCES_PART_DIR/linux"
-cp $INITRMAFS_OUTPUT_DIR/initramfs.in.cpio.xz "$RESOURCES_PART_DIR/linux"
-cp $INITRMAFS_OUTPUT_DIR/initramfs.la.cpio.xz "$RESOURCES_PART_DIR/linux"
+cp $INITRAMFS_OUTPUT_DIR/initramfs.in.cpio.xz "$RESOURCES_PART_DIR/linux"
+cp $INITRAMFS_OUTPUT_DIR/initramfs.la.cpio.xz "$RESOURCES_PART_DIR/linux"
 
 echo "Unmounting partitions from '$DISK_IMAGE_MOUNT_DIR'"
 umount -l "$DISK_IMAGE_MOUNT_DIR/EFI_SYSTEM_PARTITION" || true

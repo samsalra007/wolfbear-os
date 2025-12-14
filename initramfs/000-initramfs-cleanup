@@ -6,7 +6,7 @@ source ./globals
 
 echo "Cleaning up previous initramfs output directory..."
 
-rm -rf "$INITRMAFS_OUTPUT_DIR"
-mkdir -p "$INITRMAFS_OUTPUT_DIR"
+rm -rf "$INITRAMFS_OUTPUT_DIR"
+mkdir -p "$INITRAMFS_OUTPUT_DIR"
 
-echo "Initramfs output directory cleaned and recreated at: $INITRMAFS_OUTPUT_DIR"
+echo "Initramfs output directory cleaned and recreated at: $INITRAMFS_OUTPUT_DIR"

@@ -6,17 +6,17 @@ source ./globals
 echo "Setting permissions for initramfs output apk paths"
 
 mkdir -p \
-  "$INITRMAFS_OUTPUT_DIR/lib/apk/db" \
-  "$INITRMAFS_OUTPUT_DIR/etc/apk" \
-  "$INITRMAFS_OUTPUT_DIR/var/cache/apk"
+  "$INITRAMFS_OUTPUT_DIR/lib/apk/db" \
+  "$INITRAMFS_OUTPUT_DIR/etc/apk" \
+  "$INITRAMFS_OUTPUT_DIR/var/cache/apk"
 
 touch \
-  "$INITRMAFS_OUTPUT_DIR/lib/apk/db/installed" \
-  "$INITRMAFS_OUTPUT_DIR/lib/apk/db/world"
+  "$INITRAMFS_OUTPUT_DIR/lib/apk/db/installed" \
+  "$INITRAMFS_OUTPUT_DIR/lib/apk/db/world"
 
 chmod 644 \
-  "$INITRMAFS_OUTPUT_DIR/lib/apk/db/installed" \
-  "$INITRMAFS_OUTPUT_DIR/lib/apk/db/world"
+  "$INITRAMFS_OUTPUT_DIR/lib/apk/db/installed" \
+  "$INITRAMFS_OUTPUT_DIR/lib/apk/db/world"
 
 echo "Permissions set for initramfs output apk paths successfully"
 
