@@ -4,14 +4,14 @@ set -euo pipefail
 source ./globals
 
 echo "Initializeing apk database in initramfs installer directory"
-doas /sbin/apk --root "$INITRAMFS_OUTPUT_DIR" \
+/sbin/apk --root "$INITRAMFS_OUTPUT_DIR" \
   --repositories-file /dev/null \
   --allow-untrusted \
   --repository "http://os.wolfbear.mx/wolfbear-os_1.0/apk/" \
   add --initdb --no-scripts
 
 echo "Updating apk-tools in initramfs installer directory from repository"
-doas /sbin/apk \
+/sbin/apk \
   --root $INITRAMFS_OUTPUT_DIR \
   --repositories-file /dev/null \
   --allow-untrusted \
@@ -19,7 +19,7 @@ doas /sbin/apk \
   update
 
 echo "Installing basic packages into initramfs installer directory..."
-doas /sbin/apk \
+/sbin/apk \
   --root $INITRAMFS_OUTPUT_DIR \
   --repositories-file /dev/null \
   --allow-untrusted \
