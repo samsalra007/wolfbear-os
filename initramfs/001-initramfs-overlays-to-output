@@ -5,18 +5,6 @@ source ./globals
 
 echo "Copying initramfs overlay files to output directory..."
 
-mkdir -p \
-  "$INITRMAFS_OUTPUT_DIR/lib/apk/db" \
-  "$INITRMAFS_OUTPUT_DIR/etc/apk" \
-  "$INITRMAFS_OUTPUT_DIR/var/cache/apk"
-
-touch \
-  "$INITRMAFS_OUTPUT_DIR/lib/apk/db/installed" \
-  "$INITRMAFS_OUTPUT_DIR/lib/apk/db/world"
-
-chmod 644 "$INITRMAFS_OUTPUT_DIR/lib/apk/db/installed"
-chmod 644 "$INITRMAFS_OUTPUT_DIR/etc/apk/world"
-
 rsync -a --links "$INITRAMFS_INSTALLER_OVERLAY_DIR/" "$INITRMAFS_OUTPUT_DIR/"
 
 echo "Initramfs overlay files copied to: $INITRMAFS_OUTPUT_DIR"
