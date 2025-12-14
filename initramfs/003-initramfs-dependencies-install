@@ -3,8 +3,7 @@ set -euo pipefail
 
 source ./globals
 
-echo "Installing basic packages into initramfs installer directory..."
-
+echo "Updating apk-tools in initramfs installer directory from repository"
 doas /sbin/apk \
   --root $INITRMAFS_OUTPUT_DIR \
   --repositories-file /dev/null \
@@ -12,6 +11,7 @@ doas /sbin/apk \
   --repository "http://os.wolfbear.mx/wolfbear-os_1.0/apk/" \
   update
 
+echo "Installing basic packages into initramfs installer directory..."
 doas /sbin/apk \
   --root $INITRMAFS_OUTPUT_DIR \
   --repositories-file /dev/null \
