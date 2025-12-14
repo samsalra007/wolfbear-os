@@ -7,7 +7,6 @@ echo "Installing basic packages into initramfs installer directory..."
 
 doas /sbin/apk \
   --root $INITRMAFS_OUTPUT_DIR \
-  --initdb \
   --repositories-file /dev/null \
   --allow-untrusted \
   --repository "http://os.wolfbear.mx/wolfbear-os_1.0/apk/" \
@@ -18,6 +17,7 @@ doas /sbin/apk \
   --repositories-file /dev/null \
   --allow-untrusted \
   --repository "http://os.wolfbear.mx/wolfbear-os_1.0/apk/" \
+  --initdb \
   add \
     apk-tools \
     shadow \
