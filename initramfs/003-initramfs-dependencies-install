@@ -5,12 +5,16 @@ source ./globals
 
 echo "Installing basic packages into initramfs installer directory..."
 
-doas /sbin/apk update --root $INITRMAFS_OUTPUT_DIR \
+doas /sbin/apk \
+  --root $INITRMAFS_OUTPUT_DIR \
+  --initdb \
   --repositories-file /dev/null \
   --allow-untrusted \
   --repository "http://os.wolfbear.mx/wolfbear-os_1.0/apk/" \
+  update
 
-doas /sbin/apk --root $INITRMAFS_OUTPUT_DIR \
+doas /sbin/apk \
+  --root $INITRMAFS_OUTPUT_DIR \
   --repositories-file /dev/null \
   --allow-untrusted \
   --repository "http://os.wolfbear.mx/wolfbear-os_1.0/apk/" \
