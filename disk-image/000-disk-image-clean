@@ -6,10 +6,8 @@ source ./globals
 
 echo "Cleaning previous dependencies for disk image"
 rm -rf "$LINUX_KERNEL_DEPENDENCY_DIR"
-rm -rf "$BUSYBOX_DEPENDENCY_DIR"
 rm -rf "$DISK_IMAGE_OUTPUT_DIR"
 
 echo "Creating dependency directories for disk image"
 mkdir -p "$LINUX_KERNEL_DEPENDENCY_DIR"
-mkdir -p "$BUSYBOX_DEPENDENCY_DIR"
 mkdir -p "$DISK_IMAGE_OUTPUT_DIR"

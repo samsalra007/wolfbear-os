@@ -7,6 +7,9 @@ source ./globals
 echo "Cleaning up previous initramfs output directory..."
 
 doas rm -rf "$INITRAMFS_OUTPUT_DIR"
+doas rm -rf "$BUSYBOX_DEPENDENCY_DIR"
+
 mkdir -p "$INITRAMFS_OUTPUT_DIR"
+mkdir -p "$BUSYBOX_DEPENDENCY_DIR"
 
 echo "Initramfs output directory cleaned and recreated at: $INITRAMFS_OUTPUT_DIR"

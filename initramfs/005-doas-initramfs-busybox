@@ -3,9 +3,6 @@ set -euo pipefail
 
 source ./globals
 
-rm -rf "$BUSYBOX_DEPENDENCY_DIR"
-mkdir -p "$BUSYBOX_DEPENDENCY_DIR"
-
 echo "Downloading busybox from wolfbear-os repository"
 wget -O "$BUSYBOX_DEPENDENCY_DIR/busybox.zip" \
   "http://os.wolfbear.mx/wolfbear-os_1.0/busybox/arm64/1.37.0/busybox.zip"
