@@ -107,8 +107,8 @@ EOF
 #        root=/dev/ram0 rw rdinit=/init
 #    initrd (hd0,gpt2)/boot/initramfs.in.cpio.xz
 
-echo "Creating EFI startup script at '$EFI_SYSTEM_PARTITION/startup.nsh'"
-cat > "$EFI_SYSTEM_PARTITION/startup.nsh" <<EOF
+echo "Creating EFI startup script at '$EFI_BOOTDIR/startup.nsh'"
+cat > "$EFI_BOOTDIR/startup.nsh" <<EOF
 fs0:\\EFI\\BOOT\\$GRUB_EFI_NAME
 EOF
 
