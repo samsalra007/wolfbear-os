@@ -1,0 +1,7 @@
+#!/bin/sh
+export WOLFBEAR_VERSION="1.0"
+
+export ROOT_DIR="$(pwd)"
+export INITRAMFS_INSTALLER_DIR="$ROOT_DIR/initramfs"
+export INITRAMFS_INSTALLER_OVERLAY_DIR="$ROOT_DIR/initramfs/overlay"
+export INITRMAFS_OUTPUT_DIR="$ROOT_DIR/output/initramfs"
