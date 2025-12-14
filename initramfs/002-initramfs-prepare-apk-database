@@ -10,11 +10,13 @@ mkdir -p \
   "$INITRMAFS_OUTPUT_DIR/etc/apk" \
   "$INITRMAFS_OUTPUT_DIR/var/cache/apk"
 
-touch "$INITRMAFS_OUTPUT_DIR/lib/apk/db/installed"
-touch "$INITRMAFS_OUTPUT_DIR/lib/apk/db/world"
+touch \
+  "$INITRMAFS_OUTPUT_DIR/lib/apk/db/installed" \
+  "$INITRMAFS_OUTPUT_DIR/lib/apk/db/world"
 
-chmod 644 "$INITRMAFS_OUTPUT_DIR/lib/apk/db/installed"
-chmod 644 "$INITRMAFS_OUTPUT_DIR/etc/apk/world"
+chmod 644 \
+  "$INITRMAFS_OUTPUT_DIR/lib/apk/db/installed" \
+  "$INITRMAFS_OUTPUT_DIR/lib/apk/db/world"
 
 echo "Permissions set for initramfs output apk paths successfully"
 
