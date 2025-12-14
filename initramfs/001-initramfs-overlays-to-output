@@ -1,0 +1,10 @@
+#!/bin/sh
+set -euo pipefail
+
+source ./globals
+
+echo "Copying initramfs overlay files to output directory..."
+
+rsync -a --links "$INITRAMFS_INSTALLER_OVERLAY_DIR/" "$INITRMAFS_OUTPUT_DIR/"
+
+echo "Initramfs overlay files copied to: $INITRMAFS_OUTPUT_DIR"

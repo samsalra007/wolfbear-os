@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo "[miscellaneous] Pequeños ajustes del sistema."
+
+echo "- Exportando /sbin en PATH "
+export PATH=$PATH:/sbin:/bin:/usr/sbin:/usr/bin
+
+echo "- Cambiando hostname según archivo de configuración."
+if [ -f /etc/hostname ]; then
+    hostname "$(cat /etc/hostname)"
+fi
+
+echo "[miscellaneous] Finalizando pequeños ajustes."

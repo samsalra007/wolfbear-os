@@ -1,0 +1,52 @@
+#!/bin/sh
+set -euo pipefail
+
+export CURRENT_PATH=$( pwd )
+export SCRIPTS_DIR="$( dirname "$0" )/install"
+
+echo "Launcher de WolfbearOS en ROOTFS empezó"
+
+# Obtén la ruta real del script "install"
+BASEDIR=$(cd "$(dirname "$0")" && pwd)
+# Los scripts numerados están en el mismo directorio que este script
+SCRIPTS_DIR="$BASEDIR"
+
+if [ -z "${1-}" ]; then
+  echo "Has solicitado ejecutar todos los scripts del directorio."
+else
+  SCRIPT_NAME_TO_EXECUTE=$1
+  echo "Has solicitado ejecutar el script '$SCRIPT_NAME_TO_EXECUTE'."
+  sh "$SCRIPT_NAME_TO_EXECUTE"
+  exit 0
+fi
+
+i=0
+while :; do
+  prefix=$(printf "%03d" "$i")
+
+  # Expande el patrón (efectúa globbing)
+  set -- "$SCRIPTS_DIR/${prefix}-"*
+  # Si no existe ningún fichero coincidente, $1 será literal y -e fallará
+  if [ ! -e "$1" ]; then
+    echo
+    echo "Se ha terminado la ejecución de los scripts (ya no existe el script ${prefix}-*)"
+    break
+  fi
+
+  # Ejecuta cada script existente y ejecutable usando sh
+  for script in "$SCRIPTS_DIR/${prefix}-"*; do
+    [ -f "$script" ] || continue
+    if [ ! -x "$script" ]; then
+      echo "Saltando script $script (no es ejecutable)"
+      continue
+    fi
+    echo
+    echo "Corriendo script $script"
+    sh "$script"
+  done
+
+  i=$((i + 1))
+done
+
+echo "Launcher de WolfbearOS en ROOTFS terminó"
+exit 0

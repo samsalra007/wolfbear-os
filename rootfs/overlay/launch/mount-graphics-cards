@@ -1,0 +1,26 @@
+#!/bin/sh
+
+echo "[mount-graphics-cards] Montando controladores de tarjeta gráfica"
+
+echo "- Creando en caso de que no exista /dev/dri"
+mkdir -p /dev/dri
+
+echo "- Montando dispositivos card0 y renderD128."
+[ ! -e /dev/dri/card0 ] && mknod -m 0666 /dev/dri/card0 c 226 0
+[ ! -e /dev/dri/renderD128 ] && mknod -m 0666 /dev/dri/renderD128 c 226 128
+
+echo "- Asignando permisos para la tarjeta gráfica."
+chmod 0666 /dev/dri/card0 /dev/dri/renderD128
+
+echo "- Exportando variables de entorno para SDL y LIBGL."
+export LIBGL_DRIVERS_PATH=/usr/lib/dri
+export SDL_VIDEODRIVER=KMSDRM
+export SDL_KMSDRM_DEVICE=/dev/dri/card0
+export SDL_KMSDRM_RENDER_NODE=/dev/dri/renderD128
+
+echo "- Activando módulos de kernel gráficos"
+modprobe drm
+modprobe virtio_gpu
+modprobe drm_kms_helper
+
+echo "[mount-graphics-cards] Se ha terminado de montar los módulos de la tarjeta gráfica"
