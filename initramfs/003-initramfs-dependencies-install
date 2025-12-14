@@ -40,6 +40,7 @@ doas /sbin/apk \
     dosfstools \
     rsync \
     nano \
-    libc-utils
+    libc-utils \
+    busybox
 
 echo "Basic packages installed into initramfs installer directory successfully"
