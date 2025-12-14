@@ -7,8 +7,4 @@ echo "Downloading linux kernel from wolfbear-os repository"
 wget -O "$LINUX_KERNEL_DEPENDENCY_DIR/wolfbear-kernel_$SYS_ARCH" \
   "http://os.wolfbear.mx/wolfbear-os_1.0/linux/arm64/6.17/Image"
 
-echo "Downloading busybox from wolfbear-os repository"
-wget -O "$BUSYBOX_DEPENDENCY_DIR/busybox.zip" \
-  "http://os.wolfbear.mx/wolfbear-os_1.0/busybox/arm64/1.37.0/busybox.zip"
-
 echo "Dependencies downloaded successfully."
