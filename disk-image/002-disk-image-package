@@ -72,16 +72,16 @@ mount "$RESOURCES_PART" "$RESOURCES_PART_DIR"
 
 echo "Preparing GRUB EFI bootloader according to system architecture"
 
-if [ "$SYS_ARCH" = "arm64" ]; then
+if [ "$SYS_ARCH" = "aarch64" ]; then
     GRUB_TARGET="arm64-efi"
     GRUB_EFI_NAME="BOOTAA64.EFI"
     CONSOLE_DEVICE="ttyAMA0"
-    IMAGE_NAME="wolfbear-kernel_amd64"
-elif [ "$SYS_ARCH" = "aarch64" ]; then
+    IMAGE_NAME="wolfbear-kernel_aarch64"
+elif [ "$SYS_ARCH" = "amd64" ]; then
     GRUB_TARGET="x86_64-efi"
     GRUB_EFI_NAME="BOOTX64.EFI"
     CONSOLE_DEVICE="ttyS0"
-    IMAGE_NAME="wolfbear-kernel_aarch64"
+    IMAGE_NAME="wolfbear-kernel_amd64"
 else
     echo "Unsupported architecture: $SYS_ARCH"
     exit 1
