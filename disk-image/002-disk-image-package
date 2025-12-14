@@ -3,8 +3,6 @@ set -euo pipefail
 
 source ./globals
 
-log_message $SCRIPT_NAME "Generando imagen de disco '$INITRAMFS_INSTALLER_DIR'"
-
 LOOPDEV=""
 
 echo "Desmontando cualquier montaje previo en '$DISK_IMAGE_MOUNT_DIR'"
