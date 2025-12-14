@@ -1,0 +1,8 @@
+#!/bin/sh
+set -euo pipefail
+
+source ./globals
+
+echo "Unzipping BusyBox into initramfs output directory"
+unzip "$BUSYBOX_DEPENDENCY_DIR/busybox.zip" -d "$INITRAMFS_OUTPUT_DIR/"
+echo "BusyBox unzipped into initramfs output directory successfully"
