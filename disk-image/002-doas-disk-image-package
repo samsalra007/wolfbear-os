@@ -85,15 +85,13 @@ echo "Creating GRUB configuration file at '$DISK_IMAGE_MOUNT_EFI_BOOT_DIR/grub.c
 cat > "$DISK_IMAGE_MOUNT_EFI_BOOT_DIR/grub.cfg" <<EOF
 set timeout=3
 
-terminal_output console
-
 menuentry "WolfbearOS $WOLFBEAR_VERSION ($SYS_ARCH)" {
-    linux (hd0,gpt2)/boot/$IMAGE_NAME \
-        console=$CONSOLE_DEVICE,115200 console=tty0 \
-        earlycon=pl011,0x09000000 loglevel=8 ignore_loglevel \
+    linux (hd0,gpt2)/boot/wolfbear-kernel_aarch64 \
+        console=ttyAMA0,115200 console=tty0 \
+        earlycon=pl011,0x09000000 \
+        keep_bootcon loglevel=8 ignore_loglevel \
         root=/dev/ram0 rw rdinit=/init
     initrd (hd0,gpt2)/boot/initramfs.in.cpio.xz
-}
 EOF
 
 echo "Creating EFI startup script at '$DISK_IMAGE_MOUNT_EFI_DIR/startup.nsh'"
