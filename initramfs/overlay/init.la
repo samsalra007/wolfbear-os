@@ -1,5 +1,9 @@
 #!/bin/sh
-set -euo pipefail
+set -eu
+
+# si el shell soporta pipefail, lo activamos; si no, no pasa nada
+set -o pipefail 2>/dev/null || true
+
 
 echo "[initramfs-launcher] Bienvenido al script de lanzamiento de WolfbearOS"
 

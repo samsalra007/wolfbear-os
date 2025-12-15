@@ -1,5 +1,9 @@
 #!/bin/sh
-set -euo pipefail
+set -eu
+
+# si el shell soporta pipefail, lo activamos; si no, no pasa nada
+set -o pipefail 2>/dev/null || true
+
 
 # Script init para initramfs de WolfbearOS
 # Monta la partición, comprueba la instalación y lanza instalador si es necesario
