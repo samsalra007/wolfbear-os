@@ -1,4 +1,5 @@
 #!/bin/sh
+echo "[init] Wolfbear init started"
 set -eu
 
 # si el shell soporta pipefail, lo activamos; si no, no pasa nada
