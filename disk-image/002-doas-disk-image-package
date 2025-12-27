@@ -58,7 +58,7 @@ mount "$RESOURCES_PART" "$DISK_IMAGE_MOUNT_RESOURCES_DIR"
 
 echo "Preparing GRUB EFI bootloader according to system architecture"
 
-if [ "$SYS_ARCH" = "aarch64" ]; then
+if [ "$SYS_ARCH" = "arm64" ]; then
     GRUB_TARGET="arm64-efi"
     GRUB_EFI_NAME="BOOTAA64.EFI"
     CONSOLE_DEVICE="ttyAMA0"

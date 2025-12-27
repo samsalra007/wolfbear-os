@@ -2,7 +2,13 @@
 
 export WOLFBEAR_VERSION="1.0"
 export WOLFBEAR_FULL_NAME="wolfbear-os_$WOLFBEAR_VERSION"
-export SYS_ARCH="aarch64"
+
+export SYS_ARCH=$(uname -m)
+if [ "$SYS_ARCH" = 'aarch64' ] || [ "$SYS_ARCH" = 'arm64' ]; then
+	SYS_ARCH='arm64'
+else 
+	SYS_ARCH='amd64'
+fi
 
 export ROOT_DIR="$(pwd)"
 export INITRAMFS_INSTALLER_DIR="$ROOT_DIR/initramfs"
