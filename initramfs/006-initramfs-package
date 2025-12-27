@@ -11,7 +11,7 @@ mv init.in init
 chmod +x init
 
 # despues procedemos a comprimirlo
-doas find . | cpio -o -H newc | xz -T0 -z -C crc32 -6 > $INITRAMFS_OUTPUT_DIR/initramfs.in.cpio.xz
+find . | cpio -o -H newc | xz -T0 -z -C crc32 -6 > $INITRAMFS_OUTPUT_DIR/initramfs.in.cpio.xz
 
 # le regresamos su nombre y ahora movemos el init.la para el init del sistema ya instalado
 mv init init.in
@@ -19,7 +19,7 @@ mv init.la init
 chmod +x init
 
 # luego procedemos a comprimirlo al igual que el initramfs anterior pero con otro nombre
-doas find . | cpio -o -H newc | xz -T0 -z -C crc32 -6 > $INITRAMFS_OUTPUT_DIR/initramfs.la.cpio.xz
+find . | cpio -o -H newc | xz -T0 -z -C crc32 -6 > $INITRAMFS_OUTPUT_DIR/initramfs.la.cpio.xz
 
 # regresamos el nombre del init a como estaba
 mv init init.la

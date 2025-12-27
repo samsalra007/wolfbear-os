@@ -9,6 +9,6 @@ echo 'root:x:0:0:root:/root:/bin/sh' >> $INITRAMFS_OUTPUT_DIR/etc/passwd
 echo 'root::14600:0:99999:7:::' >> $INITRAMFS_OUTPUT_DIR/etc/shadow
 
 echo "Setting SUID bit on ping binary in initramfs output directory"
-doas chmod u+s $INITRAMFS_OUTPUT_DIR/bin/ping
+chmod u+s $INITRAMFS_OUTPUT_DIR/bin/ping
 
 echo "Passwd and shadow files added to initramfs output directory successfully"
