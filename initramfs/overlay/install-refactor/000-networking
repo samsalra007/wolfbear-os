@@ -1,0 +1,92 @@
+#!/bin/sh
+set -eu
+set -o pipefail 2>/dev/null || true
+
+source "${WOLFBEAR_INSTALLER_DIR}/globals"
+
+mkdir -p /run/dhcpcd
+
+# Lista interfaces (excluye loopback)
+list_ifaces() {
+  # /sys/class/net existe aunque no haya iproute2
+  for d in /sys/class/net/*; do
+    iface="$(basename "$d")"
+    [ "$iface" = "lo" ] && continue
+    echo "$iface"
+  done
+}
+
+echo "[net] Interfaces disponibles:"
+IFACES="$(list_ifaces || true)"
+
+if [ -z "${IFACES:-}" ]; then
+  echo "[net] No se detectaron interfaces de red." >&2
+  exit 1
+fi
+
+# muestra con numeración
+i=1
+DEFAULT_IFACE=""
+for iface in $IFACES; do
+  [ -z "$DEFAULT_IFACE" ] && DEFAULT_IFACE="$iface"
+  echo "  $i) $iface"
+  i=$((i + 1))
+done
+
+echo ""
+echo -n "[net] Elige interfaz (nombre o número) [default: $DEFAULT_IFACE]: "
+read -r CHOICE || true
+CHOICE="${CHOICE:-$DEFAULT_IFACE}"
+
+# Si el usuario puso un número, conviértelo a nombre
+if echo "$CHOICE" | grep -Eq '^[0-9]+$'; then
+  idx="$CHOICE"
+  i=1
+  SELECTED=""
+  for iface in $IFACES; do
+    if [ "$i" -eq "$idx" ]; then
+      SELECTED="$iface"
+      break
+    fi
+    i=$((i + 1))
+  done
+  if [ -z "$SELECTED" ]; then
+    echo "[net] Selección inválida: $CHOICE" >&2
+    exit 1
+  fi
+  IFACE="$SELECTED"
+else
+  IFACE="$CHOICE"
+fi
+
+# valida que exista
+if [ ! -d "/sys/class/net/$IFACE" ]; then
+  echo "[net] Interfaz no encontrada: $IFACE" >&2
+  exit 1
+fi
+
+echo "[net] Usando interfaz: $IFACE"
+
+# Sube la interfaz (si tienes ip)
+if command -v ip >/dev/null 2>&1; then
+  ip link set "$IFACE" up || true
+fi
+
+# DHCP (dhcpcd). -B = background; -t = timeout
+echo "[net] Solicitando DHCP en $IFACE..."
+if dhcpcd -B -t 15 "$IFACE"; then
+  echo "[net] DHCP solicitado. Estado actual:"
+  if command -v ip >/dev/null 2>&1; then
+    ip addr show "$IFACE" || true
+    ip route || true
+  fi
+  exit 0
+fi
+
+echo "[net] DHCP falló en $IFACE."
+echo "[net] Puedes intentar manualmente:"
+echo "  - Revisa link:   ip link show $IFACE"
+echo "  - Asigna IP:     ip addr add 192.168.1.50/24 dev $IFACE"
+echo "  - Ruta default:  ip route add default via 192.168.1.1"
+echo "  - DNS:           echo 'nameserver 1.1.1.1' > /etc/resolv.conf"
+exit 1

@@ -1,0 +1,35 @@
+#!/bin/sh
+set -eu
+set -o pipefail 2>/dev/null || true
+
+# Uso:
+#   ./run
+#   ./run ./initramfs
+
+SCRIPTS_DIR="$WOLFBEAR_INSTALLER_DIR"
+
+STEP=0
+
+while :; do
+  PREFIX="$(printf "%03d-" "$STEP")"
+
+  FILE=""
+  for f in "$SCRIPTS_DIR/$PREFIX"*; do
+    [ -e "$f" ] || continue
+    FILE="$f"
+    break
+  done
+
+  if [ -z "$FILE" ]; then
+    echo "[run] No existe paso $(printf "%03d" "$STEP") en $SCRIPTS_DIR. Fin del flujo."
+    break
+  fi
+
+  BASENAME="$(basename "$FILE")"
+  echo "[run] Ejecutando $BASENAME"
+
+  chmod +x "$FILE"
+  "$FILE"
+
+  STEP=$((STEP + 1))
+done
