@@ -1,5 +1,4 @@
 #!/bin/sh
-echo "[init] Wolfbear init started"
 set -eu
 
 # si el shell soporta pipefail, lo activamos; si no, no pasa nada
@@ -33,19 +32,7 @@ case "$WOLFBEAR_OS_PRODUCT_NAME" in
         ;;
 esac
 
-sleep 2
-
-blkid | grep -q 'LABEL="WBI_'
-
-for port in $WOLFBEAR_OS_CONSOLE_PORTS; do
-  if [ -e "/dev/$port" ]; then
-    echo "[initramfs] Consola disponible en $port"
-    /sbin/getty -L "$port" 115200 vt100 &
-  fi
-done
-
 for i in $(seq 1 10); do
-  
   if blkid | grep -q 'LABEL="WBI_'; then
     echo "[initramfs] Dispositivo detectado"
     export WOLFBEAR_OS_INSTALL_DISK_FIRST_PART=$( /sbin/blkid | grep 'LABEL="WBI_' | head -n1 | cut -d: -f1 )
@@ -66,8 +53,6 @@ echo "WOLFBEAR_OS_PARTITION_TIMEOUT:        $WOLFBEAR_OS_PARTITION_TIMEOUT"
 
 source /install/globals-definitions
 source /install/util-log
-
-sleep 2
 
 if ! . /install/run; then
   echo "[initramfs] La instalación de WolfbearOS falló. Iniciando consola de recuperación..."
