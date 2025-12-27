@@ -1,0 +1,16 @@
+#!/bin/sh
+
+echo "Welcome to WolfbearOS (ROOTFS INSTALLATION)"
+
+# /runs/launcher
+
+# Bucle para mantener consola activa
+for port in tty1 ttyAMA0; do
+  if [ -e "/dev/$port" ]; then
+    echo "[ROOTFS] WolfbearOS getty en $port"
+    /sbin/getty -L "$port" 115200 vt100 &
+  fi
+done
+
+# Esperar indefinidamente (para evitar que PID 1 muera)
+wait

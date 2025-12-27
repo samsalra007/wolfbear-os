@@ -1,13 +1,3 @@
 dependencies/*
-rootfs/*
-target/*
-initramfs/*
-modprobe-compiled/*
-**.swp
-*.wbapp
-*.wba
-*.img
+output/*
 .DS_STORE
-overlay/sys-apps/apps/wolfbear-apps
-overlay/qt-custom/*
-initramfs-installer/

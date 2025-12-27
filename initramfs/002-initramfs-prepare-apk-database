@@ -1,0 +1,22 @@
+#!/bin/sh
+set -euo pipefail
+
+source ./globals
+
+echo "Setting permissions for initramfs output apk paths"
+
+mkdir -p \
+  "$INITRAMFS_OUTPUT_DIR/lib/apk/db" \
+  "$INITRAMFS_OUTPUT_DIR/etc/apk" \
+  "$INITRAMFS_OUTPUT_DIR/var/cache/apk"
+
+touch \
+  "$INITRAMFS_OUTPUT_DIR/lib/apk/db/installed" \
+  "$INITRAMFS_OUTPUT_DIR/lib/apk/db/world"
+
+chmod 644 \
+  "$INITRAMFS_OUTPUT_DIR/lib/apk/db/installed" \
+  "$INITRAMFS_OUTPUT_DIR/lib/apk/db/world"
+
+echo "Permissions set for initramfs output apk paths successfully"
+

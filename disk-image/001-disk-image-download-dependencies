@@ -1,0 +1,10 @@
+#! /bin/sh
+set -euo pipefail
+
+source ./globals
+
+echo "Downloading linux kernel from wolfbear-os repository"
+wget -O "$LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME_DIR" \
+  "http://os.wolfbear.mx/wolfbear-os_1.0/linux/arm64/6.17/Image"
+
+echo "Dependencies downloaded successfully."

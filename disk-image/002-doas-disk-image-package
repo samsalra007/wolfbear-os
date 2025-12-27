@@ -1,0 +1,130 @@
+#!/bin/sh
+set -euo pipefail
+
+source ./globals
+
+LOOPDEV=""
+
+echo "Desmontando cualquier montaje previo en '$DISK_IMAGE_MOUNT_DIR'"
+umount -l "$DISK_IMAGE_MOUNT_EFI_DIR" || true
+umount -l "$DISK_IMAGE_MOUNT_ROOTFS_DIR" || true
+umount -l "$DISK_IMAGE_MOUNT_RESOURCES_DIR" || true
+
+echo "Creating blank disk image of size ${DISK_IMAGE_SIZE}MB at '$DISK_IMAGE_OUTPUT_FILE'"
+dd if=/dev/zero of="$DISK_IMAGE_OUTPUT_FILE" bs=1M count=$DISK_IMAGE_SIZE
+
+echo "Associating loop device with disk image"
+LOOPDEV=$(losetup --find --show "$DISK_IMAGE_OUTPUT_FILE")
+
+echo "Creating GPT partition table and partitions on '$LOOPDEV'"
+parted --script "$LOOPDEV" \
+  mklabel gpt \
+  mkpart ESP fat32 1MiB 100MiB \
+  set 1 esp on \
+  mkpart primary ext4 100MiB 200MiB \
+  mkpart primary ext4 200MiB 100%
+
+echo "Informing kernel of partition table changes"
+partprobe "$LOOPDEV" || true
+sleep 2
+
+echo "Setting up partitions on loop device '$LOOPDEV'"
+EFI_PART="${LOOPDEV}p1"
+ROOT_PART="${LOOPDEV}p2"
+RESOURCES_PART="${LOOPDEV}p3"
+
+echo "Formatting partitions for EFI as FAT32, ROOT as ext4, and RESOURCES as ext4"
+mkfs.vfat -F 32 "$EFI_PART"
+fatlabel "$EFI_PART" WBI_EFI_SYS
+
+mkfs.ext4 "$ROOT_PART"
+e2label "$ROOT_PART" WBI_ROOT
+
+mkfs.ext4 "$RESOURCES_PART"
+e2label "$RESOURCES_PART" WBI_RES
+
+echo "Mounting partitions to '$DISK_IMAGE_MOUNT_DIR'"
+
+mkdir -p "$DISK_IMAGE_MOUNT_EFI_DIR"
+mount "$EFI_PART" "$DISK_IMAGE_MOUNT_EFI_DIR"
+mkdir -p "$DISK_IMAGE_MOUNT_EFI_BOOT_DIR"
+
+mkdir -p "$DISK_IMAGE_MOUNT_ROOTFS_DIR"
+mount "$ROOT_PART" "$DISK_IMAGE_MOUNT_ROOTFS_DIR"
+mkdir -p "$DISK_IMAGE_MOUNT_ROOTFS_BOOT_DIR"
+
+mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR"
+mount "$RESOURCES_PART" "$DISK_IMAGE_MOUNT_RESOURCES_DIR"
+
+echo "Preparing GRUB EFI bootloader according to system architecture"
+
+if [ "$SYS_ARCH" = "aarch64" ]; then
+    GRUB_TARGET="arm64-efi"
+    GRUB_EFI_NAME="BOOTAA64.EFI"
+    CONSOLE_DEVICE="ttyAMA0"
+elif [ "$SYS_ARCH" = "amd64" ]; then
+    GRUB_TARGET="x86_64-efi"
+    GRUB_EFI_NAME="BOOTX64.EFI"
+    CONSOLE_DEVICE="ttyS0"
+else
+    echo "Unsupported architecture: $SYS_ARCH"
+    exit 1
+fi
+
+IMAGE_NAME="$LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME"
+
+echo "Generating GRUB EFI binary at '$DISK_IMAGE_MOUNT_EFI_BOOT_DIR/$GRUB_EFI_NAME'"
+
+grub-mkimage \
+  -O "$GRUB_TARGET" \
+  -p "/EFI/BOOT" \
+  -o "$DISK_IMAGE_MOUNT_EFI_BOOT_DIR/$GRUB_EFI_NAME" \
+  part_gpt fat ext2 normal configfile linux cpio gfxterm all_video
+
+echo "Creating GRUB configuration file at '$DISK_IMAGE_MOUNT_EFI_BOOT_DIR/grub.cfg'"
+cat > "$DISK_IMAGE_MOUNT_EFI_BOOT_DIR/grub.cfg" <<EOF
+set timeout=5
+set default=0
+
+terminal_output console
+
+menuentry "WolfbearOS $WOLFBEAR_VERSION ($SYS_ARCH)" {
+    linux (hd0,gpt2)/boot/$IMAGE_NAME console=$CONSOLE_DEVICE,115200 console=tty0 earlycon=pl011,0x09000000 keep_bootcon loglevel=8 ignore_loglevel panic=1 root=/dev/ram0 rw rdinit=/init
+    initrd (hd0,gpt2)/boot/initramfs.in.cpio.xz
+}
+EOF
+
+echo "Creating EFI startup script at '$DISK_IMAGE_MOUNT_EFI_DIR/startup.nsh'"
+cat > "$DISK_IMAGE_MOUNT_EFI_DIR/startup.nsh" <<EOF
+fs0:\\EFI\\BOOT\\$GRUB_EFI_NAME
+EOF
+
+echo "Copying kernel and initramfs to boot directory at '$DISK_IMAGE_MOUNT_ROOTFS_BOOT_DIR'"
+mkdir -p "$DISK_IMAGE_MOUNT_ROOTFS_BOOT_DIR"
+cp "$LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME_DIR" $DISK_IMAGE_MOUNT_ROOTFS_BOOT_DIR
+cp "$INITRAMFS_OUTPUT_DIR/initramfs.in.cpio.xz" $DISK_IMAGE_MOUNT_ROOTFS_BOOT_DIR
+
+echo "Preparing RESOURCES partition with necessary directories and files"
+mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/rootfs"
+mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/busybox"
+mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/linux"
+
+echo "Copying rootfs overlay and busybox to RESOURCES partition"
+rsync -a --links "$ROOTFS_OVERLAY_DIR/" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/rootfs/"
+rsync -a --links "$BUSYBOX_DEPENDENCY_DIR/" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/busybox/"
+
+echo "Copying kernel and initramfs to RESOURCES partition"
+cp "$LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME_DIR" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/linux"
+cp "$INITRAMFS_OUTPUT_DIR/initramfs.in.cpio.xz" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/linux"
+cp "$INITRAMFS_OUTPUT_DIR/initramfs.la.cpio.xz" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/linux"
+
+echo "Unmounting partitions from '$DISK_IMAGE_MOUNT_DIR'"
+umount -l "$DISK_IMAGE_MOUNT_EFI_DIR" || true
+umount -l "$DISK_IMAGE_MOUNT_ROOTFS_DIR" || true
+umount -l "$DISK_IMAGE_MOUNT_RESOURCES_DIR" || true
+
+echo "Liberating loop device '$LOOPDEV'"
+sync
+losetup -d "$LOOPDEV" || true
+
+echo "Disk image creation completed successfully: '$DISK_IMAGE_OUTPUT_FILE'"

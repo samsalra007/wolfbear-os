@@ -1,0 +1,29 @@
+#!/bin/sh
+set -euo pipefail
+
+source ./globals
+
+echo "Packaging initramfs files into compressed cpio archives"
+cd $INITRAMFS_OUTPUT_DIR
+
+# movemos temporalmente el archivo init.in para que sea el principal y le respetamos sus permisos
+mv init.in init
+chmod +x init
+
+# despues procedemos a comprimirlo
+doas find . | cpio -o -H newc | xz -T0 -z -C crc32 -6 > $INITRAMFS_OUTPUT_DIR/initramfs.in.cpio.xz
+
+# le regresamos su nombre y ahora movemos el init.la para el init del sistema ya instalado
+mv init init.in
+mv init.la init
+chmod +x init
+
+# luego procedemos a comprimirlo al igual que el initramfs anterior pero con otro nombre
+doas find . | cpio -o -H newc | xz -T0 -z -C crc32 -6 > $INITRAMFS_OUTPUT_DIR/initramfs.la.cpio.xz
+
+# regresamos el nombre del init a como estaba
+mv init init.la
+
+echo "Initramfs packaging completed successfully. Output files:"
+echo "- $INITRAMFS_OUTPUT_DIR/initramfs.in.cpio.xz"
+echo "- $INITRAMFS_OUTPUT_DIR/initramfs.la.cpio.xz"

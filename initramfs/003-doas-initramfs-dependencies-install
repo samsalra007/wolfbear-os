@@ -1,0 +1,44 @@
+#!/bin/sh
+set -euo pipefail
+
+source ./globals
+
+echo "Initializeing apk database in initramfs installer directory"
+doas /sbin/apk --root "$INITRAMFS_OUTPUT_DIR" \
+  --repositories-file /dev/null \
+  --allow-untrusted \
+  --repository "http://os.wolfbear.mx/wolfbear-os_1.0/apk/" \
+  add --initdb --no-scripts
+
+echo "Updating apk-tools in initramfs installer directory from repository"
+doas /sbin/apk \
+  --root $INITRAMFS_OUTPUT_DIR \
+  --repositories-file /dev/null \
+  --allow-untrusted \
+  --repository "http://os.wolfbear.mx/wolfbear-os_1.0/apk/" \
+  update
+
+echo "Installing basic packages into initramfs installer directory..."
+doas /sbin/apk \
+  --root $INITRAMFS_OUTPUT_DIR \
+  --repositories-file /dev/null \
+  --allow-untrusted \
+  --repository "http://os.wolfbear.mx/wolfbear-os_1.0/apk/" \
+  add \
+    apk-tools \
+    shadow \
+    dhcpcd \
+    openresolv \
+    util-linux \
+    strace \
+    openssh \
+    grub-efi \
+    parted \
+    e2fsprogs \
+    e2fsprogs-extra \
+    dosfstools \
+    rsync \
+    nano \
+    libc-utils
+
+echo "Basic packages installed into initramfs installer directory successfully"

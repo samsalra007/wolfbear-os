@@ -1,0 +1,72 @@
+#!/bin/sh
+set -eu
+
+# si el shell soporta pipefail, lo activamos; si no, no pasa nada
+set -o pipefail 2>/dev/null || true
+
+
+# Script init para initramfs de WolfbearOS
+# Monta la partición, comprueba la instalación y lanza instalador si es necesario
+
+echo "[initramfs-installer] Bienvenido al script de instalación de WolfbearOS"
+
+echo "Montando particiones del sistema /proc /dev y /sys"
+
+mkdir -p /proc /sys /dev
+mount -t devtmpfs dev /dev
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+
+echo "Determinando variables del sistema"
+export WOLFBEAR_OS_PRODUCT_NAME=$( cat /sys/class/dmi/id/product_name 2>/dev/null | tr -d '\r' )
+export WOLFBEAR_OS_SYS_VENDOR=$( cat /sys/class/dmi/id/sys_vendor )
+export WOLFBEAR_OS_PARTITION_TIMEOUT=10
+export WOLFBEAR_OS_CONSOLE_PORTS="tty1 ttyAMA0"
+
+case "$WOLFBEAR_OS_PRODUCT_NAME" in
+    *QEMU*|*KVM*|*VirtualBox*|*VMware*|*Bochs*|*Xen*|*Hyper-V*|*Parallels*|*Apple\ Virtual*)
+        export WOLFBEAR_OS_IS_VIRTUALIZED="true"
+        ;;
+    *)
+        export WOLFBEAR_OS_IS_VIRTUALIZED="false"
+        ;;
+esac
+
+for i in $(seq 1 10); do
+  if blkid | grep -q 'LABEL="WBI_'; then
+    echo "[initramfs] Dispositivo detectado"
+    export WOLFBEAR_OS_INSTALL_DISK_FIRST_PART=$( /sbin/blkid | grep 'LABEL="WBI_' | head -n1 | cut -d: -f1 )
+    export WOLFBEAR_OS_INSTALL_DISK=$( echo "$WOLFBEAR_OS_INSTALL_DISK_FIRST_PART" | sed -E 's/[0-9]+$//' )
+    break
+  fi
+  echo "[initramfs] Esperando dispositivos... intento $i"
+  sleep 1
+done
+
+echo "Variables del sistema de WolfbearOS"
+echo "WOLFBEAR_OS_PRODUCT_NAME:             $WOLFBEAR_OS_PRODUCT_NAME"
+echo "WOLFBEAR_OS_SYS_VENDOR:               $WOLFBEAR_OS_SYS_VENDOR"
+echo "WOLFBEAR_OS_IS_VIRTUALIZED:           $WOLFBEAR_OS_IS_VIRTUALIZED"
+echo "WOLFBEAR_OS_INSTALL_DISK_FIRST_PART:  $WOLFBEAR_OS_INSTALL_DISK_FIRST_PART"
+echo "WOLFBEAR_OS_INSTALL_DISK:             $WOLFBEAR_OS_INSTALL_DISK"
+echo "WOLFBEAR_OS_PARTITION_TIMEOUT:        $WOLFBEAR_OS_PARTITION_TIMEOUT"
+
+source /install/globals-definitions
+source /install/util-log
+
+if ! . /install/run; then
+  echo "[initramfs] La instalación de WolfbearOS falló. Iniciando consola de recuperación..."
+  sleep 1
+else 
+  echo "[initramfs] La instalación de WolfbearOS finalizó exitosamente, ahora puedes expulsar el medio de instalación y reiniciar el sistema"
+  sleep 1
+fi
+
+for port in $WOLFBEAR_OS_CONSOLE_PORTS; do
+  if [ -e "/dev/$port" ]; then
+    echo "[initramfs] Consola disponible en $port"
+    /sbin/getty -L "$port" 115200 vt100 &
+  fi
+done
+
+wait
