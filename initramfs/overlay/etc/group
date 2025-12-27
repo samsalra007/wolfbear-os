@@ -1,2 +1,15 @@
 root:x:0:
 root:x:0:root
+
+tty:x:5:
+dialout:x:20:
+audio:x:29:
+video:x:44:
+input:x:123:
+disk:x:6:
+tape:x:26:
+kmem:x:3:
+kvm:x:4:
+floppy:x:19:
+cdrom:x:24:
+netdev:x:82:
