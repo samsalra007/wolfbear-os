@@ -38,8 +38,7 @@ echo "Formateando y particionando la unidad"
 mkfs.vfat -F 32 "$EFI_PARTITION"
 fatlabel "$EFI_PARTITION" WB_EFI_SYS
 
-/sbin/mke2fs "$ROOTFS_PARTITION"
-e2label "$ROOTFS_PARTITION" WB_ROOTFS
+/sbin/mke2fs -F -t ext4 -L WB_ROOTFS "$ROOTFS_PARTITION"
 
 echo "Montando particiones"
 
@@ -51,18 +50,20 @@ mount -t vfat "$EFI_PARTITION" "$BOOT_EFI_DIR"
 
 mkdir -p "$BOOT_EFI_EFI_BOOT_DIR"
 
+echo "Copiando Kernel y initramfs.la.cpio.xz a '$BOOT_DIR'"
 cp "$WOLFBEAR_INSTALLER_RESOURCES_MNT_DIR/linux/wolfbear-kernel_$WOLFBEAR_SYS_ARCH" "$BOOT_DIR/Image"
 cp "$WOLFBEAR_INSTALLER_RESOURCES_MNT_DIR/linux/initramfs.la.cpio.xz" "$BOOT_DIR/"
 
+sleep 1
 
 echo "Generando GRUB según arquitectura: $WOLFBEAR_SYS_ARCH"
-sleep 3
+sleep 1
 
 if [ "$WOLFBEAR_SYS_ARCH" = "amd64" ]; then
-  grub-mkimage -O x86_64-efi -o $BOOT_EFI_EFI_BOOT_DIR/bootx64.efi -p "/EFI/BOOT" part_gpt fat ext2 normal configfile linux cpio gfxterm all_video
+  grub-mkimage -O x86_64-efi -o $BOOT_EFI_EFI_BOOT_DIR/bootx64.efi -p "/EFI/BOOT" part_gpt fat ext2 normal configfile linux cpio search search_fs_uuid gfxterm all_video
   echo 'fs0:\boot\grub\bootx64.efi' > $BOOT_EFI_EFI_BOOT_DIR/startup.nsh
 elif [ "$WOLFBEAR_SYS_ARCH" = "arm64" ]; then
-  grub-mkimage -O arm64-efi -o $BOOT_EFI_EFI_BOOT_DIR/bootaa64.efi -p "/EFI/BOOT" part_gpt fat ext2 normal configfile linux cpio gfxterm all_video
+  grub-mkimage -O arm64-efi -o $BOOT_EFI_EFI_BOOT_DIR/bootaa64.efi -p "/EFI/BOOT" part_gpt fat ext2 normal configfile linux cpio search search_fs_uuid gfxterm all_video
   echo 'fs0:\boot\grub\bootaa64.efi' > $BOOT_EFI_EFI_BOOT_DIR/startup.nsh
 else
   echo "Arquitectura no soportada para GRUB: $WOLFBEAR_SYS_ARCH"
@@ -75,7 +76,7 @@ echo "GRUB ROOT_UUID=$ROOT_UUID"
 echo "GRUB EFI_UUID=$EFI_UUID"
 
 echo "Generando archivo '$BOOT_EFI_EFI_BOOT_DIR/grub.cfg'"
-sleep 2
+sleep 1
 
 cat > "$BOOT_EFI_EFI_BOOT_DIR/grub.cfg" <<EOF
 set timeout=3
@@ -92,6 +93,5 @@ menuentry "WolfbearOS for $WOLFBEAR_SYS_ARCH (ROOTFS)" {
 }
 EOF
 
-
 echo "Formato y montaje base finalizado"
-sleep 1
+sleep 5

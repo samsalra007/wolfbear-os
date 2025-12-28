@@ -35,7 +35,6 @@ echo "Installing basic packages into initramfs installer directory..."
     grub-efi \
     parted \
     e2fsprogs \
-    e2fsprogs-extra \
     dosfstools \
     rsync \
     nano \

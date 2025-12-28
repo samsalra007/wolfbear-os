@@ -14,8 +14,6 @@ echo "Instalando paquetes esenciales del sistema"
   add \
   apk-tools \
   shadow \
-  util-linux \
-  e2fsprogs \
   dosfstools \
   parted \
   kmod \
@@ -72,3 +70,11 @@ echo "Instalando GRUB UEFI"
   --repository "$APK_UNCOMPRESSED_DIR" \
   add \
   grub-efi
+
+/sbin/apk \
+  --root $WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR \
+  --repositories-file /dev/null \
+  --allow-untrusted \
+  --repository "$APK_UNCOMPRESSED_DIR" \
+  add \
+  e2fsprogs util-linux dosfstools
