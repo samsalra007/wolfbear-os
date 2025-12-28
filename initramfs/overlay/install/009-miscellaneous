@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+set -o pipefail 2>/dev/null || true
+
+source $WOLFBEAR_INSTALLER_DIR/globals
+
+chmod u+s $WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/bin/ping
+
+echo "Desmontando particiones"
+
+umount -l "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/dev"
+umount -l "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/sys"
+umount -l "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/proc"

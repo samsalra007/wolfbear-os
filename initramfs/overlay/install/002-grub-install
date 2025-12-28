@@ -1,0 +1,7 @@
+#!/bin/sh
+set -eu
+set -o pipefail 2>/dev/null || true
+
+source $WOLFBEAR_INSTALLER_DIR/globals
+
+

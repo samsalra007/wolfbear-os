@@ -1,0 +1,97 @@
+#!/bin/sh
+set -eu
+set -o pipefail 2>/dev/null || true
+
+source $WOLFBEAR_INSTALLER_DIR/globals
+
+lsblk -d -o NAME,SIZE,MODEL | grep -E 'sd|vd|nvme'
+read -rp "¿En qué unidad quieres instalar? (/dev/sdX o /dev/vdX): " INSTALLATION_DISK
+
+DEV_DISK="/dev/$(basename "$INSTALLATION_DISK")"
+
+echo "IMPORTANTE: Se eliminará todo el contenido en '$DEV_DISK'"
+read -rp "¿Deseas continuar? (y/[n]): " CONF
+
+if [ "$CONF" != 'y' ]; then 
+  echo "El proceso de instalación no puede continuar sin formatear el disco"
+  exit 1
+fi
+
+echo "Calculando directorios de particiones"
+
+EFI_PARTITION="${DEV_DISK}1"
+ROOTFS_PARTITION="${DEV_DISK}2"
+
+echo "Generando tabla de particiones en el disco"
+
+parted --script "$DEV_DISK" \
+  mklabel gpt \
+  mkpart ESP fat32 1MiB 100MiB \
+  set 1 esp on \
+  mkpart primary ext4 100MiB 100%
+
+partprobe "$DEV_DISK" 2>/dev/null || true
+sleep 1
+
+echo "Formateando y particionando la unidad"
+
+mkfs.vfat -F 32 "$EFI_PARTITION"
+fatlabel "$EFI_PARTITION" WB_EFI_SYS
+
+/sbin/mke2fs "$ROOTFS_PARTITION"
+e2label "$ROOTFS_PARTITION" WB_ROOTFS
+
+echo "Montando particiones"
+
+mkdir -p $WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR
+mount "$ROOTFS_PARTITION" "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR"
+
+mkdir -p $BOOT_EFI_DIR
+mount -t vfat "$EFI_PARTITION" "$BOOT_EFI_DIR"
+
+mkdir -p "$BOOT_EFI_EFI_BOOT_DIR"
+
+cp "$WOLFBEAR_INSTALLER_RESOURCES_MNT_DIR/linux/wolfbear-kernel_$WOLFBEAR_SYS_ARCH" "$BOOT_DIR/Image"
+cp "$WOLFBEAR_INSTALLER_RESOURCES_MNT_DIR/linux/initramfs.la.cpio.xz" "$BOOT_DIR/"
+
+
+echo "Generando GRUB según arquitectura: $WOLFBEAR_SYS_ARCH"
+sleep 3
+
+if [ "$WOLFBEAR_SYS_ARCH" = "amd64" ]; then
+  grub-mkimage -O x86_64-efi -o $BOOT_EFI_EFI_BOOT_DIR/bootx64.efi -p "/EFI/BOOT" part_gpt fat ext2 normal configfile linux cpio gfxterm all_video
+  echo 'fs0:\boot\grub\bootx64.efi' > $BOOT_EFI_EFI_BOOT_DIR/startup.nsh
+elif [ "$WOLFBEAR_SYS_ARCH" = "arm64" ]; then
+  grub-mkimage -O arm64-efi -o $BOOT_EFI_EFI_BOOT_DIR/bootaa64.efi -p "/EFI/BOOT" part_gpt fat ext2 normal configfile linux cpio gfxterm all_video
+  echo 'fs0:\boot\grub\bootaa64.efi' > $BOOT_EFI_EFI_BOOT_DIR/startup.nsh
+else
+  echo "Arquitectura no soportada para GRUB: $WOLFBEAR_SYS_ARCH"
+  exit 1
+fi
+
+ROOT_UUID="$(blkid -s UUID -o value "$ROOTFS_PARTITION")"
+EFI_UUID="$(blkid -s UUID -o value "$EFI_PARTITION")"
+echo "GRUB ROOT_UUID=$ROOT_UUID"
+echo "GRUB EFI_UUID=$EFI_UUID"
+
+echo "Generando archivo '$BOOT_EFI_EFI_BOOT_DIR/grub.cfg'"
+sleep 2
+
+cat > "$BOOT_EFI_EFI_BOOT_DIR/grub.cfg" <<EOF
+set timeout=3
+set default=0
+
+# Opcional: si quieres ver qué está pasando
+# set pager=1
+
+menuentry "WolfbearOS for $WOLFBEAR_SYS_ARCH (ROOTFS)" {
+    search --no-floppy --fs-uuid --set=root $ROOT_UUID
+
+    linux /boot/Image root=UUID=$ROOT_UUID rw console=tty0
+    initrd /boot/initramfs.la.cpio.xz
+}
+EOF
+
+
+echo "Formato y montaje base finalizado"
+sleep 1

@@ -40,5 +40,5 @@ echo "Installing basic packages into initramfs installer directory..."
     rsync \
     nano \
     libc-utils
-
+      
 echo "Basic packages installed into initramfs installer directory successfully"
