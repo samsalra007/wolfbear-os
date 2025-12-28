@@ -114,6 +114,7 @@ echo "Preparing RESOURCES partition with necessary directories and files"
 mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/rootfs"
 mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/busybox"
 mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/linux"
+mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/apk"
 
 echo "Copying rootfs overlay and busybox to RESOURCES partition"
 rsync -a --links "$ROOTFS_OVERLAY_DIR/" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/rootfs/"
@@ -123,6 +124,14 @@ echo "Copying kernel and initramfs to RESOURCES partition"
 cp "$LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME_DIR" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/linux"
 cp "$INITRAMFS_OUTPUT_DIR/initramfs.in.cpio.xz" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/linux"
 cp "$INITRAMFS_OUTPUT_DIR/initramfs.la.cpio.xz" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/linux"
+
+unzip "$APK_DEPENDENCY_COMPRESSED_FILENAME_DIR" -d "$DISK_IMAGE_MOUNT_RESOURCES_DIR/apk"
+
+if [ "$SYS_ARCH" == "arm64"]; then
+  rm -rf "$DISK_IMAGE_MOUNT_RESOURCES_DIR/apk/x86_64"
+else
+  rm -rf "$DISK_IMAGE_MOUNT_RESOURCES_DIR/apk/aarch64"
+fi
 
 echo "Unmounting partitions from '$DISK_IMAGE_MOUNT_DIR'"
 umount -l "$DISK_IMAGE_MOUNT_EFI_DIR" || true

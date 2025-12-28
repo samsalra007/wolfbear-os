@@ -1,0 +1,23 @@
+#!/bin/sh
+set -eu
+set -o pipefail 2>/dev/null || true
+
+source $WOLFBEAR_INSTALLER_DIR/globals
+
+echo "Generando directorios /sys, /dev y /proc"
+
+mkdir -p "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/sys"
+mkdir -p "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/dev"
+mkdir -p "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/proc"
+
+echo "Generando directorios /tmp, /bin y /sbin"
+
+mkdir -p "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/tmp"
+mkdir -p "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/bin"
+mkdir -p "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/sbin"
+
+echo "Montando particiones de kernel /sys, /dev y /proc"
+
+mount -t proc proc $WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/proc
+mount --rbind /sys $WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/sys
+mount --rbind /dev $WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/dev

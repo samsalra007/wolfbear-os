@@ -1,0 +1,74 @@
+#!/bin/sh
+set -eu
+set -o pipefail 2>/dev/null || true
+
+source $WOLFBEAR_INSTALLER_DIR/globals
+
+echo "Instalando paquetes esenciales del sistema"
+
+/sbin/apk \
+  --root $WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR \
+  --repositories-file /dev/null \
+  --allow-untrusted \
+  --repository "$APK_UNCOMPRESSED_DIR" \
+  add \
+  apk-tools \
+  shadow \
+  util-linux \
+  e2fsprogs \
+  dosfstools \
+  parted \
+  kmod \
+  linux-headers \
+  libc-utils \
+  file \
+  nano
+
+echo "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR" "Instalando herramientas de red"
+
+/sbin/apk \
+  --root $WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR \
+  --repositories-file /dev/null \
+  --allow-untrusted \
+  --repository "$APK_UNCOMPRESSED_DIR" \
+  add \
+  dhcpcd \
+  openresolv \
+  openssh \
+  openssh-server
+
+echo "Instalando herramientas de desarrollo y debugging"
+
+/sbin/apk \
+  --root $WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR \
+  --repositories-file /dev/null \
+  --allow-untrusted \
+  --repository "$APK_UNCOMPRESSED_DIR" \
+  add \
+  strace \
+  git
+
+echo "Instalando dependencias gráficas"
+
+/sbin/apk \
+  --root $WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR \
+  --repositories-file /dev/null \
+  --allow-untrusted \
+  --repository "$APK_UNCOMPRESSED_DIR" \
+  add \
+  sdl2-dev sdl2 \
+  libdrm libdrm-dev \
+  mesa-gbm mesa-dev mesa-dri-gallium mesa-egl \
+  libinput libinput-dev \
+  expat-dev libffi-dev \
+  libxkbcommon
+
+echo "Instalando GRUB UEFI"
+
+/sbin/apk \
+  --root $WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR \
+  --repositories-file /dev/null \
+  --allow-untrusted \
+  --repository "$APK_UNCOMPRESSED_DIR" \
+  add \
+  grub-efi

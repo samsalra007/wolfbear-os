@@ -17,4 +17,7 @@ fi
 wget -O "$LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME_DIR" \
   "http://os.wolfbear.mx/wolfbear-os_1.0/linux/$SYS_ARCH/6.17/$REMOTE_IMAGE_NAME"
 
+wget -O "$APK_DEPENDENCY_COMPRESSED_FILENAME_DIR" \
+  "http://os.wolfbear.mx/wolfbear-os_1.0/apk.zip"
+
 echo "Dependencies downloaded successfully."

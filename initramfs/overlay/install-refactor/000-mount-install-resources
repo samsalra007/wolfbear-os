@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+set -o pipefail 2>/dev/null || true
+
+source $WOLFBEAR_INSTALLER_DIR/globals
+
+mkdir -p "$WOLFBEAR_INSTALLER_RESOURCES_MNT_DIR"
+
+mount "$WOLFBEAR_INSTALLER_DEV_PARTITION" "$WOLFBEAR_INSTALLER_RESOURCES_MNT_DIR"

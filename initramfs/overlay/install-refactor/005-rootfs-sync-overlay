@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+set -o pipefail 2>/dev/null || true
+
+echo "Sincronizando overlay de rootfs"
+rsync -a --links "$ROOTFS_INSTALLER_RESOURCES_DIR/" "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/"

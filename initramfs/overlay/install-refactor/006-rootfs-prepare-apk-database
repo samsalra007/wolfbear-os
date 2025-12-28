@@ -1,0 +1,18 @@
+#!/bin/sh
+set -eu
+set -o pipefail 2>/dev/null || true
+
+source $WOLFBEAR_INSTALLER_DIR/globals
+
+mkdir -p \
+  "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/lib/apk/db" \
+  "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/etc/apk" \
+  "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/var/cache/apk"
+
+touch \
+  "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/lib/apk/db/installed" \
+  "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/lib/apk/db/world"
+
+chmod 644 \
+  "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/lib/apk/db/installed" \
+  "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/lib/apk/db/world"
