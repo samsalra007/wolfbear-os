@@ -7,7 +7,7 @@ echo "Initializeing apk database in initramfs installer directory"
 /sbin/apk --root "$INITRAMFS_OUTPUT_DIR" \
   --repositories-file /dev/null \
   --allow-untrusted \
-  --repository "http://os.wolfbear.mx/wolfbear-os_1.0/apk/" \
+  --repository "$APK_DEPENDENCY_COMPILED_DIR" \
   add --initdb --no-scripts
 
 echo "Updating apk-tools in initramfs installer directory from repository"
@@ -15,7 +15,7 @@ echo "Updating apk-tools in initramfs installer directory from repository"
   --root $INITRAMFS_OUTPUT_DIR \
   --repositories-file /dev/null \
   --allow-untrusted \
-  --repository "http://os.wolfbear.mx/wolfbear-os_1.0/apk/" \
+  --repository "$APK_DEPENDENCY_COMPILED_DIR" \
   update
 
 echo "Installing basic packages into initramfs installer directory..."
@@ -23,7 +23,7 @@ echo "Installing basic packages into initramfs installer directory..."
   --root $INITRAMFS_OUTPUT_DIR \
   --repositories-file /dev/null \
   --allow-untrusted \
-  --repository "http://os.wolfbear.mx/wolfbear-os_1.0/apk/" \
+  --repository "$APK_DEPENDENCY_COMPILED_DIR" \
   add \
     apk-tools \
     shadow \

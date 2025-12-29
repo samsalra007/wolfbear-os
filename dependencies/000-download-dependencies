@@ -17,40 +17,45 @@ fi
 rm -rf $ROOT_DIR/sources
 mkdir -p $ROOT_DIR/sources
 
-# Checking for cache for Linux Kernel
 mkdir -p $( dirname $LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME_DIR )
-mkdir -p $( dirname $BUSYBOX_DEPENDENCY_DIR )
 mkdir -p $( dirname $APK_DEPENDENCY_COMPRESSED_FILENAME_DIR )
 
+mkdir -p $BUSYBOX_DEPENDENCY_DIR
+mkdir -p $APK_DEPENDENCY_COMPILED_DIR
+
+# Checking for cache for Linux Kernel
+echo "[ WolfbearOs ] [ info ] importing Linux kernel"
 if [[ -f "$LINUX_DEPENDENCY_CACHE_DIR/$REMOTE_IMAGE_NAME" ]]; then
-  echo "Copying Linux Kernel from WolfbearOS Cache Directory"
+  echo "[ WolfbearOs ] [ cache ] copying from '$LINUX_DEPENDENCY_CACHE_DIR/$REMOTE_IMAGE_NAME'"
   cp "$LINUX_DEPENDENCY_CACHE_DIR/$REMOTE_IMAGE_NAME" "$LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME_DIR"
 else 
-  echo "Downloading Linux Kernel from WolfbearOS Repository"
+  echo "[ WolfbearOs ] [ repo ] downloading from 'http://os.wolfbear.mx/wolfbear-os_1.0/linux/$SYS_ARCH/6.17/$REMOTE_IMAGE_NAME'"
   wget -O "$LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME_DIR" \
     "http://os.wolfbear.mx/wolfbear-os_1.0/linux/$SYS_ARCH/6.17/$REMOTE_IMAGE_NAME"
 fi
 
-
 # Checking for cache for Busybox
+echo "[ WolfbearOs ] [ info ] importing Busybox"
 if [[ -f "$BUSYBOX_DEPENDENCY_CACHE_ZIP_FILENAME_DIR" ]]; then
-  echo "Copying Busybox from WolfbearOS Cache Directory"
-  cp "$BUSYBOX_DEPENDENCY_CACHE_ZIP_FILENAME_DIR" "$BUSYBOX_DEPENDENCY_DIR"
+  echo "[ WolfbearOs ] [ cache ] copying from '$BUSYBOX_DEPENDENCY_CACHE_ZIP_FILENAME_DIR"
+  cp "$BUSYBOX_DEPENDENCY_CACHE_ZIP_FILENAME_DIR" "$BUSYBOX_DEPENDENCY_DIR/busybox.zip"
 else 
-  echo "Downloading Busybox from WolfbearOS Repository"
+  echo "[ WolfbearOs ] [ repo ] downloading from 'http://os.wolfbear.mx/wolfbear-os_1.0/busybox/$SYS_ARCH/1.37.0/busybox.zip'"
   wget -O "$BUSYBOX_DEPENDENCY_DIR" \
     "http://os.wolfbear.mx/wolfbear-os_1.0/busybox/$SYS_ARCH/1.37.0/busybox.zip"
 fi
 
 # Checking for cache for APKs
 
+echo "[ WolfbearOs ] [ info ] importing APKs"
 if [[ -f "$APK_DEPENDENCY_CACHE_ZIP_FILENAME_DIR" ]]; then
-  echo "Copying APKs from WolfbearOS Cache Directory"
+  echo "[ WolfbearOs ] [ cache ] copying from '$APK_DEPENDENCY_CACHE_ZIP_FILENAME_DIR'"
   cp "$APK_DEPENDENCY_CACHE_ZIP_FILENAME_DIR" "$APK_DEPENDENCY_COMPRESSED_FILENAME_DIR"
 else 
-  echo "Downloading APKs from WolfbearOS Repository"
+  echo "[ WolfbearOs ] [ repo ] downloading from 'http://os.wolfbear.mx/wolfbear-os_1.0/apk_$SYS_ARCH.zip'"
   wget -O "$APK_DEPENDENCY_COMPRESSED_FILENAME_DIR" \
     "http://os.wolfbear.mx/wolfbear-os_1.0/apk_$SYS_ARCH.zip"
 fi
+unzip "$APK_DEPENDENCY_COMPRESSED_FILENAME_DIR" -d "$APK_DEPENDENCY_COMPILED_DIR/../"
 
 echo "Dependencies imported successfully."

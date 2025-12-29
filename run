@@ -28,7 +28,7 @@ while :; do
   done
 
   if [ -z "$FILE" ]; then
-    echo "[run] No existe paso $(printf "%03d" "$STEP") en $SCRIPTS_DIR. Fin del flujo."
+    echo "[run] Directorio de scripts ejecutado exitosamente!"
     break
   fi
 
