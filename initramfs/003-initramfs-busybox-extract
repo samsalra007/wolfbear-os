@@ -3,10 +3,6 @@ set -euo pipefail
 
 source ./globals
 
-echo "Downloading busybox from wolfbear-os repository"
-wget -O "$BUSYBOX_DEPENDENCY_DIR/busybox.zip" \
-  "http://os.wolfbear.mx/wolfbear-os_1.0/busybox/$SYS_ARCH/1.37.0/busybox.zip"
-
 echo "Unzipping BusyBox into initramfs output directory"
 unzip -o "$BUSYBOX_DEPENDENCY_DIR/busybox.zip" -d "$INITRAMFS_OUTPUT_DIR/"
 echo "BusyBox unzipped into initramfs output directory successfully"

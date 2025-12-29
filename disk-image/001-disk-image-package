@@ -127,12 +127,6 @@ cp "$INITRAMFS_OUTPUT_DIR/initramfs.la.cpio.xz" "$DISK_IMAGE_MOUNT_RESOURCES_DIR
 
 unzip "$APK_DEPENDENCY_COMPRESSED_FILENAME_DIR" -d "$DISK_IMAGE_MOUNT_RESOURCES_DIR"
 
-if [ "$SYS_ARCH" == "arm64" ]; then
-  rm -rf "$DISK_IMAGE_MOUNT_RESOURCES_DIR/apk/x86_64"
-else
-  rm -rf "$DISK_IMAGE_MOUNT_RESOURCES_DIR/apk/aarch64"
-fi
-
 echo "Unmounting partitions from '$DISK_IMAGE_MOUNT_DIR'"
 umount -l "$DISK_IMAGE_MOUNT_EFI_DIR" || true
 umount -l "$DISK_IMAGE_MOUNT_ROOTFS_DIR" || true

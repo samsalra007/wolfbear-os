@@ -1,0 +1,56 @@
+#! /bin/sh
+set -euo pipefail
+
+source ./globals
+
+echo "Downloading linux kernel from wolfbear-os repository"
+
+if [ "$SYS_ARCH" == "amd64" ]; then
+  REMOTE_IMAGE_NAME="bzImage";
+elif [ "$SYS_ARCH" == "arm64" ]; then
+  REMOTE_IMAGE_NAME="Image";
+else
+  echo "Unsupported architecture: $SYS_ARCH"
+  exit 1
+fi
+
+rm -rf $ROOT_DIR/sources
+mkdir -p $ROOT_DIR/sources
+
+# Checking for cache for Linux Kernel
+mkdir -p $( dirname $LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME_DIR )
+mkdir -p $( dirname $BUSYBOX_DEPENDENCY_DIR )
+mkdir -p $( dirname $APK_DEPENDENCY_COMPRESSED_FILENAME_DIR )
+
+if [[ -f "$LINUX_DEPENDENCY_CACHE_DIR/$REMOTE_IMAGE_NAME" ]]; then
+  echo "Copying Linux Kernel from WolfbearOS Cache Directory"
+  cp "$LINUX_DEPENDENCY_CACHE_DIR/$REMOTE_IMAGE_NAME" "$LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME_DIR"
+else 
+  echo "Downloading Linux Kernel from WolfbearOS Repository"
+  wget -O "$LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME_DIR" \
+    "http://os.wolfbear.mx/wolfbear-os_1.0/linux/$SYS_ARCH/6.17/$REMOTE_IMAGE_NAME"
+fi
+
+
+# Checking for cache for Busybox
+if [[ -f "$BUSYBOX_DEPENDENCY_CACHE_ZIP_FILENAME_DIR" ]]; then
+  echo "Copying Busybox from WolfbearOS Cache Directory"
+  cp "$BUSYBOX_DEPENDENCY_CACHE_ZIP_FILENAME_DIR" "$BUSYBOX_DEPENDENCY_DIR"
+else 
+  echo "Downloading Busybox from WolfbearOS Repository"
+  wget -O "$BUSYBOX_DEPENDENCY_DIR" \
+    "http://os.wolfbear.mx/wolfbear-os_1.0/busybox/$SYS_ARCH/1.37.0/busybox.zip"
+fi
+
+# Checking for cache for APKs
+
+if [[ -f "$APK_DEPENDENCY_CACHE_ZIP_FILENAME_DIR" ]]; then
+  echo "Copying APKs from WolfbearOS Cache Directory"
+  cp "$APK_DEPENDENCY_CACHE_ZIP_FILENAME_DIR" "$APK_DEPENDENCY_COMPRESSED_FILENAME_DIR"
+else 
+  echo "Downloading APKs from WolfbearOS Repository"
+  wget -O "$APK_DEPENDENCY_COMPRESSED_FILENAME_DIR" \
+    "http://os.wolfbear.mx/wolfbear-os_1.0/apk_$SYS_ARCH.zip"
+fi
+
+echo "Dependencies imported successfully."

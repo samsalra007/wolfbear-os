@@ -1,8 +1,13 @@
 #!/bin/sh
 
+# WolfbearOS versioning
 export WOLFBEAR_VERSION="1.0"
 export WOLFBEAR_FULL_NAME="wolfbear-os_$WOLFBEAR_VERSION"
 
+export BUSYBOX_VERSION="1.37.0"
+export LINUX_KERNEL_VERSION="6.17"
+
+# Arch detection
 export SYS_ARCH=$(uname -m)
 if [ "$SYS_ARCH" = 'aarch64' ] || [ "$SYS_ARCH" = 'arm64' ]; then
 	SYS_ARCH='arm64'
@@ -10,18 +15,28 @@ else
 	SYS_ARCH='amd64'
 fi
 
+# Initramfs and overlays directories
 export ROOT_DIR="$(pwd)"
+
 export INITRAMFS_INSTALLER_DIR="$ROOT_DIR/initramfs"
 export INITRAMFS_INSTALLER_OVERLAY_DIR="$ROOT_DIR/initramfs/overlay"
 export INITRAMFS_OUTPUT_DIR="$ROOT_DIR/output/$WOLFBEAR_FULL_NAME/initramfs"
 
-export LINUX_KERNEL_DEPENDENCY_DIR="$ROOT_DIR/dependencies/$WOLFBEAR_FULL_NAME/linux"
+export ROOTFS_OVERLAY_DIR="$ROOT_DIR/rootfs/overlay"
+
+# Sources directories
+export LINUX_KERNEL_DEPENDENCY_DIR="$ROOT_DIR/sources/$WOLFBEAR_FULL_NAME/linux"
 export LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME="wolfbear-kernel_$SYS_ARCH"
 export LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME_DIR="$LINUX_KERNEL_DEPENDENCY_DIR/$LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME"
-export BUSYBOX_DEPENDENCY_DIR="$ROOT_DIR/dependencies/$WOLFBEAR_FULL_NAME/busybox"
+export BUSYBOX_DEPENDENCY_DIR="$ROOT_DIR/sources/$WOLFBEAR_FULL_NAME/busybox"
+export APK_DEPENDENCY_COMPRESSED_FILENAME_DIR="$ROOT_DIR/sources/$WOLFBEAR_FULL_NAME/apk.zip"
 
-export APK_DEPENDENCY_COMPRESSED_FILENAME_DIR="$ROOT_DIR/dependencies/$WOLFBEAR_FULL_NAME/apk.zip"
+# Cache directories
+export LINUX_DEPENDENCY_CACHE_DIR="$HOME/.wolfcache/remote-output/$WOLFBEAR_FULL_NAME/linux/$SYS_ARCH/$LINUX_KERNEL_VERSION"
+export BUSYBOX_DEPENDENCY_CACHE_ZIP_FILENAME_DIR="$HOME/.wolfcache/remote-output/$WOLFBEAR_FULL_NAME/busybox/$SYS_ARCH/$BUSYBOX_VERSION/busybox.zip"
+export APK_DEPENDENCY_CACHE_ZIP_FILENAME_DIR="$HOME/.wolfcache/remote-output/$WOLFBEAR_FULL_NAME/apk_$SYS_ARCH.zip"
 
+# Disk Image Generation variables
 export DISK_IMAGE_MOUNT_DIR="$ROOT_DIR/output/$WOLFBEAR_FULL_NAME/disk-image-temp"
 
 export DISK_IMAGE_MOUNT_EFI_DIR="$DISK_IMAGE_MOUNT_DIR/EFI_SYSTEM_PARTITION"
@@ -36,5 +51,3 @@ export DISK_IMAGE_SIZE=2048
 export DISK_IMAGE_NAME="$WOLFBEAR_FULL_NAME-diskimage_$SYS_ARCH.img"
 export DISK_IMAGE_OUTPUT_DIR="$ROOT_DIR/output/$WOLFBEAR_FULL_NAME/disk-image"
 export DISK_IMAGE_OUTPUT_FILE="$ROOT_DIR/output/$WOLFBEAR_FULL_NAME/disk-image/$DISK_IMAGE_NAME"
-
-export ROOTFS_OVERLAY_DIR="$ROOT_DIR/rootfs/overlay"
