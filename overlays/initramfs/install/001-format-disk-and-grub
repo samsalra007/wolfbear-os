@@ -31,7 +31,6 @@ parted --script "$DEV_DISK" \
   mkpart primary ext4 100MiB 100%
 
 partprobe "$DEV_DISK" 2>/dev/null || true
-sleep 1
 
 echo "Formateando y particionando la unidad"
 
@@ -54,10 +53,7 @@ echo "Copiando Kernel y initramfs.la.cpio.xz a '$BOOT_DIR'"
 cp "$WOLFBEAR_INSTALLER_RESOURCES_MNT_DIR/linux/wolfbear-kernel_$WOLFBEAR_SYS_ARCH" "$BOOT_DIR/Image"
 cp "$WOLFBEAR_INSTALLER_RESOURCES_MNT_DIR/linux/initramfs.la.cpio.xz" "$BOOT_DIR/"
 
-sleep 1
-
 echo "Generando GRUB según arquitectura: $WOLFBEAR_SYS_ARCH"
-sleep 1
 
 if [ "$WOLFBEAR_SYS_ARCH" = "amd64" ]; then
   grub-mkimage -O x86_64-efi -o $BOOT_EFI_EFI_BOOT_DIR/bootx64.efi -p "/EFI/BOOT" part_gpt fat ext2 normal configfile linux cpio search search_fs_uuid gfxterm all_video
@@ -76,16 +72,15 @@ echo "GRUB ROOT_UUID=$ROOT_UUID"
 echo "GRUB EFI_UUID=$EFI_UUID"
 
 echo "Generando archivo '$BOOT_EFI_EFI_BOOT_DIR/grub.cfg'"
-sleep 1
 
 cat > "$BOOT_EFI_EFI_BOOT_DIR/grub.cfg" <<EOF
-set timeout=3
+set timeout=1
 set default=0
 
 # Opcional: si quieres ver qué está pasando
 # set pager=1
 
-menuentry "WolfbearOS for $WOLFBEAR_SYS_ARCH (ROOTFS)" {
+menuentry "Launch WolfbearOS for $WOLFBEAR_SYS_ARCH" {
     search --no-floppy --fs-uuid --set=root $ROOT_UUID
 
     linux /boot/Image root=UUID=$ROOT_UUID rw console=tty0
@@ -94,4 +89,3 @@ menuentry "WolfbearOS for $WOLFBEAR_SYS_ARCH (ROOTFS)" {
 EOF
 
 echo "Formato y montaje base finalizado"
-sleep 5

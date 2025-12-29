@@ -40,6 +40,8 @@ echo "Installing basic packages into initramfs installer directory..."
     nano \
     libc-utils \
     zstd \
-    file
+    file \
+    zip \
+    unzip
 
 echo "Basic packages installed into initramfs installer directory successfully"

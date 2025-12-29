@@ -20,9 +20,11 @@ mkdir -p $ROOT_DIR/sources
 mkdir -p $( dirname $LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME_DIR )
 mkdir -p $( dirname $APK_DEPENDENCY_COMPRESSED_FILENAME_DIR )
 
-mkdir -p $BUSYBOX_DEPENDENCY_DIR
-mkdir -p $APK_DEPENDENCY_COMPILED_DIR
-mkdir -p $QT_EVERYWHERE_DEPENDENCY_COMPRESSED_DIR
+mkdir -p "$BUSYBOX_DEPENDENCY_DIR"
+mkdir -p "$APK_DEPENDENCY_COMPILED_DIR"
+mkdir -p "$QT_EVERYWHERE_DEPENDENCY_COMPRESSED_DIR"
+
+mkdir -p "$WOLFBEAR_DEN_LAUNCHER_SOURCE_DIR"
 
 # Checking for cache for Linux Kernel
 echo "[ WolfbearOs ] [ info ] importing Linux kernel"
@@ -68,6 +70,17 @@ else
   echo "[ WolfbearOs ] [ repo ] downloading from 'http://os.wolfbear.mx/wolfbear-os_1.0/qt-everywhere/$SYS_ARCH/$QT_VERSION/qt.tar.zst'"
   wget -O "$QT_EVERYWHERE_DEPENDENCY_COMPRESSED_FILENAME_DIR" \
     "http://os.wolfbear.mx/wolfbear-os_1.0/qt-everywhere/$SYS_ARCH/$QT_VERSION/qt.tar.zst"
+fi
+
+
+echo "[ WolfbearOs ] [ info ] importing WolfbearDenLauncher (compiled)"
+if [[ -f "$WOLFBEAR_DEN_LAUNCHER_CACHE_ZIP_FILENAME_DIR" ]]; then
+  echo "[ WolfbearOs ] [ cache ] copying from '$WOLFBEAR_DEN_LAUNCHER_CACHE_ZIP_FILENAME_DIR'"
+  cp "$WOLFBEAR_DEN_LAUNCHER_CACHE_ZIP_FILENAME_DIR" "$WOLFBEAR_DEN_LAUNCHER_SOURCE_ZIP_FILENAME_DIR"
+else 
+  echo "[ WolfbearOs ] [ repo ] downloading from 'http://os.wolfbear.mx/wolfbear-os_1.0/qt-everywhere/$SYS_ARCH/$QT_VERSION/qt.tar.zst'"
+  wget -O "$WOLFBEAR_DEN_LAUNCHER_SOURCE_ZIP_FILENAME_DIR" \
+    "http://os.wolfbear.mx/wolfbear-os_1.0/wbapps/$SYS_ARCH/WolfbearDenLauncher.zip"
 fi
 
 echo "Dependencies imported successfully."

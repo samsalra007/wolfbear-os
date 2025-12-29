@@ -21,7 +21,9 @@ echo "Instalando paquetes esenciales del sistema"
   libc-utils \
   file \
   nano \
-  zstd
+  zstd \
+  zip \
+  unzip
 
 echo "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR" "Instalando herramientas de red"
 

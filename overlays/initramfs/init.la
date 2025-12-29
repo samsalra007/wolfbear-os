@@ -4,32 +4,16 @@ set -eu
 # si el shell soporta pipefail, lo activamos; si no, no pasa nada
 set -o pipefail 2>/dev/null || true
 
-echo "[DBG] PATH=$PATH"
-echo "[DBG] busybox: $(ls -l /bin/busybox 2>/dev/null || echo MISSING)"
+sleep 2
 
-for x in sh cat sed tr seq blkid grep head cut mount switch_root; do
-  if command -v "$x" >/dev/null 2>&1; then
-    echo "[DBG] $x -> $(command -v "$x")"
-  else
-    echo "[DBG] MISSING: $x"
-  fi
-done
-
-# prueba explícita de applets
-/bin/busybox --list | grep -E '^(cat|sed|seq)$' || true
-
-sleep 5
-
-echo "[initramfs-launcher] Bienvenido al script de lanzamiento de WolfbearOS"
-
-echo "Montando particiones del sistema /proc /dev y /sys"
+echo "[initramfs] Montando particiones del sistema /proc /dev y /sys"
 
 mkdir -p /proc /sys /dev
 mount -t devtmpfs devtmpfs /dev
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 
-echo "Determinando variables del sistema"
+echo "[initramfs] Determinando variables del sistema"
 export WOLFBEAR_OS_PRODUCT_NAME=$( cat /sys/class/dmi/id/product_name 2>/dev/null | tr -d '\r' )
 export WOLFBEAR_OS_SYS_VENDOR=$( cat /sys/class/dmi/id/sys_vendor )
 export WOLFBEAR_OS_PARTITION_TIMEOUT=10
@@ -92,5 +76,4 @@ mount --rbind /dev $WOLFBEAR_OS_ROOTFS_MOUNT_POINT/dev
 mount --rbind /sys $WOLFBEAR_OS_ROOTFS_MOUNT_POINT/sys
 
 echo "Cambiando de ambiente a $WOLFBEAR_OS_ROOTFS_MOUNT_POINT con switch_root"
-sleep 2
 exec switch_root $WOLFBEAR_OS_ROOTFS_MOUNT_POINT /init

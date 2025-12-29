@@ -44,6 +44,10 @@ export BUSYBOX_DEPENDENCY_CACHE_ZIP_FILENAME_DIR="$HOME/.wolfcache/remote-output
 export APK_DEPENDENCY_CACHE_ZIP_FILENAME_DIR="$HOME/.wolfcache/remote-output/$WOLFBEAR_FULL_NAME/apk_$SYS_ARCH.zip"
 export QT_EVERYWHERE_DEPENDENCY_CACHE_ZIP_FILENAME_DIR="$HOME/.wolfcache/remote-output/$WOLFBEAR_FULL_NAME/qt-everywhere/$SYS_ARCH/$QT_VERSION/qt.tar.zst"
 
+export WOLFBEAR_DEN_LAUNCHER_CACHE_ZIP_FILENAME_DIR="$HOME/.wolfcache/remote-output/$WOLFBEAR_FULL_NAME/wbapps/$SYS_ARCH/WolfbearDenLauncher.zip"
+export WOLFBEAR_DEN_LAUNCHER_SOURCE_DIR="$ROOT_DIR/sources/$WOLFBEAR_FULL_NAME/wbapps"
+export WOLFBEAR_DEN_LAUNCHER_SOURCE_ZIP_FILENAME_DIR="$ROOT_DIR/sources/$WOLFBEAR_FULL_NAME/wbapps/WolfbearDenLauncher.zip"
+
 # Disk Image Generation variables
 export DISK_IMAGE_MOUNT_DIR="$ROOT_DIR/output/$WOLFBEAR_FULL_NAME/disk-image-temp"
 

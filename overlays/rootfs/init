@@ -1,8 +1,9 @@
 #!/bin/sh
 
-echo "Welcome to WolfbearOS (ROOTFS INSTALLATION)"
+echo "Launching WolfbearOS in rootfs"
+sleep 1
 
-# /runs/launcher
+exec /.launch/000-run-wolfbear-den-launcher
 
 # Bucle para mantener consola activa
 for port in tty1 ttyAMA0; do

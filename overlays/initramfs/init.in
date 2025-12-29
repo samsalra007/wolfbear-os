@@ -4,22 +4,7 @@ set -eu
 # si el shell soporta pipefail, lo activamos; si no, no pasa nada
 set -o pipefail 2>/dev/null || true
 
-echo "[DBG] PATH=$PATH"
-echo "[DBG] busybox: $(ls -l /bin/busybox 2>/dev/null || echo MISSING)"
-
-for x in sh cat sed tr seq blkid grep head cut mount switch_root; do
-  if command -v "$x" >/dev/null 2>&1; then
-    echo "[DBG] $x -> $(command -v "$x")"
-  else
-    echo "[DBG] MISSING: $x"
-  fi
-done
-
-# prueba explícita de applets
-/bin/busybox --list | grep -E '^(cat|sed|seq)$' || true
-
-sleep 5
-
+sleep 2
 
 echo "Bienvenido al script de instalación de WolfbearOS"
 echo "  Montando particiones del sistema"

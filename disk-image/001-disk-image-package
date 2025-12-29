@@ -83,12 +83,12 @@ grub-mkimage \
 
 echo "Creating GRUB configuration file at '$DISK_IMAGE_MOUNT_EFI_BOOT_DIR/grub.cfg'"
 cat > "$DISK_IMAGE_MOUNT_EFI_BOOT_DIR/grub.cfg" <<EOF
-set timeout=5
+set timeout=1
 set default=0
 
 terminal_output console
 
-menuentry "WolfbearOS $SYS_ARCH" {
+menuentry "Install WolfbearOS for $SYS_ARCH" {
     insmod part_gpt
     insmod ext2
     insmod search
@@ -116,6 +116,7 @@ mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/busybox"
 mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/linux"
 mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/apk"
 mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/qt-everywhere"
+mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/wbapps"
 
 echo "Copying rootfs overlay and busybox to RESOURCES partition"
 rsync -a --links "$ROOTFS_OVERLAY_DIR/" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/rootfs/"
@@ -128,6 +129,9 @@ cp "$INITRAMFS_OUTPUT_DIR/initramfs.la.cpio.xz" "$DISK_IMAGE_MOUNT_RESOURCES_DIR
 
 echo "Copying compiled qt-everywhere"
 cp "$QT_EVERYWHERE_DEPENDENCY_COMPRESSED_FILENAME_DIR" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/qt-everywhere"
+
+echo "Copying compiled Wolfbear Apps"
+cp "$WOLFBEAR_DEN_LAUNCHER_SOURCE_ZIP_FILENAME_DIR" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/wbapps"
 
 unzip "$APK_DEPENDENCY_COMPRESSED_FILENAME_DIR" -d "$DISK_IMAGE_MOUNT_RESOURCES_DIR"
 
