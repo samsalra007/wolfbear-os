@@ -39,5 +39,18 @@ echo "Installing basic packages into initramfs installer directory..."
     rsync \
     nano \
     libc-utils
-      
+
+echo "Installing QT packages into initramfs installer directory..."
+/sbin/apk \
+  --root $INITRAMFS_OUTPUT_DIR \
+  --repositories-file /dev/null \
+  --allow-untrusted \
+  --repository "$APK_DEPENDENCY_COMPILED_DIR" \
+  add \
+    qt6-qtbase \
+    qt6-qtdeclarative \
+    qt6-qtshadertools \
+    qt6-qtimageformats \
+    qt6-qt5compat
+
 echo "Basic packages installed into initramfs installer directory successfully"

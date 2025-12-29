@@ -6,6 +6,8 @@ export WOLFBEAR_FULL_NAME="wolfbear-os_$WOLFBEAR_VERSION"
 
 export BUSYBOX_VERSION="1.37.0"
 export LINUX_KERNEL_VERSION="6.17"
+export QT_VERSION="6.8.3"
+export QT_SHORT_VERSION="6.8"
 
 # Arch detection
 export SYS_ARCH=$(uname -m)
