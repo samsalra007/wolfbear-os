@@ -5,4 +5,7 @@ set -o pipefail 2>/dev/null || true
 source $WOLFBEAR_INSTALLER_DIR/globals
 
 echo "Uncompressing QT Evertwhere (compiled)"
+
 zstd -dc "$QT_EVERYWHERE_COMPRESSED_FILENAME_DIR" | tar -C "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR" -xpf -
+
+echo "Decompression finished successfully"

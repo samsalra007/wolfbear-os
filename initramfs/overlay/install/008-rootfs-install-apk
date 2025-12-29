@@ -20,7 +20,8 @@ echo "Instalando paquetes esenciales del sistema"
   linux-headers \
   libc-utils \
   file \
-  nano
+  nano \
+  zstd
 
 echo "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR" "Instalando herramientas de red"
 
