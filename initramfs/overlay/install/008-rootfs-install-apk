@@ -78,3 +78,16 @@ echo "Instalando GRUB UEFI"
   --repository "$APK_UNCOMPRESSED_DIR" \
   add \
   e2fsprogs util-linux dosfstools
+
+echo "Installing QT packages into initramfs installer directory..."
+/sbin/apk \
+  --root $WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR \
+  --repositories-file /dev/null \
+  --allow-untrusted \
+  --repository "$APK_UNCOMPRESSED_DIR" \
+  add \
+    qt6-qtbase \
+    qt6-qtdeclarative \
+    qt6-qtshadertools \
+    qt6-qtimageformats \
+    qt6-qt5compat

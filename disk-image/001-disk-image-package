@@ -115,6 +115,7 @@ mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/rootfs"
 mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/busybox"
 mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/linux"
 mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/apk"
+mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/qt-everywhere"
 
 echo "Copying rootfs overlay and busybox to RESOURCES partition"
 rsync -a --links "$ROOTFS_OVERLAY_DIR/" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/rootfs/"
@@ -124,6 +125,9 @@ echo "Copying kernel and initramfs to RESOURCES partition"
 cp "$LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME_DIR" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/linux"
 cp "$INITRAMFS_OUTPUT_DIR/initramfs.in.cpio.xz" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/linux"
 cp "$INITRAMFS_OUTPUT_DIR/initramfs.la.cpio.xz" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/linux"
+
+echo "Copying compiled qt-everywhere"
+cp "$QT_EVERYWHERE_DEPENDENCY_COMPRESSED_FILENAME_DIR" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/qt-everywhere"
 
 unzip "$APK_DEPENDENCY_COMPRESSED_FILENAME_DIR" -d "$DISK_IMAGE_MOUNT_RESOURCES_DIR"
 

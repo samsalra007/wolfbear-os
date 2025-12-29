@@ -22,6 +22,7 @@ mkdir -p $( dirname $APK_DEPENDENCY_COMPRESSED_FILENAME_DIR )
 
 mkdir -p $BUSYBOX_DEPENDENCY_DIR
 mkdir -p $APK_DEPENDENCY_COMPILED_DIR
+mkdir -p $QT_EVERYWHERE_DEPENDENCY_COMPRESSED_DIR
 
 # Checking for cache for Linux Kernel
 echo "[ WolfbearOs ] [ info ] importing Linux kernel"
@@ -57,5 +58,16 @@ else
     "http://os.wolfbear.mx/wolfbear-os_1.0/apk_$SYS_ARCH.zip"
 fi
 unzip "$APK_DEPENDENCY_COMPRESSED_FILENAME_DIR" -d "$APK_DEPENDENCY_COMPILED_DIR/../"
+
+
+echo "[ WolfbearOs ] [ info ] importing QT Everywhere (compiled)"
+if [[ -f "$QT_EVERYWHERE_DEPENDENCY_CACHE_ZIP_FILENAME_DIR" ]]; then
+  echo "[ WolfbearOs ] [ cache ] copying from '$QT_EVERYWHERE_DEPENDENCY_CACHE_ZIP_FILENAME_DIR'"
+  cp "$QT_EVERYWHERE_DEPENDENCY_CACHE_ZIP_FILENAME_DIR" "$QT_EVERYWHERE_DEPENDENCY_COMPRESSED_FILENAME_DIR"
+else 
+  echo "[ WolfbearOs ] [ repo ] downloading from 'http://os.wolfbear.mx/wolfbear-os_1.0/qt-everywhere/$SYS_ARCH/$QT_VERSION/qt.tar.zst'"
+  wget -O "$QT_EVERYWHERE_DEPENDENCY_COMPRESSED_FILENAME_DIR" \
+    "http://os.wolfbear.mx/wolfbear-os_1.0/qt-everywhere/$SYS_ARCH/$QT_VERSION/qt.tar.zst"
+fi
 
 echo "Dependencies imported successfully."
