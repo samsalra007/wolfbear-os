@@ -11,3 +11,8 @@ echo "Desmontando particiones"
 umount -l "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/dev"
 umount -l "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/sys"
 umount -l "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR/proc"
+
+echo "Vaciando memoria mediante sync (esperando 5 segundos)"
+sync
+
+sleep 5
