@@ -20,11 +20,10 @@ fi
 # Initramfs and overlays directories
 export ROOT_DIR="$(pwd)"
 
-export INITRAMFS_INSTALLER_DIR="$ROOT_DIR/initramfs"
-export INITRAMFS_INSTALLER_OVERLAY_DIR="$ROOT_DIR/initramfs/overlay"
-export INITRAMFS_OUTPUT_DIR="$ROOT_DIR/output/$WOLFBEAR_FULL_NAME/initramfs"
+export INITRAMFS_INSTALLER_OVERLAY_DIR="$ROOT_DIR/overlays/initramfs"
+export ROOTFS_OVERLAY_DIR="$ROOT_DIR/overlays/rootfs"
 
-export ROOTFS_OVERLAY_DIR="$ROOT_DIR/rootfs/overlay"
+export INITRAMFS_OUTPUT_DIR="$ROOT_DIR/output/$WOLFBEAR_FULL_NAME/initramfs"
 
 # Sources directories
 export LINUX_KERNEL_DEPENDENCY_DIR="$ROOT_DIR/sources/$WOLFBEAR_FULL_NAME/linux"
