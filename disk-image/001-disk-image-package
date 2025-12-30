@@ -115,7 +115,9 @@ mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/rootfs"
 mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/busybox"
 mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/linux"
 mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/apk"
-mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/qt-everywhere"
+
+# Now this comes with qt6-qtbase-x11 but keeping commented if needed later
+# mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/qt-everywhere"
 mkdir -p "$DISK_IMAGE_MOUNT_RESOURCES_DIR/wbapps"
 
 echo "Copying rootfs overlay and busybox to RESOURCES partition"
@@ -127,8 +129,9 @@ cp "$LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME_DIR" "$DISK_IMAGE_MOUNT_RESOURCES
 cp "$INITRAMFS_OUTPUT_DIR/initramfs.in.cpio.xz" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/linux"
 cp "$INITRAMFS_OUTPUT_DIR/initramfs.la.cpio.xz" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/linux"
 
-echo "Copying compiled qt-everywhere"
-cp "$QT_EVERYWHERE_DEPENDENCY_COMPRESSED_FILENAME_DIR" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/qt-everywhere"
+# QT Everywhere is now a build dependency
+# echo "Copying compiled qt-everywhere"
+# cp "$QT_EVERYWHERE_DEPENDENCY_COMPRESSED_FILENAME_DIR" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/qt-everywhere"
 
 echo "Copying compiled Wolfbear Apps"
 cp "$WOLFBEAR_DEN_LAUNCHER_SOURCE_ZIP_FILENAME_DIR" "$DISK_IMAGE_MOUNT_RESOURCES_DIR/wbapps"

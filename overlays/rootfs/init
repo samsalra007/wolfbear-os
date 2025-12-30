@@ -3,7 +3,7 @@
 echo "Launching WolfbearOS in rootfs"
 sleep 1
 
-exec /.launch/000-run-wolfbear-den-launcher
+exec /.launch/wolfbear-den-launcher
 
 # Bucle para mantener consola activa
 for port in tty1 ttyAMA0; do

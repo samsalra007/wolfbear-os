@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Forzar EGLFS
+export QT_QPA_PLATFORM=eglfs
+export QT_QPA_EGLFS_INTEGRATION=eglfs_kms
+
+# (Opcional pero recomendado)
+export QT_QPA_EGLFS_KMS_CONFIG=/etc/eglfs.json
+
+# Debug básico (puedes quitar estas dos líneas cuando funcione)
+export QT_DEBUG_PLUGINS=1
+export QT_LOGGING_RULES="qt.qpa.*=true"
+
+# Evitar que intente X11 o Wayland
+unset DISPLAY
+unset WAYLAND_DISPLAY
+
+# Ejecutar launcher
+exec WolfbearDenLauncherApp
