@@ -57,11 +57,12 @@ echo "Instalando dependencias gráficas"
   --allow-untrusted \
   --repository "$APK_UNCOMPRESSED_DIR" \
   add \
-  sdl2-dev sdl2 \
-  libdrm libdrm-dev \
-  mesa-gbm mesa-dev mesa-dri-gallium mesa-egl \
-  libinput libinput-dev \
-  expat-dev libffi-dev \
+  sdl2 \
+  libdrm \
+  mesa-gbm \
+  mesa-dri-gallium \
+  mesa-egl \
+  libinput\
   libxkbcommon
 
 echo "Instalando GRUB UEFI"
