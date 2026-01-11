@@ -22,7 +22,7 @@ mkdir -p $( dirname $APK_DEPENDENCY_COMPRESSED_FILENAME_DIR )
 
 mkdir -p "$BUSYBOX_DEPENDENCY_DIR"
 mkdir -p "$APK_DEPENDENCY_COMPILED_DIR"
-mkdir -p "$QT_EVERYWHERE_DEPENDENCY_COMPRESSED_DIR"
+# mkdir -p "$QT_EVERYWHERE_DEPENDENCY_COMPRESSED_DIR"
 
 mkdir -p "$WOLFBEAR_DEN_LAUNCHER_SOURCE_DIR"
 
@@ -31,7 +31,7 @@ echo "[ WolfbearOs ] [ info ] importing Linux kernel"
 if [[ -f "$LINUX_DEPENDENCY_CACHE_DIR/$REMOTE_IMAGE_NAME" ]]; then
   echo "[ WolfbearOs ] [ cache ] copying from '$LINUX_DEPENDENCY_CACHE_DIR/$REMOTE_IMAGE_NAME'"
   cp "$LINUX_DEPENDENCY_CACHE_DIR/$REMOTE_IMAGE_NAME" "$LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME_DIR"
-else 
+  else 
   echo "[ WolfbearOs ] [ repo ] downloading from 'http://os.wolfbear.mx/wolfbear-os_1.0/linux/$SYS_ARCH/6.17/$REMOTE_IMAGE_NAME'"
   wget -O "$LINUX_KERNEL_DEPENDENCY_COMPILED_FILENAME_DIR" \
     "http://os.wolfbear.mx/wolfbear-os_1.0/linux/$SYS_ARCH/6.17/$REMOTE_IMAGE_NAME"
