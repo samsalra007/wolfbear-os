@@ -4,17 +4,13 @@ set -eu
 # si el shell soporta pipefail, lo activamos; si no, no pasa nada
 set -o pipefail 2>/dev/null || true
 
-sleep 2
-
-echo "Bienvenido al script de instalación de WolfbearOS"
-echo "  Montando particiones del sistema"
+echo " [ WolfbearOS Installer ] Mounting virtual filesystems..."
+sleep 0.5
 
 mkdir -p /proc /sys /dev
 mount -t devtmpfs devtmpfs /dev
 mount -t proc proc /proc
 mount -t sysfs sysfs /sys
-
-echo "  Detalles del sistema: "
 
 export WOLFBEAR_OS_PRODUCT_NAME=$( cat /sys/class/dmi/id/product_name 2>/dev/null | tr -d '\r' )
 export WOLFBEAR_OS_SYS_VENDOR=$( cat /sys/class/dmi/id/sys_vendor )
@@ -30,14 +26,28 @@ case "$WOLFBEAR_OS_PRODUCT_NAME" in
         ;;
 esac
 
-echo "    product_name: $WOLFBEAR_OS_PRODUCT_NAME"
-echo "    sys_vendor:   $WOLFBEAR_OS_SYS_VENDOR"
-echo "    is_virtualized: $WOLFBEAR_OS_IS_VIRTUALIZED"
-echo "    console_ports: $WOLFBEAR_OS_CONSOLE_PORTS"
-echo "    partition_timeout: $WOLFBEAR_OS_PARTITION_TIMEOUT seconds"
+WOLFBEAR_GRUB_PARAMETERS="$(cat /proc/cmdline)"
+for arg in $WOLFBEAR_GRUB_PARAMETERS; do
+  case "$arg" in
+    quiet)
+      WOLFBEAR_QUIET=1
+      ;;
+    wb.whattodo=*)
+      WOLFBEAR_WHAT_TO_DO="${arg#wb.whattodo=}"
+  esac
+done
 
-echo "Abriendo consolas de sistema"
-sleep 2
+if [ $WOLFBEAR_QUIET ]; then
+  echo " [ WolfbearOS Installer ] Starting in quiet mode..."
+else
+  echo " [ WolfbearOS Installer ] System details:"
+  echo "    Kernel parameters: $WOLFBEAR_GRUB_PARAMETERS"
+  echo "    product_name: $WOLFBEAR_OS_PRODUCT_NAME"
+  echo "    sys_vendor:   $WOLFBEAR_OS_SYS_VENDOR"
+  echo "    is_virtualized: $WOLFBEAR_OS_IS_VIRTUALIZED"
+  echo "    console_ports: $WOLFBEAR_OS_CONSOLE_PORTS"
+  echo "    partition_timeout: $WOLFBEAR_OS_PARTITION_TIMEOUT seconds"
+fi
 
 if [ -f /etc/hostname ]; then
   hostname "$(cat /etc/hostname)"
@@ -45,9 +55,35 @@ fi
 
 clear
 
+case "$WOLFBEAR_WHAT_TO_DO" in
+  install)
+    echo " [ WolfbearOS Installer ] Starting installation process..."
+    
+    export WOLFBEAR_INSTALLER_DIR="/install"
+    export WOLFBEAR_SYS_ARCH=$(uname -m)
+    
+    if [ "$WOLFBEAR_SYS_ARCH" = 'aarch64' ] || [ "$WOLFBEAR_SYS_ARCH" = 'arm64' ]; then
+      WOLFBEAR_SYS_ARCH='arm64'
+    else 
+      WOLFBEAR_SYS_ARCH='amd64'
+    fi
+
+    cd /install
+    ./wolfbear-install
+
+    ;;
+  cli)
+    echo " [ WolfbearOS Installer ] Starting command line interface..."
+    ;;
+  *)
+    echo " [ WolfbearOS Installer ] No valid action specified. Please use 'wb.whattodo=install' or 'wb.whattodo=cli' kernel parameter."
+    ;;
+esac
+
+clear
+
 for port in $WOLFBEAR_OS_CONSOLE_PORTS; do
   if [ -e "/dev/$port" ]; then
-    echo "[initramfs] Consola disponible en $port"
     /sbin/getty -L "$port" 115200 vt100 &
   fi
 done
