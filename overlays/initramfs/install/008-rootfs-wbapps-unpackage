@@ -4,4 +4,4 @@ set -o pipefail 2>/dev/null || true
 
 source $WOLFBEAR_INSTALLER_DIR/globals
 
-unzip -o "$WOLFBEAR_APPS_DEN_LAUNCHER_COMPRESSED_ZIP_DIR" -d "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR"
+tar -xzf "$WOLFBEAR_INSTALLER_RESOURCES_MNT_DIR/wbapps/wolfbear-apps.tar.gz" -C "$WOLFBEAR_TARGET_DISK_ROOTFS_MNT_DIR" --strip-components=1
